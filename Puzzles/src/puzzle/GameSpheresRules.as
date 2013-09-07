@@ -1,6 +1,8 @@
 package puzzle 
 {
+	import flash.geom.Point;
 	import net.flashpunk.FP;
+	import net.flashpunk.utils.Data;
 	/**
 	 * ...
 	 * @author Sean Snyder
@@ -13,11 +15,18 @@ package puzzle
 		public static const IS_FINISHED:int = 0;
 		public static const NOTHING_HAPPENED:int = -1;
 		public static const GRID_CHANGED:int = -2;
+		public static const SPHERES_SELECTED:int = -3;
+		
+		private static const STATE_DOING_NOTHING:int = 50;
+		private static const STATE_SELECTED:int = 51;
 		
 		private static const MAX_COLORS:int = 6;
+		
+		private var currentState:int = STATE_DOING_NOTHING;
 		private var _width:int;
 		private var _height:int;
 		private var spheres:Array; //acts as 2d grid filled with sphere id #s
+		private var selectedSpheres:Array; //acts as 2d grid designating selected spheres
 		private var _score:int;
 		
 		public function GameSpheresRules(width:int, height:int, numColors:int)
@@ -26,6 +35,7 @@ package puzzle
 			this._height = height;
 			this._score = 0;
 			this.spheres = new Array();
+			this.selectedSpheres = new Array();
 			generateSphereGrid(numColors);
 		}
 		
@@ -41,6 +51,7 @@ package puzzle
 			for (var j:int = 0; j < _height; j++) {
 				for (var i:int = 0; i < _width; i++) {
 					spheres[i + j * _width] = (int)(Math.floor(Math.random() * numColors)) + 1;
+					selectedSpheres[i + j * _width] = false;
 				}
 			}
 			if (isFinished()) {
@@ -67,6 +78,13 @@ package puzzle
 			x = FP.clamp(x, 0, _width - 1);
 			y = FP.clamp(y, 0, _height - 1);
 			return spheres[x + y * _width];
+		}
+		
+		
+		public function isIndexSelected(x:int, y:int):Boolean {
+			x = FP.clamp(x, 0, _width - 1);
+			y = FP.clamp(y, 0, _height - 1);
+			return selectedSpheres[x + y * _width];
 		}
 		
 		//isFinished() -> checks if any valid moves remain
@@ -99,55 +117,67 @@ package puzzle
 		//selectSphere(x,y)
 		//handles clicked spheres
 		public function selectSphere(x:int, y:int):int {
-			//if sphere is touching other spheres of same color, remove it and touched spheres
-			//otherwise stop
-			var numSpheresRemoved:int = removeColoredSpheresAt( getIndex(x, y), x, y);
-			if (numSpheresRemoved == 0) {
-				return NOTHING_HAPPENED;
+			if(currentState == STATE_DOING_NOTHING){
+				//if sphere is touching other spheres of same color, remove it and touched spheres
+				//otherwise stop
+				var numSpheresSelected:int = selectColoredSpheresAt( getIndex(x, y), x, y);
+				if (numSpheresSelected > 0) {
+					currentState = STATE_SELECTED;
+					return SPHERES_SELECTED;
+				}
+				else {
+					return NOTHING_HAPPENED;
+				}
 			}
-			
-			//add points based on number of spheres removed
-			_score += (numSpheresRemoved - 1) * (numSpheresRemoved - 1);
-			
-			//all spheres above removed spheres head downward
-			shiftSpheresDown();
-			
-			//if any column is empty, move all columns left of it to the right
-			shiftColumnsRight();
-			
-			if (isFinished()) {
-				return IS_FINISHED;
-			}
-			else {
-				return GRID_CHANGED;
+			else if (currentState == STATE_SELECTED) {
+				if (isIndexSelected(x, y)) {
+					var numSpheres:int = 0;
+					//for loop removing all designated spheres and counting total
+					
+					//add points based on number of spheres removed
+					_score += (numSpheresSelected) * (numSpheresSelected - 1);
+					
+					//all spheres above removed spheres head downward
+					shiftSpheresDown();
+					
+					//if any column is empty, move all columns left of it to the right
+					shiftColumnsRight();
+					
+					if (isFinished()) {
+						return IS_FINISHED;
+					}
+					else {
+						return GRID_CHANGED;
+					}
+				}
 			}
 		}
 		
-		private function removeColoredSpheresAt(id:int, x:int, y:int, firstAttempt:Boolean = true ):int
+		private function selectColoredSpheresAt(id:int, x:int, y:int, firstAttempt:Boolean = true ):int
 		{
 			//if sphere out of bounds, not correct color, or invalid, return 0
 			if (x < 0 || x >= _width || y < 0 || y >= _height ||
-				id == INVALID_ID || spheres[x + y * _width] != id) {
+				id == INVALID_ID || spheres[x + y * _width] != id || selectedSpheres[x + y * _width]) {
+				
 				//trace("Sphere " + id + "(" + spheres[x + y * _width] + ") at x:" + x + " y:" + y + " failed");
 				return 0;
 			}
 			
 			//remove all adjacent spheres of same color
-			var numSpheresRemoved:int = 1;
-			var prevSphereID:int = spheres[x + y * _width];
-			spheres[x + y * _width] = INVALID_ID;
+			var numSpheresSelected:int = 1;
+			selectedSpheres[x + y * _width] = true;
 			
-			numSpheresRemoved += removeColoredSpheresAt(id, x + 1, y, false);
-			numSpheresRemoved += removeColoredSpheresAt(id, x - 1, y, false);
-			numSpheresRemoved += removeColoredSpheresAt(id, x, y + 1, false);
-			numSpheresRemoved += removeColoredSpheresAt(id, x, y - 1, false);
+			numSpheresSelected += selectColoredSpheresAt(id, x + 1, y, false);
+			numSpheresSelected += selectColoredSpheresAt(id, x - 1, y, false);
+			numSpheresSelected += selectColoredSpheresAt(id, x, y + 1, false);
+			numSpheresSelected += selectColoredSpheresAt(id, x, y - 1, false);
 			
-			if (firstAttempt && numSpheresRemoved == 1) { //if this is only sphere of color, don't remove
-				spheres[x + y * _width] = prevSphereID;
+			if (firstAttempt && numSpheresSelected == 1) { //if this is only sphere of color, don't remove
+				selectedSpheres[x + y * _width] = false;
 				return 0;
 			}
 			
-			return numSpheresRemoved;
+			return numSpheresSelected;
 			
 		}
 		

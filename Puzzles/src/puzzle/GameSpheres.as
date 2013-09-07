@@ -46,6 +46,7 @@ package puzzle
 				for (var i:int = 0; i < width; i++) {
 					var index:int = gameRules.getIndex(i, j);
 					sphereGridDisplay.setTile(i, j, index);
+					//check if tile highlighted and update highlight Grid display
 				}
 			}
 			
@@ -65,7 +66,7 @@ package puzzle
 					var tileX:int = (Input.mouseX - sphereGridRect.x) / sphereGridDisplay.tileWidth;
 					var tileY:int = (Input.mouseY - sphereGridRect.y) / sphereGridDisplay.tileHeight;
 					var result:int = gameRules.selectSphere(tileX, tileY);
-					if (result == GameSpheresRules.GRID_CHANGED) {
+					if (result == GameSpheresRules.GRID_CHANGED || result == GameSpheresRules.SPHERES_SELECTED) {
 						updateSphereGridDisplay();
 						trace("GRID CHANGED at tileX: " + tileX + " tileY: " + tileY);
 					}
