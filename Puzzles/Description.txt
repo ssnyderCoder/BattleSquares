@@ -1,0 +1,16 @@
+-----BattleSqaures(Working title)-----
+-------------------------------------
+A puzzle rts game where the player must capture more territory squares than his opponents.  Capturing a territory square involves gaining a high score in a puzzle game.
+-------------------------------------
+Package/Class plan (emphasize capability to switch minigames in and out)
+
+Main
+GameWorld
+GameState
+Player
+-->PlayerAI
+GameDisplay
+GameSquaresLogic
+GameSquaresDisplay
+GameSpheresLogic
+GameSpheresDisplay
