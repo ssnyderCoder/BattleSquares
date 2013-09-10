@@ -2,6 +2,7 @@ package puzzle
 {
 	import flash.geom.Rectangle;
 	import net.flashpunk.Entity;
+	import net.flashpunk.FP;
 	import net.flashpunk.Graphic;
 	import net.flashpunk.graphics.Graphiclist;
 	import net.flashpunk.graphics.Stamp;
@@ -16,7 +17,7 @@ package puzzle
 	 */
 	public class GameSpheres extends Entity 
 	{
-		private static const NUM_COLORS:int = 6;
+		private static const NUM_COLORS:int = 3;
 		private static const HIGHLIGHT_OFF:int = 0;
 		private static const HIGHLIGHT_ON:int = 1;
 		private static const HIGHLIGHT_ROUND_OVER:int = 2;
@@ -27,11 +28,14 @@ package puzzle
 		private var gameRules:GameSpheresRules;
 		private var scoreDisplay:Text;
 		private var newGameOnNextClick:Boolean = false;
+		private var pointBox:PointsBox;
 		public function GameSpheres(x:Number=0, y:Number=0) 
 		{
 			this.x = x;
 			this.y = y;
+			this.setHitbox(600, 600);
 			gameRules = new GameSpheresRules(8, 8, NUM_COLORS);
+			
 			var background:Graphic = new Stamp(Assets.SPHERE_GAME_BACKGROUND);
 			scoreDisplay = new Text("Score: 0", 100, 550);
 			sphereGridDisplay = new Tilemap(Assets.SPHERES, 512, 512, 64, 64);
@@ -41,16 +45,28 @@ package puzzle
 			sphereGridHighlight.x = sphereGridDisplay.x;
 			sphereGridHighlight.y = sphereGridDisplay.y;
 			sphereGridHighlight.alpha = 0.2;
-			updateSphereGridDisplay();
+			this.graphic = new Graphiclist(background, sphereGridDisplay, sphereGridHighlight, scoreDisplay);
 			sphereGridRect = new Rectangle(sphereGridDisplay.x + x, sphereGridDisplay.y + y,
 											sphereGridDisplay.width, sphereGridDisplay.height);
-			this.graphic = new Graphiclist(background, sphereGridDisplay, sphereGridHighlight, scoreDisplay);
+			
+			pointBox = new PointsBox(0, 0);
+			pointBox.visible = false;
+		}
+		
+		override public function added():void 
+		{
+			super.added();
+			this.world.add(pointBox);
+			
+			updateSphereGridDisplay();
 		}
 		
 		private function updateSphereGridDisplay():void 
 		{
 			var height:int = gameRules.height;
 			var width:int = gameRules.width;
+			var topLeftX:int = 999;
+			var topLeftY:int = 999;
 			for (var j:int = 0; j < height; j++) {
 				for (var i:int = 0; i < width; i++) {
 					var index:int = gameRules.getIndex(i, j);
@@ -59,10 +75,35 @@ package puzzle
 					var highlight:Boolean = gameRules.isIndexSelected(i, j);
 					sphereGridHighlight.setTile(i, j, 
 						newGameOnNextClick ? HIGHLIGHT_ROUND_OVER : (highlight ? HIGHLIGHT_ON : HIGHLIGHT_OFF));
+					if (highlight) {
+						if (topLeftX > i) {
+							topLeftX = i;
+							topLeftY = j;
+						}
+						else if (topLeftX == i && topLeftY > j) {
+							topLeftY = j;
+						}
+					}
 				}
 			}
 			
 			scoreDisplay.text = "Score: " + gameRules.score;
+			
+			//setup points box if valid situation for it
+			var selectedSpheresScore:int = gameRules.getSelectedSpheresTotalScore();
+			if (selectedSpheresScore > 0) {
+				pointBox.visible = true;
+				pointBox.setPoints(selectedSpheresScore);
+				//set location to top left of top leftmost block
+				pointBox.x = sphereGridRect.x + (sphereGridDisplay.tileWidth * topLeftX) -
+					(sphereGridDisplay.tileWidth / 2);
+				pointBox.y = sphereGridRect.y + (sphereGridDisplay.tileHeight * topLeftY) -
+					(sphereGridDisplay.tileHeight / 2);
+				FP.clampInRect(pointBox, this.x, this.y, this.width, this.height);
+			}
+			else { //hide points box when not needed
+				pointBox.visible = false;
+			}
 		}
 		override public function update():void 
 		{

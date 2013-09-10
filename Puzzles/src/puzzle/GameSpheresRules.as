@@ -27,6 +27,7 @@ package puzzle
 		private var spheres:Array; //acts as 2d grid filled with sphere id #s
 		private var selectedSpheres:Array; //acts as 2d grid designating selected spheres
 		private var _score:int;
+		private var numSelectedSpheres:int = 0;
 		
 		public function GameSpheresRules(width:int, height:int, numColors:int)
 		{
@@ -119,8 +120,8 @@ package puzzle
 			if(currentState == STATE_DOING_NOTHING){
 				//if sphere is touching other spheres of same color, select it and others
 				//otherwise stop
-				var numSpheresSelected:int = selectColoredSpheresAt( getIndex(x, y), x, y);
-				if (numSpheresSelected > 0) {
+				numSelectedSpheres = selectColoredSpheresAt( getIndex(x, y), x, y);
+				if (numSelectedSpheres > 0) {
 					currentState = STATE_SELECTED;
 					return GRID_CHANGED;
 				}
@@ -130,19 +131,18 @@ package puzzle
 			}
 			else if (currentState == STATE_SELECTED) {
 				if (isIndexSelected(x, y)) {
-					var numSpheres:int = 0;
 					//for loop removing all designated spheres and counting total
 					for (var j:int = 0; j < _height; j++) {
 						for (var i:int = 0; i < _width; i++) {
 							if(selectedSpheres[i + j * _width]){
 								spheres[i + j * _width] = INVALID_ID;
 								selectedSpheres[i + j * _width] = false;
-								numSpheres++;
 							}
 						}
 					}
 					//add points based on number of spheres removed
-					_score += (numSpheres) * (numSpheres - 1);
+					_score += getSelectedSpheresTotalScore();
+					numSelectedSpheres = 0;
 					
 					//all spheres above removed spheres head downward
 					shiftSpheresDown();
@@ -169,14 +169,16 @@ package puzzle
 			return NOTHING_HAPPENED;
 			
 		}
-		
+		public function getSelectedSpheresTotalScore():int {
+			return (numSelectedSpheres) * (numSelectedSpheres - 1);
+		}
 		private function resetSphereSelection():void {
 			for (var j:int = 0; j < _height; j++) {
 				for (var i:int = 0; i < _width; i++) {
 					selectedSpheres[i + j * _width] = false;
 				}
 			}
-			
+			numSelectedSpheres = 0;
 		}
 		
 		private function selectColoredSpheresAt(id:int, x:int, y:int, firstAttempt:Boolean = true ):int
