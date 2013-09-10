@@ -68,12 +68,10 @@ package puzzle
 					var result:int = gameRules.selectSphere(tileX, tileY);
 					if (result == GameSpheresRules.GRID_CHANGED || result == GameSpheresRules.SPHERES_SELECTED) {
 						updateSphereGridDisplay();
-						trace("GRID CHANGED at tileX: " + tileX + " tileY: " + tileY);
 					}
 					else if (result == GameSpheresRules.IS_FINISHED) {
 						updateNextClick = true;
 						updateSphereGridDisplay();
-						trace("GAME COMPLETE");
 					}
 				}
 			}
