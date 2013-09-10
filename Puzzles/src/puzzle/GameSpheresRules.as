@@ -11,16 +11,15 @@ package puzzle
 	{
 		public static const INVALID_ID:int = 0;
 		
+		private static const MAX_COLORS:int = 6;
+		
 		//returned by selectSphere()
 		public static const IS_FINISHED:int = 0;
 		public static const NOTHING_HAPPENED:int = -1;
 		public static const GRID_CHANGED:int = -2;
-		public static const SPHERES_SELECTED:int = -3;
 		
 		private static const STATE_DOING_NOTHING:int = 50;
 		private static const STATE_SELECTED:int = 51;
-		
-		private static const MAX_COLORS:int = 6;
 		
 		private var currentState:int = STATE_DOING_NOTHING;
 		private var _width:int;
@@ -118,12 +117,12 @@ package puzzle
 		//handles clicked spheres
 		public function selectSphere(x:int, y:int):int {
 			if(currentState == STATE_DOING_NOTHING){
-				//if sphere is touching other spheres of same color, remove it and touched spheres
+				//if sphere is touching other spheres of same color, select it and others
 				//otherwise stop
 				var numSpheresSelected:int = selectColoredSpheresAt( getIndex(x, y), x, y);
 				if (numSpheresSelected > 0) {
 					currentState = STATE_SELECTED;
-					return SPHERES_SELECTED;
+					return GRID_CHANGED;
 				}
 				else {
 					return NOTHING_HAPPENED;
@@ -133,9 +132,17 @@ package puzzle
 				if (isIndexSelected(x, y)) {
 					var numSpheres:int = 0;
 					//for loop removing all designated spheres and counting total
-					
+					for (var j:int = 0; j < _height; j++) {
+						for (var i:int = 0; i < _width; i++) {
+							if(selectedSpheres[i + j * _width]){
+								spheres[i + j * _width] = INVALID_ID;
+								selectedSpheres[i + j * _width] = false;
+								numSpheres++;
+							}
+						}
+					}
 					//add points based on number of spheres removed
-					_score += (numSpheresSelected) * (numSpheresSelected - 1);
+					_score += (numSpheres) * (numSpheres - 1);
 					
 					//all spheres above removed spheres head downward
 					shiftSpheresDown();
@@ -143,6 +150,8 @@ package puzzle
 					//if any column is empty, move all columns left of it to the right
 					shiftColumnsRight();
 					
+					//finish up
+					currentState = STATE_DOING_NOTHING;
 					if (isFinished()) {
 						return IS_FINISHED;
 					}
@@ -150,7 +159,24 @@ package puzzle
 						return GRID_CHANGED;
 					}
 				}
+				else { //unselect spheres
+					resetSphereSelection();
+					currentState = STATE_DOING_NOTHING;
+					return GRID_CHANGED;
+				}
 			}
+			
+			return NOTHING_HAPPENED;
+			
+		}
+		
+		private function resetSphereSelection():void {
+			for (var j:int = 0; j < _height; j++) {
+				for (var i:int = 0; i < _width; i++) {
+					selectedSpheres[i + j * _width] = false;
+				}
+			}
+			
 		}
 		
 		private function selectColoredSpheresAt(id:int, x:int, y:int, firstAttempt:Boolean = true ):int
@@ -158,8 +184,6 @@ package puzzle
 			//if sphere out of bounds, not correct color, or invalid, return 0
 			if (x < 0 || x >= _width || y < 0 || y >= _height ||
 				id == INVALID_ID || spheres[x + y * _width] != id || selectedSpheres[x + y * _width]) {
-				
-				//trace("Sphere " + id + "(" + spheres[x + y * _width] + ") at x:" + x + " y:" + y + " failed");
 				return 0;
 			}
 			
