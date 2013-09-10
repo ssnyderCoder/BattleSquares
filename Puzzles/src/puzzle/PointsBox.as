@@ -1,20 +1,18 @@
 package puzzle 
 {
 	import net.flashpunk.Entity;
-	import net.flashpunk.Graphic;
-	import net.flashpunk.Mask;
 	
 	/**
 	 * ...
 	 * @author Sean Snyder
 	 */
-	public class ScoreBox extends Entity 
+	public class PointsBox extends Entity 
 	{
 		
-		public function ScoreBox(x:Number=0, y:Number=0, graphic:Graphic=null, mask:Mask=null) 
+		public function PointsBox(x:Number, y:Number) 
 		{
-			super(x, y, graphic, mask);
-			
+			this.x = x;
+			this.y = y;
 		}
 		
 	}
