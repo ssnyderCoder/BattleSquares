@@ -33,7 +33,7 @@ package puzzle
 		private var newGameOnNextClick:Boolean = false;
 		private var pointBox:PointsBox;
 		
-		private var acceptingInput:Boolean = true;
+		private var transitionSphereCount:int = 0;
 		public function GameSpheres(x:Number=0, y:Number=0) 
 		{
 			this.x = x;
@@ -125,12 +125,11 @@ package puzzle
 					var tileX:int = (Input.mouseX - sphereGridRect.x) / sphereGridDisplay.tileWidth;
 					var tileY:int = (Input.mouseY - sphereGridRect.y) / sphereGridDisplay.tileHeight;
 					var result:int = gameRules.selectSphere(tileX, tileY);
-					if (result == GameSpheresRules.SPHERES_SELECTED) {
+					if (result == GameSpheresRules.SPHERE_SELECTION) {
 						updateSphereGridDisplay();
 					}
 					else if (result == GameSpheresRules.GRID_CHANGED) {
-						acceptingInput = false;
-						
+						transitionSphereGridDisplay();
 					}
 					else if (result == GameSpheresRules.IS_FINISHED) {
 						newGameOnNextClick = true;
@@ -140,6 +139,33 @@ package puzzle
 			}
 		}
 		
+		//create shrinking spheres
+		private function transitionSphereGridDisplay():void 
+		{
+			var height:int = gameRules.height;
+			var width:int = gameRules.width;
+			transitionSphereCount = 0;
+			for (var j:int = 0; j < height; j++) {
+				for (var i:int = 0; i < width; i++) {
+					if(sphereGridHighlight.getTile(i, j) == HIGHLIGHT_ON){
+						var previousIndex:int = sphereGridDisplay.getTile(i, j);
+						sphereGridDisplay.setTile(i, j, GameSpheresRules.EMPTY_ID);
+						transitionSphereCount++;
+						var xPos:Number = sphereGridRect.x + (sphereGridDisplay.tileWidth * (i + 0.5));
+						var yPos:Number = sphereGridRect.y + (sphereGridDisplay.tileHeight * (j + 0.5));
+						var sphere:SingleSphere = new SingleSphere(xPos, yPos, previousIndex, sphereHasFinishedShrinking);
+						this.world.add(sphere);
+					}
+				}
+			}
+		}
+		
+		private function sphereHasFinishedShrinking():void {
+			transitionSphereCount--;
+			if (transitionSphereCount <= 0) {
+				updateSphereGridDisplay();
+			}
+		}
 	}
 
 }

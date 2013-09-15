@@ -9,7 +9,7 @@ package puzzle
 	 */
 	public class GameSpheresRules 
 	{
-		public static const INVALID_ID:int = 0;
+		public static const EMPTY_ID:int = 0;
 		
 		private static const MAX_COLORS:int = 6;
 		
@@ -17,7 +17,7 @@ package puzzle
 		public static const IS_FINISHED:int = 0;
 		public static const NOTHING_HAPPENED:int = -1;
 		public static const GRID_CHANGED:int = -2;
-		public static const SPHERES_SELECTED:int = -3;
+		public static const SPHERE_SELECTION:int = -3;
 		
 		private static const STATE_DOING_NOTHING:int = 50;
 		private static const STATE_SELECTED:int = 51;
@@ -97,13 +97,13 @@ package puzzle
 			for (var j:int = 0; j < _height; j++) {
 				for (var i:int = 0; i < _width; i++) {
 					var id_center:int = spheres[i + (j * _width)];
-					if (id_center == INVALID_ID) {
+					if (id_center == EMPTY_ID) {
 						continue;
 					}
 					
 					empty = false;
-					var id_below:int = j + 1 == _height ? INVALID_ID : spheres[i + ((j + 1) * _width)];
-					var id_right:int = i + 1 == _width ? INVALID_ID : spheres[(i + 1) + (j * _width)];
+					var id_below:int = j + 1 == _height ? EMPTY_ID : spheres[i + ((j + 1) * _width)];
+					var id_right:int = i + 1 == _width ? EMPTY_ID : spheres[(i + 1) + (j * _width)];
 					if (id_center == id_right || id_center == id_below) {
 						return false; //if touching another sphere of same color
 					}
@@ -124,7 +124,7 @@ package puzzle
 				numSelectedSpheres = selectColoredSpheresAt( getIndex(x, y), x, y);
 				if (numSelectedSpheres > 0) {
 					currentState = STATE_SELECTED;
-					return SPHERES_SELECTED;
+					return SPHERE_SELECTION;
 				}
 				else {
 					return NOTHING_HAPPENED;
@@ -136,7 +136,7 @@ package puzzle
 					for (var j:int = 0; j < _height; j++) {
 						for (var i:int = 0; i < _width; i++) {
 							if(selectedSpheres[i + j * _width]){
-								spheres[i + j * _width] = INVALID_ID;
+								spheres[i + j * _width] = EMPTY_ID;
 								selectedSpheres[i + j * _width] = false;
 							}
 						}
@@ -163,7 +163,7 @@ package puzzle
 				else { //unselect spheres
 					resetSphereSelection();
 					currentState = STATE_DOING_NOTHING;
-					return SPHERES_SELECTED;
+					return SPHERE_SELECTION;
 				}
 			}
 			
@@ -186,7 +186,7 @@ package puzzle
 		{
 			//if sphere out of bounds, not correct color, or invalid, return 0
 			if (x < 0 || x >= _width || y < 0 || y >= _height ||
-				id == INVALID_ID || spheres[x + y * _width] != id || selectedSpheres[x + y * _width]) {
+				id == EMPTY_ID || spheres[x + y * _width] != id || selectedSpheres[x + y * _width]) {
 				return 0;
 			}
 			
@@ -214,14 +214,14 @@ package puzzle
 			var columnIndex:int = _width - 1;
 			while (columnIndex >= 0) {
 				//check if column has no spheres
-				if (spheres[columnIndex + (_height - 1) * _width] == INVALID_ID) {
+				if (spheres[columnIndex + (_height - 1) * _width] == EMPTY_ID) {
 					emptyColumnCount++;
 				}
 				else if(emptyColumnCount > 0){ //shift non-empty columns into empty ones
 					for (var row:int = 0; row < _height; row++) {
 						spheres[(columnIndex + emptyColumnCount) + (row * _width)] = 
 							spheres[columnIndex + (row * _width)];
-						spheres[columnIndex + (row * _width)] = INVALID_ID;
+						spheres[columnIndex + (row * _width)] = EMPTY_ID;
 					}
 				}
 				columnIndex--;
@@ -234,12 +234,12 @@ package puzzle
 				var emptyRowCount:int = 0;
 				for (var j:int = _height - 1; j >= 0; j--) {
 					var id_center:int = spheres[i + (j * _width)];
-					if (id_center == INVALID_ID ) {//add to count if empty space
+					if (id_center == EMPTY_ID ) {//add to count if empty space
 						emptyRowCount++;
 					}
 					else if(emptyRowCount > 0){ //shift down if not
 						spheres[i + ((j + emptyRowCount) * _width)] = spheres[i + (j * _width)];
-						spheres[i + (j * _width)] = INVALID_ID;
+						spheres[i + (j * _width)] = EMPTY_ID;
 					}
 				}
 			}	

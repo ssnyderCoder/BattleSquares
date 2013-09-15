@@ -24,10 +24,11 @@ package puzzle
 			sprite.originY = GameSpheres.SPHERE_HEIGHT / 2;
 			this.graphic = sprite;
 			
-			scaleTween = new Tween(0.5, Tween.ONESHOT, complete, Ease.circOut);
+			scaleTween = new Tween(0.3, Tween.ONESHOT, complete, Ease.circOut);
 			this.addTween(scaleTween, true);
 		}
 		
+		//shrink during each update
 		override public function update():void 
 		{
 			super.update();
