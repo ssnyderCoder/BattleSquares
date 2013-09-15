@@ -17,6 +17,7 @@ package puzzle
 		public static const IS_FINISHED:int = 0;
 		public static const NOTHING_HAPPENED:int = -1;
 		public static const GRID_CHANGED:int = -2;
+		public static const SPHERES_SELECTED:int = -3;
 		
 		private static const STATE_DOING_NOTHING:int = 50;
 		private static const STATE_SELECTED:int = 51;
@@ -123,7 +124,7 @@ package puzzle
 				numSelectedSpheres = selectColoredSpheresAt( getIndex(x, y), x, y);
 				if (numSelectedSpheres > 0) {
 					currentState = STATE_SELECTED;
-					return GRID_CHANGED;
+					return SPHERES_SELECTED;
 				}
 				else {
 					return NOTHING_HAPPENED;
@@ -162,7 +163,7 @@ package puzzle
 				else { //unselect spheres
 					resetSphereSelection();
 					currentState = STATE_DOING_NOTHING;
-					return GRID_CHANGED;
+					return SPHERES_SELECTED;
 				}
 			}
 			

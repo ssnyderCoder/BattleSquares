@@ -17,6 +17,9 @@ package puzzle
 	 */
 	public class GameSpheres extends Entity 
 	{
+		public static const SPHERE_WIDTH:int = 64;
+		public static const SPHERE_HEIGHT:int = 64;
+		
 		private static const NUM_COLORS:int = 3;
 		private static const HIGHLIGHT_OFF:int = 0;
 		private static const HIGHLIGHT_ON:int = 1;
@@ -29,6 +32,8 @@ package puzzle
 		private var scoreDisplay:Text;
 		private var newGameOnNextClick:Boolean = false;
 		private var pointBox:PointsBox;
+		
+		private var acceptingInput:Boolean = true;
 		public function GameSpheres(x:Number=0, y:Number=0) 
 		{
 			this.x = x;
@@ -38,10 +43,10 @@ package puzzle
 			
 			var background:Graphic = new Stamp(Assets.SPHERE_GAME_BACKGROUND);
 			scoreDisplay = new Text("Score: 0", 100, 550);
-			sphereGridDisplay = new Tilemap(Assets.SPHERES, 512, 512, 64, 64);
+			sphereGridDisplay = new Tilemap(Assets.SPHERES, 512, 512, SPHERE_WIDTH, SPHERE_HEIGHT);
 			sphereGridDisplay.x = 43;
 			sphereGridDisplay.y = 0;
-			sphereGridHighlight = new Tilemap(Assets.HIGHLIGHT, 512, 512, 64, 64);
+			sphereGridHighlight = new Tilemap(Assets.HIGHLIGHT, 512, 512, SPHERE_WIDTH, SPHERE_HEIGHT);
 			sphereGridHighlight.x = sphereGridDisplay.x;
 			sphereGridHighlight.y = sphereGridDisplay.y;
 			sphereGridHighlight.alpha = 0.2;
@@ -105,6 +110,7 @@ package puzzle
 				pointBox.visible = false;
 			}
 		}
+		
 		override public function update():void 
 		{
 			super.update();
@@ -119,8 +125,12 @@ package puzzle
 					var tileX:int = (Input.mouseX - sphereGridRect.x) / sphereGridDisplay.tileWidth;
 					var tileY:int = (Input.mouseY - sphereGridRect.y) / sphereGridDisplay.tileHeight;
 					var result:int = gameRules.selectSphere(tileX, tileY);
-					if (result == GameSpheresRules.GRID_CHANGED) {
+					if (result == GameSpheresRules.SPHERES_SELECTED) {
 						updateSphereGridDisplay();
+					}
+					else if (result == GameSpheresRules.GRID_CHANGED) {
+						acceptingInput = false;
+						
 					}
 					else if (result == GameSpheresRules.IS_FINISHED) {
 						newGameOnNextClick = true;
