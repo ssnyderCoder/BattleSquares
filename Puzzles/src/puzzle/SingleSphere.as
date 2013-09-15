@@ -24,7 +24,7 @@ package puzzle
 			sprite.originY = GameSpheres.SPHERE_HEIGHT / 2;
 			this.graphic = sprite;
 			
-			scaleTween = new Tween(0.3, Tween.ONESHOT, complete, Ease.circOut);
+			scaleTween = new Tween(0.3, Tween.ONESHOT, complete, Ease.backIn);
 			this.addTween(scaleTween, true);
 		}
 		

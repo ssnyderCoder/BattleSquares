@@ -133,7 +133,7 @@ package puzzle
 					}
 					else if (result == GameSpheresRules.IS_FINISHED) {
 						newGameOnNextClick = true;
-						updateSphereGridDisplay();
+						transitionSphereGridDisplay();
 					}
 				}
 			}

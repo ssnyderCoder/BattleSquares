@@ -4,7 +4,9 @@ package puzzle
 	import net.flashpunk.FP;
 	import net.flashpunk.utils.Data;
 	/**
-	 * ...
+	 * Basically a custom size Bubble Breaker with custom ball colors
+	 * 
+	 * NOTE: Perhaps make it more obvious when player gains extra points for clearing the entire grid
 	 * @author Sean Snyder
 	 */
 	public class GameSpheresRules 
