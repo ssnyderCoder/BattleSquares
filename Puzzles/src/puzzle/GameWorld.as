@@ -9,11 +9,14 @@ package puzzle
 	public class GameWorld extends World 
 	{
 		private var gameSpheres:GameSpheres;
+		private var gameSquares:GameSquares;
 		public function GameWorld() 
 		{
 			super();
-			gameSpheres = new GameSpheres(0, 0);
+			gameSpheres = new GameSpheres(350, 0);
 			this.add(gameSpheres);
+			gameSquares = new GameSquares(20, 0);
+			this.add(gameSquares);
 		}
 		
 	}

@@ -1,5 +1,6 @@
 package puzzle 
 {
+	import net.flashpunk.FP;
 	/**
 	 * A custom size grid with a custom number of square colors.
 	 * 
@@ -53,6 +54,19 @@ package puzzle
 		public function resetGame():void {
 			generateSquareGrid();
 			this._timeRemaining = timePerRound;
+		}
+		
+		public function getIndex(x:int, y:int):SquareInfo {
+			x = FP.clamp(x, 0, _width - 1);
+			y = FP.clamp(y, 0, _height - 1);
+			return squares[x + y * _width];
+		}
+		
+		public function captureSquare(playerID:int, points:int, x:int, y:int):Boolean {
+			var square:SquareInfo = getIndex(x, y);
+			square.ownerID = playerID;
+			square.points = points;
+			return true;
 		}
 		
 		private function generateSquareGrid():void 
