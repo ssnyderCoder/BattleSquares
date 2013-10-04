@@ -39,6 +39,8 @@ package puzzle
 		private var timePerRound:int; //seconds
 		
 		private var squares:Array; //acts as 2d grid containing square information
+		private var ownershipCounts:Array; //contains number of owned squares for each player
+		private var pointCounts:Array; //contains total points for each player
 		
 		public function GameSquaresRules(width:int, height:int, numPlayers:int, secondsPerRound:int = 300) 
 		{
@@ -46,6 +48,7 @@ package puzzle
 			this._height = height;
 			this._numPlayers = numPlayers > MAX_PLAYERS ? MAX_PLAYERS : numPlayers;
 			this.squares = new Array();
+			this.ownershipCounts = new Array();
 			this.timePerRound = secondsPerRound;
 			this._timeRemaining = timePerRound;
 			generateSquareGrid();
@@ -64,6 +67,14 @@ package puzzle
 		
 		public function captureSquare(playerID:int, points:int, x:int, y:int):Boolean {
 			var square:SquareInfo = getIndex(x, y);
+			
+			var prevOwnerCount:int = ownershipCounts[square.ownerID];
+			var newOwnerCount:int = ownershipCounts[playerID];
+			ownershipCounts[square.ownerID] = prevOwnerCount - 1;
+			ownershipCounts[playerID] = newOwnerCount + 1;
+			pointCounts[square.ownerID] -= square.points;
+			pointCounts[playerID] += points;
+			
 			square.ownerID = playerID;
 			square.points = points;
 			return true;
@@ -71,11 +82,22 @@ package puzzle
 		
 		public function update():void {
 			countDownTime();
+			if (_timeRemaining == 0) {
+				finishGame();
+			}
+		}
+		
+		private function finishGame():void 
+		{
+			//count total tiles owned by each player
+			//if tie, count total points owned by tied players
+			//winner is one with most tiles owned (and points)
+			//save in winner variable that is checked by GameSquare
 		}
 		
 		private function countDownTime():void 
 		{
-			_timeRemaining -= FP.elapsed;
+			_timeRemaining -= ownershipCounts[SQUARE_UNOWNED] > 0 ? FP.elapsed : FP.elapsed * 10;
 			if (_timeRemaining < 0) {
 				_timeRemaining = 0;
 			}
@@ -83,32 +105,47 @@ package puzzle
 		
 		private function generateSquareGrid():void 
 		{
+			//reset ownership
+			for (var n:int = 0; n <= SQUARE_BLOCKED; n++) {
+				ownershipCounts[n] = 0;
+			}
+			
+			//reset grid
 			for (var j:int = 0; j < _height; j++) {
 				for (var i:int = 0; i < _width; i++) {
 					squares[i + j * _width] = new SquareInfo(SQUARE_UNOWNED, STARTING_POINTS, BONUS_NONE);
 				}
 			}
+			ownershipCounts[SQUARE_UNOWNED] = _height * _width;
 			
 			var square:SquareInfo;
 			//player 1 starting position = top left corner
 			if (_numPlayers > 0) {
 				square = squares[0 + 0 * _width];
 				square.ownerID = SQUARE_PLAYER_1;
+				ownershipCounts[SQUARE_PLAYER_1] = 1;
+				ownershipCounts[SQUARE_UNOWNED] -= 1;
 			}
 			//player 2 starting position = bottom right corner
 			if (_numPlayers > 1) {
 				square = squares[(_width - 1) + (_height - 1) * _width];
 				square.ownerID = SQUARE_PLAYER_2;
+				ownershipCounts[SQUARE_PLAYER_2] = 1;
+				ownershipCounts[SQUARE_UNOWNED] -= 1;
 			}
 			//player 3 starting position = bottom left corner
 			if (_numPlayers > 2) {
 				square = squares[(_width - 1) + 0 * _width];
 				square.ownerID = SQUARE_PLAYER_3;
+				ownershipCounts[SQUARE_PLAYER_3] = 1;
+				ownershipCounts[SQUARE_UNOWNED] -= 1;
 			}
 			//player 4 starting position = top right corner
 			if (_numPlayers > 3) {
 				square = squares[0 + (_height - 1) * _width];
 				square.ownerID = SQUARE_PLAYER_4;
+				ownershipCounts[SQUARE_PLAYER_4] = 1;
+				ownershipCounts[SQUARE_UNOWNED] -= 1;
 			}
 		}
 		
@@ -132,9 +169,13 @@ package puzzle
 			return (int)(Math.ceil(_timeRemaining));
 		}
 		
-/*	+Countdown() - called each tick; ticks clock down (1x or 4x); if clock 0, EndGame()
-	-EndGame():playerID - Stop gameplay; Declare winner based on total tiles (& points if needed) owned by each player
-	+ResetGame() - Resets all squares to default state, and reverts time
+		public function getTerritoryCount(playerID:int):int {
+			return playerID < 0 || playerID > SQUARE_BLOCKED ? -1 : ownershipCounts[playerID] 
+		}
+		
+/*	<>+Countdown() - called each tick; ticks clock down (1x or 4x); if clock 0, EndGame()
+	-EndGame():- Stop gameplay; Declare winner based on total tiles (& points if needed) owned by each player
+	<>+ResetGame() - Resets all squares to default state, and reverts time
 	+AttackSquare(playerID,x,y):bool - add attack to list; true if successful; false if square out of reach
 	+CaptureSquare(playerID,points,x,y) - square taken off atked list (canceling other atks); square changes owner and points; bonus applied
 	--(adjust player owner counters)

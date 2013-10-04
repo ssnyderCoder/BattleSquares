@@ -29,6 +29,8 @@ package puzzle
 		
 		private var currentPlayer:int = 0; //test
 		private var currentPlayerSquare:Spritemap = new Spritemap(Assets.SQUARES, 32, 32); //test
+		
+		//TODO: Add 6 Text and 6 square pictures to designate total ownership ; NOT STRICTLY NECESSARY
 		public function GameSquares(x:Number=0, y:Number=0) 
 		{
 			currentPlayerSquare.x = 0;
