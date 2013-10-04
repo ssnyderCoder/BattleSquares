@@ -34,7 +34,7 @@ package puzzle
 		private var _width:int;
 		private var _height:int;
 		private var _numPlayers:int;
-		private var _timeRemaining:int; //seconds
+		private var _timeRemaining:Number; //seconds
 		
 		private var timePerRound:int; //seconds
 		
@@ -67,6 +67,18 @@ package puzzle
 			square.ownerID = playerID;
 			square.points = points;
 			return true;
+		}
+		
+		public function update():void {
+			countDownTime();
+		}
+		
+		private function countDownTime():void 
+		{
+			_timeRemaining -= FP.elapsed;
+			if (_timeRemaining < 0) {
+				_timeRemaining = 0;
+			}
 		}
 		
 		private function generateSquareGrid():void 
@@ -117,7 +129,7 @@ package puzzle
 		
 		public function get timeRemaining():int 
 		{
-			return _timeRemaining;
+			return (int)(Math.ceil(_timeRemaining));
 		}
 		
 /*	+Countdown() - called each tick; ticks clock down (1x or 4x); if clock 0, EndGame()

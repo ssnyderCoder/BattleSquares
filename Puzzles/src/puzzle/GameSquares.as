@@ -7,6 +7,7 @@ package puzzle
 	import net.flashpunk.graphics.Graphiclist;
 	import net.flashpunk.graphics.Spritemap;
 	import net.flashpunk.graphics.Stamp;
+	import net.flashpunk.graphics.Text;
 	import net.flashpunk.graphics.Tilemap;
 	import net.flashpunk.Mask;
 	import net.flashpunk.utils.Input;
@@ -24,9 +25,10 @@ package puzzle
 		private var squareGridDisplay:Tilemap;
 		private var squareGridRect:Rectangle;
 		private var gameRules:GameSquaresRules;
+		private var timeDisplay:Text;
 		
-		private var currentPlayer:int = 0;
-		private var currentPlayerSquare:Spritemap = new Spritemap(Assets.SQUARES, 32, 32);
+		private var currentPlayer:int = 0; //test
+		private var currentPlayerSquare:Spritemap = new Spritemap(Assets.SQUARES, 32, 32); //test
 		public function GameSquares(x:Number=0, y:Number=0) 
 		{
 			currentPlayerSquare.x = 0;
@@ -40,14 +42,17 @@ package puzzle
 			squareGridDisplay = new Tilemap(Assets.SQUARES, 256, 256, SQUARE_WIDTH, SQUARE_HEIGHT);
 			squareGridDisplay.x = 21;
 			squareGridDisplay.y = 21;
-			this.graphic = new Graphiclist(background, squareGridDisplay, currentPlayerSquare);
 			squareGridRect = new Rectangle(squareGridDisplay.x + x, squareGridDisplay.y + y,
 											squareGridDisplay.width, squareGridDisplay.height);
+			timeDisplay = new Text("Time: 0", this.width / 2, this.height + 20);
+			this.graphic = new Graphiclist(background, squareGridDisplay, currentPlayerSquare, timeDisplay);
 		}
 		
 		override public function update():void 
 		{
 			super.update();
+			gameRules.update();
+			updateTimeDisplay(gameRules.timeRemaining);
 			if (Input.mousePressed) {
 				//check if pressed with boundaries of tilemap and accept input if so
 				if (squareGridRect.contains(Input.mouseX, Input.mouseY)) {
@@ -61,6 +66,13 @@ package puzzle
 					currentPlayerSquare.frame = currentPlayer;
 				}
 			}
+		}
+		
+		private function updateTimeDisplay(timeRemaining:int):void 
+		{
+			var minutes:int = timeRemaining / 60;
+			var seconds:int = timeRemaining % 60;
+			timeDisplay.text = "Time: " + minutes + ":" + (seconds < 10 ? "0" + seconds : seconds);
 		}
 		
 		override public function added():void 
