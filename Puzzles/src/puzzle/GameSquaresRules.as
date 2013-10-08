@@ -43,13 +43,14 @@ package puzzle
 		private var ownershipCounts:Array; //contains number of owned squares for each player
 		private var pointCounts:Array; //contains total points for each player
 		
-		public function GameSquaresRules(width:int, height:int, numPlayers:int, secondsPerRound:int = 300) 
+		public function GameSquaresRules(width:int, height:int, numPlayers:int, secondsPerRound:int = 4) 
 		{
 			this._width = width;
 			this._height = height;
 			this._numPlayers = numPlayers > MAX_PLAYERS ? MAX_PLAYERS : numPlayers;
 			this.squares = new Array();
 			this.ownershipCounts = new Array();
+			this.pointCounts = new Array();
 			this.timePerRound = secondsPerRound;
 			this._timeRemaining = timePerRound;
 			this.winnerID = PLAYER_NONE;
@@ -59,6 +60,11 @@ package puzzle
 		public function resetGame():void {
 			generateSquareGrid();
 			this._timeRemaining = timePerRound;
+			this.winnerID = PLAYER_NONE;
+		}
+		
+		public function getWinnerName():String {
+			return "Player " + (winnerID + 1);
 		}
 		
 		public function getIndex(x:int, y:int):SquareInfo {
@@ -188,7 +194,7 @@ package puzzle
 		}
 		
 /*	<>+Countdown() - called each tick; ticks clock down (1x or 4x); if clock 0, EndGame()
-	-EndGame():- Stop gameplay; Declare winner based on total tiles (& points if needed) owned by each player
+	<>-EndGame():- Stop gameplay; Declare winner based on total tiles (& points if needed) owned by each player
 	<>+ResetGame() - Resets all squares to default state, and reverts time
 	+AttackSquare(playerID,x,y):bool - add attack to list; true if successful; false if square out of reach
 	+CaptureSquare(playerID,points,x,y) - square taken off atked list (canceling other atks); square changes owner and points; bonus applied

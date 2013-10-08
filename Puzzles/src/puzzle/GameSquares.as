@@ -26,9 +26,12 @@ package puzzle
 		private var squareGridRect:Rectangle;
 		private var gameRules:GameSquaresRules;
 		private var timeDisplay:Text;
+		private var winnerDisplay:WinnerDisplay; //temp
+		private var infoBox:InfoDisplay;
 		
 		private var currentPlayer:int = 0; //test
 		private var currentPlayerSquare:Spritemap = new Spritemap(Assets.SQUARES, 32, 32); //test
+		private var gameWon:Boolean = false; //test
 		
 		//TODO: Add 6 Text and 6 square pictures to designate total ownership ; NOT STRICTLY NECESSARY
 		public function GameSquares(x:Number=0, y:Number=0) 
@@ -56,9 +59,21 @@ package puzzle
 			gameRules.update();
 			updateTimeDisplay(gameRules.timeRemaining);
 			//if time is 0, check for winner
+			if (gameRules.timeRemaining <= 0 && !gameWon) {
+				winnerDisplay = new WinnerDisplay(gameRules.getWinnerName(), 40, 40);
+				this.world.add(winnerDisplay);
+				gameWon = true;
+			}
 			if (Input.mousePressed) {
+				if (gameWon) {
+					gameWon = false;
+					this.world.remove(winnerDisplay);
+					gameRules.resetGame();
+					updateSquareGridDisplay();
+					updateTimeDisplay(gameRules.timeRemaining);
+				}
 				//check if pressed with boundaries of tilemap and accept input if so
-				if (squareGridRect.contains(Input.mouseX, Input.mouseY)) {
+				else if (squareGridRect.contains(Input.mouseX, Input.mouseY)) {
 					var tileX:int = (Input.mouseX - squareGridRect.x) / squareGridDisplay.tileWidth;
 					var tileY:int = (Input.mouseY - squareGridRect.y) / squareGridDisplay.tileHeight;
 					gameRules.captureSquare(currentPlayer, 250, tileX, tileY);
