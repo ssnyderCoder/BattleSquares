@@ -23,6 +23,9 @@ package puzzle
 		{
 			super.update();
 			gameSquares.setPlayerScore(gameSpheres.getPlayerScore());
+			//if player has declared new attack, setup new spheres game with point requirement of the square
+			//if player has clicked the capture button in spheres game, end it and tell squares game of capturing total
+			//if player's attack is no longer on the squares attack list, end squares game
 		}
 	}
 

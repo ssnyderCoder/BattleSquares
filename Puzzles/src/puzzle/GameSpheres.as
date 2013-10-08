@@ -32,6 +32,7 @@ package puzzle
 		private var scoreDisplay:Text;
 		private var newGameOnNextClick:Boolean = false;
 		private var pointBox:PointsBox;
+		private var pointsRequiredToCapture:int = 0;
 		
 		private var transitionSphereCount:int = 0;
 		public function GameSpheres(x:Number=0, y:Number=0) 
@@ -115,7 +116,7 @@ package puzzle
 		{
 			super.update();
 			if (Input.mousePressed) {
-				if (newGameOnNextClick) {
+				if (newGameOnNextClick) { //TO DO: REMOVE
 					newGameOnNextClick = false;
 					gameRules.reset(NUM_COLORS);
 					updateSphereGridDisplay();
@@ -169,6 +170,12 @@ package puzzle
 		
 		public function getPlayerScore():int {
 			return gameRules.score;
+		}
+		
+		public function resetGame(pointsRequired:int, numColors:int = NUM_COLORS) {
+			this.pointsRequiredToCapture = pointsRequired;
+			gameRules.reset(numColors);
+			updateSphereGridDisplay();
 		}
 	}
 

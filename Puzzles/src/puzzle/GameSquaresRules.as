@@ -93,7 +93,7 @@ package puzzle
 			return true;
 		}
 		
-		private function doesPlayerOwnNearbySquare(playerID:int, x:int, y:int):void 
+		private function doesPlayerOwnNearbySquare(playerID:int, x:int, y:int):Boolean 
 		{
 			//check surrounding 4 squares
 			var leftSquareOwner:int = x == 0 ? PLAYER_NONE : getIndex(x - 1, y).ownerID;
@@ -106,11 +106,11 @@ package puzzle
 		
 		public function captureSquare(playerID:int, points:int, x:int, y:int):Boolean {
 			//fail if not enough points
+			var square:SquareInfo = getIndex(x, y);
 			if (points <= square.points) {
 				return false;
 			}
 			
-			var square:SquareInfo = getIndex(x, y);
 			var prevOwnerID:int = square.ownerID;
 			var prevOwnerCount:int = ownershipCounts[prevOwnerID];
 			var newOwnerCount:int = ownershipCounts[playerID];
@@ -259,7 +259,7 @@ package puzzle
 	<>-EndGame():- Stop gameplay; Declare winner based on total tiles (& points if needed) owned by each player
 	<>+ResetGame() - Resets all squares to default state, and reverts time
 	<>+AttackSquare(playerID,x,y):bool - add attack to list; true if successful; false if square out of reach
-	+CaptureSquare(playerID,points,x,y) - square taken off atked list (canceling other atks); square changes owner and points; bonus applied
+	<>+CaptureSquare(playerID,points,x,y) - square taken off atked list (canceling other atks); square changes owner and points; bonus applied
 	--(adjust player owner counters)
 	<>+GetIndex(x,y):SquareInfo
 	<>+GetAttackedSquares:list<AttackedSquare(playerID,x,y)>
