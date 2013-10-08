@@ -43,7 +43,7 @@ package puzzle
 		private var ownershipCounts:Array; //contains number of owned squares for each player
 		private var pointCounts:Array; //contains total points for each player
 		
-		public function GameSquaresRules(width:int, height:int, numPlayers:int, secondsPerRound:int = 4) 
+		public function GameSquaresRules(width:int, height:int, numPlayers:int, secondsPerRound:int = 40) 
 		{
 			this._width = width;
 			this._height = height;
@@ -199,7 +199,7 @@ package puzzle
 	+AttackSquare(playerID,x,y):bool - add attack to list; true if successful; false if square out of reach
 	+CaptureSquare(playerID,points,x,y) - square taken off atked list (canceling other atks); square changes owner and points; bonus applied
 	--(adjust player owner counters)
-	+GetSquareInfo(x,y):SquareInfo
+	+GetIndex(x,y):SquareInfo
 	+GetAttackedSquares:list<AttackedSquare(playerID,x,y)>
 	FIELDS
 	->list<SquareInfo>, list<AttackedSquare>, list<PlayerStats(numSquares, totalScore)>, time:int*/

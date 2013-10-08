@@ -64,6 +64,18 @@ package puzzle
 				this.world.add(winnerDisplay);
 				gameWon = true;
 			}
+			//show info box if player hovering over square
+			var tileX:int = -1;
+			var tileY:int = -1;
+			if (squareGridRect.contains(Input.mouseX, Input.mouseY)) {
+					tileX = (Input.mouseX - squareGridRect.x) / squareGridDisplay.tileWidth;
+					tileY = (Input.mouseY - squareGridRect.y) / squareGridDisplay.tileHeight;
+					infoBox.visible = true;
+					infoBox.setText("Points: " + gameRules.getIndex(tileX, tileY).points);
+				}
+			else {
+				infoBox.visible = false;
+			}
 			if (Input.mousePressed) {
 				if (gameWon) {
 					gameWon = false;
@@ -73,9 +85,7 @@ package puzzle
 					updateTimeDisplay(gameRules.timeRemaining);
 				}
 				//check if pressed with boundaries of tilemap and accept input if so
-				else if (squareGridRect.contains(Input.mouseX, Input.mouseY)) {
-					var tileX:int = (Input.mouseX - squareGridRect.x) / squareGridDisplay.tileWidth;
-					var tileY:int = (Input.mouseY - squareGridRect.y) / squareGridDisplay.tileHeight;
+				else if (tileX != -1) {
 					gameRules.captureSquare(currentPlayer, 250, tileX, tileY);
 					updateSquareGridDisplay();
 				}
@@ -98,6 +108,10 @@ package puzzle
 			super.added();
 			
 			updateSquareGridDisplay();
+			
+			infoBox = new InfoDisplay(30, 380);
+			infoBox.visible = false;
+			this.world.add(infoBox);
 		}
 		
 		private function updateSquareGridDisplay():void 
