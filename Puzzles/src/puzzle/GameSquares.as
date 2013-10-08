@@ -20,6 +20,7 @@ package puzzle
 	{
 		public static const SQUARE_WIDTH:int = 32;
 		public static const SQUARE_HEIGHT:int = 32;
+		private static const MAX_ARROWS:int = 8;
 		private static const NUM_PLAYERS:int = 3;
 		private static const HUMAN_PLAYER_ID:int = 0;
 		private var squareGridDisplay:Tilemap;
@@ -33,7 +34,9 @@ package puzzle
 		
 		private var playerScore:int = 0; //temp
 		private var playerHasAttackedSquare:Boolean = false; //temp
-		private var playerAttackInfo:AttackInfo = new AttackInfo(0,0,0); //temp
+		private var playerAttackInfo:AttackInfo = new AttackInfo(0, 0, 0); //temp
+		
+		private var attackArrows:Array = new Array(); //contains 8 AttackArrows
 		
 		//TODO: Add 6 Text and 6 square pictures to designate total ownership ; NOT STRICTLY NECESSARY
 		public function GameSquares(x:Number=0, y:Number=0) 
@@ -109,11 +112,22 @@ package puzzle
 		{
 			super.added();
 			
+			initAttackArrows();
 			updateSquareGridDisplay();
 			
 			infoBox = new InfoDisplay(30, 380);
 			infoBox.visible = false;
 			this.world.add(infoBox);
+		}
+		
+		private function initAttackArrows():void 
+		{
+			for (var i:int = 0; i < MAX_ARROWS; i++) {
+				var arrow:AttackArrow = new AttackArrow(0, 0, 0);
+				arrow.visible = false;
+				this.world.add(arrow);
+				attackArrows[i] = arrow;
+			}
 		}
 		
 		private function updateSquareGridDisplay():void 
@@ -124,6 +138,51 @@ package puzzle
 				for (var i:int = 0; i < width; i++) {
 					var square:SquareInfo = gameRules.getIndex(i, j);
 					squareGridDisplay.setTile(i, j, square.ownerID);
+				}
+			}
+			
+			//render arrows for each attack
+			updateArrowDisplay();
+		}
+		
+		private function updateArrowDisplay():void 
+		{
+			var attacks:Array = gameRules.getAttackedSquares();
+			for (var i:int = 0; i < MAX_ARROWS; i++) {
+				var arrow:AttackArrow = attackArrows[i];
+				var atkInfo:AttackInfo =  i < attacks.length ? attacks[i] : null;
+				if (atkInfo == null) {
+					arrow.visible = false;
+				}
+				else {
+					//find nearest player owned square
+					var playerID:int = atkInfo.attackerID;
+					var tileX:int = atkInfo.tileX;
+					var tileY:int = atkInfo.tileY;
+					if (gameRules.getIndex(tileX - 1, tileY).ownerID == playerID) { //left
+						arrow.visible = true;
+						arrow.setDirection(AttackArrow.POINT_RIGHT);
+						arrow.x = squareGridRect.x + (squareGridDisplay.tileWidth * (tileX)) - 8;
+						arrow.y = squareGridRect.y + (squareGridDisplay.tileHeight * (tileY)) + 8;
+					}
+					else if (gameRules.getIndex(tileX + 1, tileY).ownerID == playerID) { //right
+						arrow.visible = true;
+						arrow.setDirection(AttackArrow.POINT_LEFT);
+						arrow.x = squareGridRect.x + (squareGridDisplay.tileWidth * (tileX + 1)) - 8;
+						arrow.y = squareGridRect.y + (squareGridDisplay.tileHeight * (tileY)) + 8;
+					}
+					else if (gameRules.getIndex(tileX, tileY - 1).ownerID == playerID) { //up
+						arrow.visible = true;
+						arrow.setDirection(AttackArrow.POINT_DOWN);
+						arrow.x = squareGridRect.x + (squareGridDisplay.tileWidth * (tileX)) + 8;
+						arrow.y = squareGridRect.y + (squareGridDisplay.tileHeight * (tileY)) - 8;
+					}
+					else if (gameRules.getIndex(tileX, tileY + 1).ownerID == playerID) { //down
+						arrow.visible = true;
+						arrow.setDirection(AttackArrow.POINT_UP);
+						arrow.x = squareGridRect.x + (squareGridDisplay.tileWidth * (tileX)) + 8;
+						arrow.y = squareGridRect.y + (squareGridDisplay.tileHeight * (tileY + 1)) - 8;
+					}
 				}
 			}
 		}

@@ -63,6 +63,9 @@ package puzzle
 			generateSquareGrid();
 			this._timeRemaining = timePerRound;
 			this.winnerID = PLAYER_NONE;
+			while (attackedSquares.length > 0) {
+				attackedSquares.pop();
+			}
 		}
 		
 		public function getWinnerName():String {

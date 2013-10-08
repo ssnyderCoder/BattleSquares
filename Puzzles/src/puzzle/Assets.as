@@ -13,6 +13,7 @@ package puzzle
 		[Embed(source = "../../assets/art/Highlight.png")] public static const HIGHLIGHT:Class;
 		[Embed(source = "../../assets/art/PointBox.png")] public static const POINTS_BOX:Class;	
 		[Embed(source = "../../assets/art/CaptureButton.png")] public static const CAPTURE_BUTTON:Class;
+		[Embed(source = "../../assets/art/Directions.png")] public static const DIRECTIONS:Class;
 	}
 
 }
