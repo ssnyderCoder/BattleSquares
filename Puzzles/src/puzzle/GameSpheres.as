@@ -166,6 +166,10 @@ package puzzle
 				updateSphereGridDisplay();
 			}
 		}
+		
+		public function getPlayerScore():int {
+			return gameRules.score;
+		}
 	}
 
 }

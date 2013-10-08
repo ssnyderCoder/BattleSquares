@@ -19,6 +19,11 @@ package puzzle
 			this.add(gameSquares);
 		}
 		
+		override public function update():void 
+		{
+			super.update();
+			gameSquares.setPlayerScore(gameSpheres.getPlayerScore());
+		}
 	}
 
 }

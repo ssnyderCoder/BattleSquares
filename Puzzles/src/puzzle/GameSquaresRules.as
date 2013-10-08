@@ -42,6 +42,7 @@ package puzzle
 		private var squares:Array; //acts as 2d grid containing square information
 		private var ownershipCounts:Array; //contains number of owned squares for each player
 		private var pointCounts:Array; //contains total points for each player
+		private var attackedSquares:Array; //contains information on each attack being done
 		
 		public function GameSquaresRules(width:int, height:int, numPlayers:int, secondsPerRound:int = 40) 
 		{
@@ -51,6 +52,7 @@ package puzzle
 			this.squares = new Array();
 			this.ownershipCounts = new Array();
 			this.pointCounts = new Array();
+			this.attackedSquares = new Array();
 			this.timePerRound = secondsPerRound;
 			this._timeRemaining = timePerRound;
 			this.winnerID = PLAYER_NONE;
@@ -73,10 +75,44 @@ package puzzle
 			return squares[x + y * _width];
 		}
 		
-		public function captureSquare(playerID:int, points:int, x:int, y:int):Boolean {
-			var square:SquareInfo = getIndex(x, y);
+		public function attackSquare(playerID:int, x:int, y:int):Boolean {
+			//fail if player does not own nearby square or if already owns square
+			if (!doesPlayerOwnNearbySquare(playerID, x, y) || getIndex(x,y).ownerID == playerID) {
+				return false;
+			}
 			
-			var prevOwnerCount:int = ownershipCounts[square.ownerID];
+			//fail if attack already exists
+			for (var i:int = 0; i < attackedSquares.length; i++) {
+				var atkInfo:AttackInfo = attackedSquares[i];
+				if (atkInfo.attackerID == playerID && atkInfo.tileX == x && atkInfo.tileY == y) {
+					return false;
+				}
+			}
+			
+			attackedSquares.push(new AttackInfo(playerID, x, y));
+			return true;
+		}
+		
+		private function doesPlayerOwnNearbySquare(playerID:int, x:int, y:int):void 
+		{
+			//check surrounding 4 squares
+			var leftSquareOwner:int = x == 0 ? PLAYER_NONE : getIndex(x - 1, y).ownerID;
+			var rightSquareOwner:int = x == _width - 1 ? PLAYER_NONE : getIndex(x + 1, y).ownerID;
+			var aboveSquareOwner:int = y == 0 ? PLAYER_NONE : getIndex(x, y - 1).ownerID;
+			var belowSquareOwner:int = y == _height - 1 ? PLAYER_NONE : getIndex(x, y + 1).ownerID;
+			return leftSquareOwner == playerID || rightSquareOwner == playerID ||
+					aboveSquareOwner == playerID || belowSquareOwner == playerID;
+		}
+		
+		public function captureSquare(playerID:int, points:int, x:int, y:int):Boolean {
+			//fail if not enough points
+			if (points <= square.points) {
+				return false;
+			}
+			
+			var square:SquareInfo = getIndex(x, y);
+			var prevOwnerID:int = square.ownerID;
+			var prevOwnerCount:int = ownershipCounts[prevOwnerID];
 			var newOwnerCount:int = ownershipCounts[playerID];
 			ownershipCounts[square.ownerID] = prevOwnerCount - 1;
 			ownershipCounts[playerID] = newOwnerCount + 1;
@@ -85,6 +121,25 @@ package puzzle
 			
 			square.ownerID = playerID;
 			square.points = points;
+			
+			//cancel all attacks on this square
+			//check any attacks by prevOwner and cancel if captured square was only neabry square
+			//fail if attack already exists
+			var validAttacks:Array = new Array();
+			while(attackedSquares.length > 0) {
+				var atkInfo:AttackInfo = attackedSquares.pop();
+				//cancel any attack on this square
+				if (atkInfo.tileX == x && atkInfo.tileY == y) {
+					continue;
+				}
+				//cancel newly invalid attacks by prev owner
+				else if (atkInfo.attackerID == prevOwnerID && 
+					!doesPlayerOwnNearbySquare(prevOwnerID, atkInfo.tileX, atkInfo.tileY)) {
+					continue;
+				}
+				validAttacks.push(atkInfo);
+			}
+			attackedSquares = validAttacks;
 			return true;
 		}
 		
@@ -193,14 +248,21 @@ package puzzle
 			return playerID < 0 || playerID > PLAYER_BLOCKED ? -1 : ownershipCounts[playerID] 
 		}
 		
+		/**
+		 * returns an array of AttackInfos
+		 */
+		public function getAttackedSquares():Array{
+			return attackedSquares;
+		}
+		
 /*	<>+Countdown() - called each tick; ticks clock down (1x or 4x); if clock 0, EndGame()
 	<>-EndGame():- Stop gameplay; Declare winner based on total tiles (& points if needed) owned by each player
 	<>+ResetGame() - Resets all squares to default state, and reverts time
-	+AttackSquare(playerID,x,y):bool - add attack to list; true if successful; false if square out of reach
+	<>+AttackSquare(playerID,x,y):bool - add attack to list; true if successful; false if square out of reach
 	+CaptureSquare(playerID,points,x,y) - square taken off atked list (canceling other atks); square changes owner and points; bonus applied
 	--(adjust player owner counters)
-	+GetIndex(x,y):SquareInfo
-	+GetAttackedSquares:list<AttackedSquare(playerID,x,y)>
+	<>+GetIndex(x,y):SquareInfo
+	<>+GetAttackedSquares:list<AttackedSquare(playerID,x,y)>
 	FIELDS
 	->list<SquareInfo>, list<AttackedSquare>, list<PlayerStats(numSquares, totalScore)>, time:int*/
 	}

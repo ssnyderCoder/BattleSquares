@@ -27,11 +27,13 @@ package puzzle
 		private var gameRules:GameSquaresRules;
 		private var timeDisplay:Text;
 		private var winnerDisplay:WinnerDisplay; //temp
-		private var infoBox:InfoDisplay;
+		private var infoBox:InfoDisplay; //temp
 		
 		private var currentPlayer:int = 0; //test
 		private var currentPlayerSquare:Spritemap = new Spritemap(Assets.SQUARES, 32, 32); //test
 		private var gameWon:Boolean = false; //test
+		
+		private var playerScore:int = 0;
 		
 		//TODO: Add 6 Text and 6 square pictures to designate total ownership ; NOT STRICTLY NECESSARY
 		public function GameSquares(x:Number=0, y:Number=0) 
@@ -86,7 +88,7 @@ package puzzle
 				}
 				//check if pressed with boundaries of tilemap and accept input if so
 				else if (tileX != -1) {
-					gameRules.captureSquare(currentPlayer, 250, tileX, tileY);
+					gameRules.captureSquare(currentPlayer, playerScore, tileX, tileY);
 					updateSquareGridDisplay();
 				}
 				else {
@@ -126,6 +128,9 @@ package puzzle
 			}
 		}
 		
+		public function setPlayerScore(score:int):void {
+			playerScore = score;
+		}
 	}
 
 }
