@@ -59,7 +59,9 @@ package puzzle
 		{
 			super.update();
 			gameRules.update();
+			gameRules.setPlayerPoints(HUMAN_PLAYER_ID, playerScore);
 			updateTimeDisplay(gameRules.timeRemaining);
+			updateArrowDisplay();
 			playerHasAttackedSquare = false;
 			//if time is 0, check for winner
 			if (gameRules.timeRemaining <= 0 && !gameWon) {
@@ -140,9 +142,6 @@ package puzzle
 					squareGridDisplay.setTile(i, j, square.ownerID);
 				}
 			}
-			
-			//render arrows for each attack
-			updateArrowDisplay();
 		}
 		
 		private function updateArrowDisplay():void 
@@ -153,12 +152,15 @@ package puzzle
 				var atkInfo:AttackInfo =  i < attacks.length ? attacks[i] : null;
 				if (atkInfo == null) {
 					arrow.visible = false;
+					arrow.setCompletionColor(0);
 				}
 				else {
 					//find nearest player owned square
 					var playerID:int = atkInfo.attackerID;
 					var tileX:int = atkInfo.tileX;
 					var tileY:int = atkInfo.tileY;
+					var perc:Number = ((Number)(atkInfo.currentPoints)) / ((Number)(gameRules.getIndex(tileX, tileY).points));
+					arrow.setCompletionColor(perc);
 					if (gameRules.getIndex(tileX - 1, tileY).ownerID == playerID) { //left
 						arrow.visible = true;
 						arrow.setDirection(AttackArrow.POINT_RIGHT);
@@ -183,6 +185,9 @@ package puzzle
 						arrow.x = squareGridRect.x + (squareGridDisplay.tileWidth * (tileX)) + 8;
 						arrow.y = squareGridRect.y + (squareGridDisplay.tileHeight * (tileY + 1)) - 8;
 					}
+					else {
+						arrow.visible = false;
+					}
 				}
 			}
 		}
@@ -194,7 +199,6 @@ package puzzle
 		
 		public function setPlayerScore(score:int):void {
 			playerScore = score;
-			//set player attack info later
 		}
 		
 		public function hasPlayerAttackedSquare():Boolean {

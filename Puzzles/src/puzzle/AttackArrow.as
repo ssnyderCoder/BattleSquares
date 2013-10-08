@@ -1,6 +1,8 @@
 package puzzle 
 {
+	import flash.display.Sprite;
 	import net.flashpunk.Entity;
+	import net.flashpunk.graphics.Image;
 	import net.flashpunk.graphics.Spritemap;
 	
 	/**
@@ -23,12 +25,18 @@ package puzzle
 			sprite = new Spritemap(Assets.DIRECTIONS, 16, 16);
 			sprite.frame = direction;
 			this.graphic = sprite;
+			sprite.tintMode = Image.TINTING_COLORIZE;
+			sprite.color = 0x21dd11;
+			sprite.tinting = 0;
 		}
 		
 		public function setDirection(direction:int):void {
 			sprite.frame = direction;
 		}
-		
+	
+		public function setCompletionColor(percent:Number):void {
+			sprite.tinting = percent >= 1 ? 1 : percent;
+		}
 	}
 
 }

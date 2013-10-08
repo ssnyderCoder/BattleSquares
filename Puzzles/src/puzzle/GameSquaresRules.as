@@ -266,6 +266,15 @@ package puzzle
 			return attackedSquares;
 		}
 		
+		public function setPlayerPoints(playerID:int, points:int):void {
+			for (var i:int = 0; i < attackedSquares.length; i++) {
+				var atkInfo:AttackInfo = attackedSquares[i];
+				if (atkInfo.attackerID == playerID) {
+					atkInfo.currentPoints = points;
+				}
+			}
+		}
+		
 		private function resetPlayerAttacks(playerID:int):void {
 			var validAttacks:Array = new Array();
 			while(attackedSquares.length > 0) {
