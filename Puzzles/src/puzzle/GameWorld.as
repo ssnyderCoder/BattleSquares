@@ -14,6 +14,8 @@ package puzzle
 		{
 			super();
 			gameSpheres = new GameSpheres(350, 0);
+			gameSpheres.visible = false;
+			gameSpheres.active = false;
 			this.add(gameSpheres);
 			gameSquares = new GameSquares(20, 0);
 			this.add(gameSquares);
@@ -24,8 +26,23 @@ package puzzle
 			super.update();
 			gameSquares.setPlayerScore(gameSpheres.getPlayerScore());
 			//if player has declared new attack, setup new spheres game with point requirement of the square
+			if (gameSquares.hasPlayerAttackedSquare()) {
+				gameSpheres.resetGame(gameSquares.getCurrentPlayerAttack().currentPoints);
+				gameSpheres.visible = true;
+				gameSpheres.active = true;
+				trace(gameSquares.getCurrentPlayerAttack().currentPoints);
+			}
 			//if player has clicked the capture button in spheres game, end it and tell squares game of capturing total
-			//if player's attack is no longer on the squares attack list, end squares game
+			if (gameSpheres.visible && gameSpheres.playerHasCaptured()) {
+				gameSpheres.visible = false;
+				gameSpheres.active = false;
+				gameSquares.capturePlayerSquare();
+			}
+			//if player's attack is no longer on the squares attack list or valid, end spheres game
+			if (gameSquares.gameHasBeenWon() && gameSpheres.visible) {
+				gameSpheres.visible = false;
+				gameSpheres.active = false;
+			}
 		}
 	}
 

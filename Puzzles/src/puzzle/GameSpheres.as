@@ -5,6 +5,7 @@ package puzzle
 	import net.flashpunk.FP;
 	import net.flashpunk.Graphic;
 	import net.flashpunk.graphics.Graphiclist;
+	import net.flashpunk.graphics.Image;
 	import net.flashpunk.graphics.Stamp;
 	import net.flashpunk.graphics.Text;
 	import net.flashpunk.graphics.Tilemap;
@@ -34,6 +35,10 @@ package puzzle
 		private var pointBox:PointsBox;
 		private var pointsRequiredToCapture:int = 0;
 		
+		private var captureButton:Image;
+		private var captureRect:Rectangle;
+		private var hasCaptured:Boolean = false;
+		
 		private var transitionSphereCount:int = 0;
 		public function GameSpheres(x:Number=0, y:Number=0) 
 		{
@@ -51,9 +56,14 @@ package puzzle
 			sphereGridHighlight.x = sphereGridDisplay.x;
 			sphereGridHighlight.y = sphereGridDisplay.y;
 			sphereGridHighlight.alpha = 0.2;
-			this.graphic = new Graphiclist(background, sphereGridDisplay, sphereGridHighlight, scoreDisplay);
+			captureButton = new Image(Assets.CAPTURE_BUTTON);
+			captureButton.x = 250;
+			captureButton.y = 550;
+			captureButton.visible = false;
+			this.graphic = new Graphiclist(background, sphereGridDisplay, sphereGridHighlight, scoreDisplay, captureButton);
 			sphereGridRect = new Rectangle(sphereGridDisplay.x + x, sphereGridDisplay.y + y,
 											sphereGridDisplay.width, sphereGridDisplay.height);
+			captureRect = new Rectangle(captureButton.x + x, captureButton.y + y, captureButton.width, captureButton.height);
 			
 			pointBox = new PointsBox(0, 0);
 			pointBox.visible = false;
@@ -110,16 +120,34 @@ package puzzle
 			else { //hide points box when not needed
 				pointBox.visible = false;
 			}
+			
+			//show capture button if enough points
+			if (gameRules.score > pointsRequiredToCapture) {
+				captureButton.visible = true;
+			}
+			else {
+				captureButton.visible = false;
+			}
 		}
 		
 		override public function update():void 
 		{
 			super.update();
+			hasCaptured = false;
 			if (Input.mousePressed) {
 				if (newGameOnNextClick) { //TO DO: REMOVE
 					newGameOnNextClick = false;
-					gameRules.reset(NUM_COLORS);
-					updateSphereGridDisplay();
+					if (captureButton.visible) {
+						hasCaptured = true;
+					}
+					else{
+						gameRules.reset(NUM_COLORS);
+						updateSphereGridDisplay();
+					}
+				}
+				//capture if button is showing and clicked
+				else if (captureButton.visible && captureRect.contains(Input.mouseX, Input.mouseY)) {
+					hasCaptured = true;
 				}
 				//check if pressed with boundaries of tilemap and accept input if so
 				else if (sphereGridRect.contains(Input.mouseX, Input.mouseY)) {
@@ -172,10 +200,15 @@ package puzzle
 			return gameRules.score;
 		}
 		
-		public function resetGame(pointsRequired:int, numColors:int = NUM_COLORS) {
+		public function resetGame(pointsRequired:int, numColors:int = NUM_COLORS):void {
 			this.pointsRequiredToCapture = pointsRequired;
 			gameRules.reset(numColors);
 			updateSphereGridDisplay();
+			hasCaptured = false;
+		}
+		
+		public function playerHasCaptured():Boolean {
+			return hasCaptured;
 		}
 	}
 

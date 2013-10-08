@@ -163,6 +163,7 @@ package puzzle
 						winningPlayerTotal = ownershipCounts[i];
 						winningPlayerScore = pointCounts[i];
 				}
+				trace(i + ": " + ownershipCounts[i] + " " + pointCounts[i]);
 			}
 			this.winnerID = winningPlayerID;
 		}
@@ -200,6 +201,7 @@ package puzzle
 				square.ownerID = PLAYER_1;
 				ownershipCounts[PLAYER_1] = 1;
 				ownershipCounts[PLAYER_NONE] -= 1;
+				pointCounts[PLAYER_1] = 0;
 			}
 			//player 2 starting position = bottom right corner
 			if (_numPlayers > 1) {
@@ -207,6 +209,7 @@ package puzzle
 				square.ownerID = PLAYER_2;
 				ownershipCounts[PLAYER_2] = 1;
 				ownershipCounts[PLAYER_NONE] -= 1;
+				pointCounts[PLAYER_2] = 0;
 			}
 			//player 3 starting position = bottom left corner
 			if (_numPlayers > 2) {
@@ -214,6 +217,7 @@ package puzzle
 				square.ownerID = PLAYER_3;
 				ownershipCounts[PLAYER_3] = 1;
 				ownershipCounts[PLAYER_NONE] -= 1;
+				pointCounts[PLAYER_3] = 0;
 			}
 			//player 4 starting position = top right corner
 			if (_numPlayers > 3) {
@@ -221,6 +225,7 @@ package puzzle
 				square.ownerID = PLAYER_4;
 				ownershipCounts[PLAYER_4] = 1;
 				ownershipCounts[PLAYER_NONE] -= 1;
+				pointCounts[PLAYER_4] = 0;
 			}
 		}
 		

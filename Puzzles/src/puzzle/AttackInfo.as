@@ -42,6 +42,21 @@ package puzzle
 			_currentPoints = value;
 		}
 		
+		public function set attackerID(value:int):void 
+		{
+			_attackerID = value;
+		}
+		
+		public function set tileX(value:int):void 
+		{
+			_tileX = value;
+		}
+		
+		public function set tileY(value:int):void 
+		{
+			_tileY = value;
+		}
+		
 	}
 
 }

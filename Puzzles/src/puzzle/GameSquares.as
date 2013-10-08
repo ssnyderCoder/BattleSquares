@@ -33,7 +33,9 @@ package puzzle
 		private var currentPlayerSquare:Spritemap = new Spritemap(Assets.SQUARES, 32, 32); //test
 		private var gameWon:Boolean = false; //test
 		
-		private var playerScore:int = 0;
+		private var playerScore:int = 0; //temp
+		private var playerHasAttackedSquare:Boolean = false; //temp
+		private var playerAttackInfo:AttackInfo = new AttackInfo(0,0,0); //temp
 		
 		//TODO: Add 6 Text and 6 square pictures to designate total ownership ; NOT STRICTLY NECESSARY
 		public function GameSquares(x:Number=0, y:Number=0) 
@@ -60,6 +62,7 @@ package puzzle
 			super.update();
 			gameRules.update();
 			updateTimeDisplay(gameRules.timeRemaining);
+			playerHasAttackedSquare = false;
 			//if time is 0, check for winner
 			if (gameRules.timeRemaining <= 0 && !gameWon) {
 				winnerDisplay = new WinnerDisplay(gameRules.getWinnerName(), 40, 40);
@@ -88,7 +91,13 @@ package puzzle
 				}
 				//check if pressed with boundaries of tilemap and accept input if so
 				else if (tileX != -1) {
-					gameRules.captureSquare(currentPlayer, playerScore, tileX, tileY);
+					if (gameRules.attackSquare(currentPlayer, tileX, tileY)) {
+						playerHasAttackedSquare = true;
+						playerAttackInfo.attackerID = currentPlayer;
+						playerAttackInfo.tileX = tileX;
+						playerAttackInfo.tileY = tileY;
+						playerAttackInfo.currentPoints = gameRules.getIndex(tileX, tileY).points; //acts as point requirement
+					}
 					updateSquareGridDisplay();
 				}
 				else {
@@ -128,8 +137,26 @@ package puzzle
 			}
 		}
 		
+		public function capturePlayerSquare():void {
+			gameRules.captureSquare(playerAttackInfo.attackerID, playerScore, playerAttackInfo.tileX, playerAttackInfo.tileY);
+			updateSquareGridDisplay();
+		}
+		
 		public function setPlayerScore(score:int):void {
 			playerScore = score;
+			//set player attack info later
+		}
+		
+		public function hasPlayerAttackedSquare():Boolean {
+			return playerHasAttackedSquare;
+		}
+		
+		public function getCurrentPlayerAttack():AttackInfo {
+			return playerAttackInfo;
+		}
+		
+		public function gameHasBeenWon():Boolean {
+			return gameWon;
 		}
 	}
 
