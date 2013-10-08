@@ -55,6 +55,7 @@ package puzzle
 			super.update();
 			gameRules.update();
 			updateTimeDisplay(gameRules.timeRemaining);
+			//if time is 0, check for winner
 			if (Input.mousePressed) {
 				//check if pressed with boundaries of tilemap and accept input if so
 				if (squareGridRect.contains(Input.mouseX, Input.mouseY)) {

@@ -20,12 +20,12 @@ package puzzle
 	{
 		public static const MAX_PLAYERS:int = 4;
 		
-		public static const SQUARE_PLAYER_1:int = 0;
-		public static const SQUARE_PLAYER_2:int = 1;
-		public static const SQUARE_PLAYER_3:int = 2;
-		public static const SQUARE_PLAYER_4:int = 3;
-		public static const SQUARE_UNOWNED:int = 4;
-		public static const SQUARE_BLOCKED:int = 5;
+		public static const PLAYER_1:int = 0;
+		public static const PLAYER_2:int = 1;
+		public static const PLAYER_3:int = 2;
+		public static const PLAYER_4:int = 3;
+		public static const PLAYER_NONE:int = 4;
+		public static const PLAYER_BLOCKED:int = 5;
 		
 		public static const STARTING_POINTS:int = 50;
 		
@@ -37,6 +37,7 @@ package puzzle
 		private var _timeRemaining:Number; //seconds
 		
 		private var timePerRound:int; //seconds
+		private var winnerID:int;
 		
 		private var squares:Array; //acts as 2d grid containing square information
 		private var ownershipCounts:Array; //contains number of owned squares for each player
@@ -51,6 +52,7 @@ package puzzle
 			this.ownershipCounts = new Array();
 			this.timePerRound = secondsPerRound;
 			this._timeRemaining = timePerRound;
+			this.winnerID = PLAYER_NONE;
 			generateSquareGrid();
 		}
 		
@@ -82,22 +84,34 @@ package puzzle
 		
 		public function update():void {
 			countDownTime();
-			if (_timeRemaining == 0) {
+			if (_timeRemaining == 0 && this.winnerID == PLAYER_NONE) {
 				finishGame();
 			}
 		}
 		
 		private function finishGame():void 
 		{
-			//count total tiles owned by each player
-			//if tie, count total points owned by tied players
-			//winner is one with most tiles owned (and points)
-			//save in winner variable that is checked by GameSquare
+			var winningPlayerID:int;
+			var winningPlayerTotal:int = -1;
+			var winningPlayerScore:int = 0;
+			//winner is one with most tiles owned (and points if tie)
+			for (var i:int = 0; i < PLAYER_NONE; i++) {
+				if (ownershipCounts[i] > winningPlayerTotal || 
+				   (ownershipCounts[i] == winningPlayerTotal && pointCounts[i] >= winningPlayerScore)) {
+						winningPlayerID = i;
+						winningPlayerTotal = ownershipCounts[i];
+						winningPlayerScore = pointCounts[i];
+				}
+			}
+			this.winnerID = winningPlayerID;
 		}
 		
+		/**
+		 * Updates the timer; time counts down faster if every square is owned
+		 */
 		private function countDownTime():void 
 		{
-			_timeRemaining -= ownershipCounts[SQUARE_UNOWNED] > 0 ? FP.elapsed : FP.elapsed * 10;
+			_timeRemaining -= ownershipCounts[PLAYER_NONE] > 0 ? FP.elapsed : FP.elapsed * 10;
 			if (_timeRemaining < 0) {
 				_timeRemaining = 0;
 			}
@@ -106,46 +120,46 @@ package puzzle
 		private function generateSquareGrid():void 
 		{
 			//reset ownership
-			for (var n:int = 0; n <= SQUARE_BLOCKED; n++) {
+			for (var n:int = 0; n <= PLAYER_BLOCKED; n++) {
 				ownershipCounts[n] = 0;
 			}
 			
 			//reset grid
 			for (var j:int = 0; j < _height; j++) {
 				for (var i:int = 0; i < _width; i++) {
-					squares[i + j * _width] = new SquareInfo(SQUARE_UNOWNED, STARTING_POINTS, BONUS_NONE);
+					squares[i + j * _width] = new SquareInfo(PLAYER_NONE, STARTING_POINTS, BONUS_NONE);
 				}
 			}
-			ownershipCounts[SQUARE_UNOWNED] = _height * _width;
+			ownershipCounts[PLAYER_NONE] = _height * _width;
 			
 			var square:SquareInfo;
 			//player 1 starting position = top left corner
 			if (_numPlayers > 0) {
 				square = squares[0 + 0 * _width];
-				square.ownerID = SQUARE_PLAYER_1;
-				ownershipCounts[SQUARE_PLAYER_1] = 1;
-				ownershipCounts[SQUARE_UNOWNED] -= 1;
+				square.ownerID = PLAYER_1;
+				ownershipCounts[PLAYER_1] = 1;
+				ownershipCounts[PLAYER_NONE] -= 1;
 			}
 			//player 2 starting position = bottom right corner
 			if (_numPlayers > 1) {
 				square = squares[(_width - 1) + (_height - 1) * _width];
-				square.ownerID = SQUARE_PLAYER_2;
-				ownershipCounts[SQUARE_PLAYER_2] = 1;
-				ownershipCounts[SQUARE_UNOWNED] -= 1;
+				square.ownerID = PLAYER_2;
+				ownershipCounts[PLAYER_2] = 1;
+				ownershipCounts[PLAYER_NONE] -= 1;
 			}
 			//player 3 starting position = bottom left corner
 			if (_numPlayers > 2) {
 				square = squares[(_width - 1) + 0 * _width];
-				square.ownerID = SQUARE_PLAYER_3;
-				ownershipCounts[SQUARE_PLAYER_3] = 1;
-				ownershipCounts[SQUARE_UNOWNED] -= 1;
+				square.ownerID = PLAYER_3;
+				ownershipCounts[PLAYER_3] = 1;
+				ownershipCounts[PLAYER_NONE] -= 1;
 			}
 			//player 4 starting position = top right corner
 			if (_numPlayers > 3) {
 				square = squares[0 + (_height - 1) * _width];
-				square.ownerID = SQUARE_PLAYER_4;
-				ownershipCounts[SQUARE_PLAYER_4] = 1;
-				ownershipCounts[SQUARE_UNOWNED] -= 1;
+				square.ownerID = PLAYER_4;
+				ownershipCounts[PLAYER_4] = 1;
+				ownershipCounts[PLAYER_NONE] -= 1;
 			}
 		}
 		
@@ -170,7 +184,7 @@ package puzzle
 		}
 		
 		public function getTerritoryCount(playerID:int):int {
-			return playerID < 0 || playerID > SQUARE_BLOCKED ? -1 : ownershipCounts[playerID] 
+			return playerID < 0 || playerID > PLAYER_BLOCKED ? -1 : ownershipCounts[playerID] 
 		}
 		
 /*	<>+Countdown() - called each tick; ticks clock down (1x or 4x); if clock 0, EndGame()
