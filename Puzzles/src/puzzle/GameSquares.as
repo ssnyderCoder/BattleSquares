@@ -21,7 +21,7 @@ package puzzle
 		public static const SQUARE_WIDTH:int = 32;
 		public static const SQUARE_HEIGHT:int = 32;
 		private static const NUM_PLAYERS:int = 3;
-		
+		private static const HUMAN_PLAYER_ID:int = 0;
 		private var squareGridDisplay:Tilemap;
 		private var squareGridRect:Rectangle;
 		private var gameRules:GameSquaresRules;
@@ -29,8 +29,6 @@ package puzzle
 		private var winnerDisplay:WinnerDisplay; //temp
 		private var infoBox:InfoDisplay; //temp
 		
-		private var currentPlayer:int = 0; //test
-		private var currentPlayerSquare:Spritemap = new Spritemap(Assets.SQUARES, 32, 32); //test
 		private var gameWon:Boolean = false; //test
 		
 		private var playerScore:int = 0; //temp
@@ -40,9 +38,6 @@ package puzzle
 		//TODO: Add 6 Text and 6 square pictures to designate total ownership ; NOT STRICTLY NECESSARY
 		public function GameSquares(x:Number=0, y:Number=0) 
 		{
-			currentPlayerSquare.x = 0;
-			currentPlayerSquare.y = 268;
-			currentPlayerSquare.frame = currentPlayer;
 			this.x = x;
 			this.y = y;
 			this.setHitbox(300, 300);
@@ -54,7 +49,7 @@ package puzzle
 			squareGridRect = new Rectangle(squareGridDisplay.x + x, squareGridDisplay.y + y,
 											squareGridDisplay.width, squareGridDisplay.height);
 			timeDisplay = new Text("Time: 0", this.width / 2, this.height + 20);
-			this.graphic = new Graphiclist(background, squareGridDisplay, currentPlayerSquare, timeDisplay);
+			this.graphic = new Graphiclist(background, squareGridDisplay, timeDisplay);
 		}
 		
 		override public function update():void 
@@ -91,18 +86,14 @@ package puzzle
 				}
 				//check if pressed with boundaries of tilemap and accept input if so
 				else if (tileX != -1) {
-					if (gameRules.attackSquare(currentPlayer, tileX, tileY)) {
+					if (gameRules.attackSquare(HUMAN_PLAYER_ID, tileX, tileY, true)) {
 						playerHasAttackedSquare = true;
-						playerAttackInfo.attackerID = currentPlayer;
+						playerAttackInfo.attackerID = HUMAN_PLAYER_ID;
 						playerAttackInfo.tileX = tileX;
 						playerAttackInfo.tileY = tileY;
 						playerAttackInfo.currentPoints = gameRules.getIndex(tileX, tileY).points; //acts as point requirement
 					}
 					updateSquareGridDisplay();
-				}
-				else {
-					currentPlayer = currentPlayer == 5 ? 0 : currentPlayer + 1;
-					currentPlayerSquare.frame = currentPlayer;
 				}
 			}
 		}

@@ -75,7 +75,7 @@ package puzzle
 			return squares[x + y * _width];
 		}
 		
-		public function attackSquare(playerID:int, x:int, y:int):Boolean {
+		public function attackSquare(playerID:int, x:int, y:int, clearOtherAttacks:Boolean):Boolean {
 			//fail if player does not own nearby square or if already owns square
 			if (!doesPlayerOwnNearbySquare(playerID, x, y) || getIndex(x,y).ownerID == playerID) {
 				return false;
@@ -89,6 +89,9 @@ package puzzle
 				}
 			}
 			
+			if (clearOtherAttacks) {
+				resetPlayerAttacks(playerID);
+			}
 			attackedSquares.push(new AttackInfo(playerID, x, y));
 			return true;
 		}
@@ -258,6 +261,19 @@ package puzzle
 		 */
 		public function getAttackedSquares():Array{
 			return attackedSquares;
+		}
+		
+		private function resetPlayerAttacks(playerID:int):void {
+			var validAttacks:Array = new Array();
+			while(attackedSquares.length > 0) {
+				var atkInfo:AttackInfo = attackedSquares.pop();
+				//cancel any attack by this player
+				if (atkInfo.attackerID == playerID) {
+					continue;
+				}
+				validAttacks.push(atkInfo);
+			}
+			attackedSquares = validAttacks;
 		}
 		
 /*	<>+Countdown() - called each tick; ticks clock down (1x or 4x); if clock 0, EndGame()
