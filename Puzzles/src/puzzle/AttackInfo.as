@@ -10,11 +10,13 @@ package puzzle
 		private var _tileX:int;
 		private var _tileY:int;
 		private var _currentPoints:int = 0;
-		public function AttackInfo(attackerID:int, tileX:int, tileY:int) 
+		private var _defenseValue:int;
+		public function AttackInfo(attackerID:int, tileX:int, tileY:int, defenseValue:int) 
 		{
 			_attackerID = attackerID;
 			_tileX = tileX;
 			_tileY = tileY;
+			_defenseValue = defenseValue;
 		}
 		
 		public function get attackerID():int 
@@ -55,6 +57,16 @@ package puzzle
 		public function set tileY(value:int):void 
 		{
 			_tileY = value;
+		}
+		
+		public function get defenseValue():int 
+		{
+			return _defenseValue;
+		}
+		
+		public function set defenseValue(value:int):void 
+		{
+			_defenseValue = value;
 		}
 		
 	}

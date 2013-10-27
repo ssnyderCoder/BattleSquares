@@ -8,7 +8,7 @@ package puzzle
 	 */
 	public class GameWorld extends World 
 	{
-		public static var TICKMSG:Boolean = false;
+		public static var TICKMSG:Boolean = false; //temp
 		private var gameSpheres:GameSpheres;
 		private var gameSquares:GameSquares;
 		public function GameWorld() 
@@ -28,7 +28,8 @@ package puzzle
 			gameSquares.setPlayerScore(gameSpheres.getPlayerScore());
 			//if player has declared new attack, setup new spheres game with point requirement of the square
 			if (gameSquares.hasPlayerAttackedSquare()) {
-				gameSpheres.resetGame(gameSquares.getCurrentPlayerAttack().currentPoints);
+				var playerAtk:AttackInfo = gameSquares.getCurrentPlayerAttack();
+				gameSpheres.resetGame(playerAtk.currentPoints, playerAtk.defenseValue);
 				gameSpheres.activate();
 			}
 			//if player has clicked the capture button in spheres game, end it and tell squares game of capturing total
@@ -47,5 +48,4 @@ package puzzle
 		}
 	}
  //TODO: IMPLEMENT AI OPPONENTS
- //TODO: IF GAMESPHERES IS SET INACTIVE, POINT BOX DOES NOT DISAPPEAR
 }

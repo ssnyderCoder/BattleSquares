@@ -78,10 +78,10 @@ package puzzle
 			return squares[x + y * _width];
 		}
 		
-		public function attackSquare(playerID:int, x:int, y:int, clearOtherAttacks:Boolean):Boolean {
+		public function attackSquare(playerID:int, x:int, y:int, clearOtherAttacks:Boolean):AttackInfo {
 			//fail if player does not own nearby square or if already owns square
 			if (!doesPlayerOwnNearbySquare(playerID, x, y) || getIndex(x,y).ownerID == playerID) {
-				return false;
+				return null;
 			}
 			
 			
@@ -89,16 +89,20 @@ package puzzle
 			for (var i:int = 0; i < attackedSquares.length; i++) {
 				var atkInfo:AttackInfo = attackedSquares[i];
 				if (atkInfo.attackerID == playerID && atkInfo.tileX == x && atkInfo.tileY == y) {
-					return false;
+					return null;
 				}
 			}
 			
 			if (clearOtherAttacks) {
 				resetPlayerAttacks(playerID);
 			}
-			
-			attackedSquares.push(new AttackInfo(playerID, x, y));
-			return true;
+			//determine defense of square based on square owner
+			var squareOwner:int = getIndex(x, y).ownerID;
+			var defenseValue:int = getIndex(x, y).ownerID == PLAYER_NONE ? GameSpheres.DEFAULT_NUM_COLORS
+																		 : GameSpheres.DEFAULT_NUM_COLORS + 1;
+			var attack:AttackInfo = new AttackInfo(playerID, x, y, defenseValue);
+			attackedSquares.push(attack);
+			return attack;
 		}
 		
 		private function doesPlayerOwnNearbySquare(playerID:int, x:int, y:int):Boolean 

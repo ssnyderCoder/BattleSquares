@@ -21,7 +21,7 @@ package puzzle
 		public static const SPHERE_WIDTH:int = 64;
 		public static const SPHERE_HEIGHT:int = 64;
 		
-		private static const NUM_COLORS:int = 3;
+		public static const DEFAULT_NUM_COLORS:int = 3;
 		private static const HIGHLIGHT_OFF:int = 0;
 		private static const HIGHLIGHT_ON:int = 1;
 		private static const HIGHLIGHT_ROUND_OVER:int = 2;
@@ -45,7 +45,7 @@ package puzzle
 			this.x = x;
 			this.y = y;
 			this.setHitbox(600, 600);
-			gameRules = new GameSpheresRules(8, 8, NUM_COLORS);
+			gameRules = new GameSpheresRules(8, 8, DEFAULT_NUM_COLORS);
 			
 			var background:Graphic = new Stamp(Assets.SPHERE_GAME_BACKGROUND);
 			scoreDisplay = new Text("Score: 0", 100, 550);
@@ -141,7 +141,7 @@ package puzzle
 						hasCaptured = true;
 					}
 					else{
-						gameRules.reset(NUM_COLORS);
+						gameRules.reset(DEFAULT_NUM_COLORS);
 						updateSphereGridDisplay();
 					}
 				}
@@ -200,7 +200,7 @@ package puzzle
 			return this.active ? gameRules.score : 0;
 		}
 		
-		public function resetGame(pointsRequired:int, numColors:int = NUM_COLORS):void {
+		public function resetGame(pointsRequired:int, numColors:int = DEFAULT_NUM_COLORS):void {
 			this.pointsRequiredToCapture = pointsRequired;
 			gameRules.reset(numColors);
 			updateSphereGridDisplay();

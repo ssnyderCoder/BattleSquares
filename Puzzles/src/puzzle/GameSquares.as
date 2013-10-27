@@ -34,7 +34,7 @@ package puzzle
 		
 		private var playerScore:int = 0; //temp
 		private var playerHasAttackedSquare:Boolean = false; //temp
-		private var playerAttackInfo:AttackInfo = new AttackInfo(0, 0, 0); //temp
+		private var playerAttackInfo:AttackInfo = new AttackInfo(0, 0, 0, 0); //temp
 		
 		private var attackArrows:Array = new Array(); //contains 8 AttackArrows
 		
@@ -91,11 +91,13 @@ package puzzle
 				}
 				//check if pressed with boundaries of tilemap and accept input if so
 				else if (tileX != -1) {
-					if (gameRules.attackSquare(HUMAN_PLAYER_ID, tileX, tileY, true)) {
+					var atkinfo:AttackInfo = gameRules.attackSquare(HUMAN_PLAYER_ID, tileX, tileY, true);
+					if (atkinfo) {
 						playerHasAttackedSquare = true;
 						playerAttackInfo.attackerID = HUMAN_PLAYER_ID;
 						playerAttackInfo.tileX = tileX;
 						playerAttackInfo.tileY = tileY;
+						playerAttackInfo.defenseValue = atkinfo.defenseValue;
 						playerAttackInfo.currentPoints = gameRules.getIndex(tileX, tileY).points; //acts as point requirement
 					}
 					updateSquareGridDisplay();
