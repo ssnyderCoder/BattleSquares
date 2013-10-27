@@ -16,6 +16,7 @@ package puzzle
 	 */
 	public class WinnerDisplay extends Entity 
 	{
+		private static const GLOW_DURATION:Number = 0.4;
 		private var winnerText:Text;
 		private var background:Image;
 		private var colorTween:ColorTween;
@@ -44,11 +45,11 @@ package puzzle
 		
 		private function swapTweenDirection():void {
 			if (colorBackwards) {
-				colorTween.tween(0.2, 0x308811, 0x489933, 0.8, 0.5);
+				colorTween.tween(GLOW_DURATION / 2, 0x308811, 0x57c933, 0.8, 0.5);
 				colorBackwards = false;
 			}
 			else {
-				colorTween.tween(0.2, 0x489933, 0x308811, 0.5, 0.8);
+				colorTween.tween(GLOW_DURATION / 2, 0x57c933, 0x308811, 0.5, 0.8);
 				colorBackwards = true;
 			}
 		}

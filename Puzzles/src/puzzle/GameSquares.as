@@ -30,7 +30,7 @@ package puzzle
 		private var winnerDisplay:WinnerDisplay; //temp
 		private var infoBox:InfoDisplay; //temp
 		
-		private var gameWon:Boolean = false; //test
+		private var gameHadBeenWon:Boolean = false; //test
 		
 		private var playerScore:int = 0; //temp
 		private var playerHasAttackedSquare:Boolean = false; //temp
@@ -60,30 +60,30 @@ package puzzle
 			super.update();
 			gameRules.update();
 			gameRules.setPlayerPoints(HUMAN_PLAYER_ID, playerScore);
-			updateTimeDisplay(gameRules.timeRemaining);
-			updateArrowDisplay();
-			playerHasAttackedSquare = false;
 			//if time is 0, check for winner
-			if (gameRules.timeRemaining <= 0 && !gameWon) {
+			if (gameRules.timeRemaining <= 0 && !gameHadBeenWon) {
 				winnerDisplay = new WinnerDisplay(gameRules.getWinnerName(), 40, 40);
 				this.world.add(winnerDisplay);
-				gameWon = true;
+				gameHadBeenWon = true;
 			}
-			//show info box if player hovering over square
-			var tileX:int = -1;
-			var tileY:int = -1;
-			if (squareGridRect.contains(Input.mouseX, Input.mouseY)) {
+			handleInput();
+			updateDisplay();
+		}
+		
+		private function handleInput():void 
+		{
+			playerHasAttackedSquare = false;
+			if (Input.mousePressed) {
+				//get mouse position
+				var tileX:int = -1;
+				var tileY:int = -1;
+				if (squareGridRect.contains(Input.mouseX, Input.mouseY)) {
 					tileX = (Input.mouseX - squareGridRect.x) / squareGridDisplay.tileWidth;
 					tileY = (Input.mouseY - squareGridRect.y) / squareGridDisplay.tileHeight;
-					infoBox.visible = true;
-					infoBox.setText("Points: " + gameRules.getIndex(tileX, tileY).points);
 				}
-			else {
-				infoBox.visible = false;
-			}
-			if (Input.mousePressed) {
-				if (gameWon) {
-					gameWon = false;
+				//reset everything if new game just started
+				if (gameHadBeenWon) {
+					gameHadBeenWon = false;
 					this.world.remove(winnerDisplay);
 					gameRules.resetGame();
 					updateSquareGridDisplay();
@@ -100,6 +100,28 @@ package puzzle
 					}
 					updateSquareGridDisplay();
 				}
+			}
+		}
+		
+		private function updateDisplay():void {
+			updateTimeDisplay(gameRules.timeRemaining);
+			updateArrowDisplay();
+			updateInfoBoxDisplay();
+		}
+		
+		private function updateInfoBoxDisplay():void 
+		{
+			//show info box if player hovering over square
+			var tileX:int = -1;
+			var tileY:int = -1;
+			if (squareGridRect.contains(Input.mouseX, Input.mouseY)) {
+					tileX = (Input.mouseX - squareGridRect.x) / squareGridDisplay.tileWidth;
+					tileY = (Input.mouseY - squareGridRect.y) / squareGridDisplay.tileHeight;
+					infoBox.visible = true;
+					infoBox.setText("Points: " + gameRules.getIndex(tileX, tileY).points);
+				}
+			else {
+				infoBox.visible = false;
 			}
 		}
 		
@@ -144,6 +166,7 @@ package puzzle
 			}
 		}
 		
+		//called every tick
 		private function updateArrowDisplay():void 
 		{
 			var attacks:Array = gameRules.getAttackedSquares();
@@ -161,6 +184,9 @@ package puzzle
 					var tileY:int = atkInfo.tileY;
 					var perc:Number = ((Number)(atkInfo.currentPoints)) / ((Number)(gameRules.getIndex(tileX, tileY).points));
 					arrow.setCompletionColor(perc);
+					if (GameWorld.TICKMSG) {
+						trace("Player " + (playerID + 1) + " -x: " + tileX + " -y: " + tileY + " -cp: " + atkInfo.currentPoints);
+					}
 					if (gameRules.getIndex(tileX - 1, tileY).ownerID == playerID) { //left
 						arrow.visible = true;
 						arrow.setDirection(AttackArrow.POINT_RIGHT);
@@ -187,6 +213,7 @@ package puzzle
 					}
 					else {
 						arrow.visible = false;
+						arrow.setCompletionColor(0);
 					}
 				}
 			}
@@ -210,7 +237,7 @@ package puzzle
 		}
 		
 		public function gameHasBeenWon():Boolean {
-			return gameWon;
+			return gameHadBeenWon;
 		}
 	}
 

@@ -197,7 +197,7 @@ package puzzle
 		}
 		
 		public function getPlayerScore():int {
-			return gameRules.score;
+			return this.active ? gameRules.score : 0;
 		}
 		
 		public function resetGame(pointsRequired:int, numColors:int = NUM_COLORS):void {
@@ -209,6 +209,17 @@ package puzzle
 		
 		public function playerHasCaptured():Boolean {
 			return hasCaptured;
+		}
+		
+		public function activate():void {
+			this.visible = true;
+			this.active = true;
+		}
+		
+		public function deactivate():void {
+			this.visible = false;
+			this.active = false;
+			this.pointBox.visible = false;
 		}
 	}
 

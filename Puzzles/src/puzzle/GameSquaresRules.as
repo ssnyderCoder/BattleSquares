@@ -84,6 +84,7 @@ package puzzle
 				return false;
 			}
 			
+			
 			//fail if attack already exists
 			for (var i:int = 0; i < attackedSquares.length; i++) {
 				var atkInfo:AttackInfo = attackedSquares[i];
@@ -95,6 +96,7 @@ package puzzle
 			if (clearOtherAttacks) {
 				resetPlayerAttacks(playerID);
 			}
+			
 			attackedSquares.push(new AttackInfo(playerID, x, y));
 			return true;
 		}
