@@ -30,11 +30,11 @@ package puzzle
 		private var winnerDisplay:WinnerDisplay; //temp
 		private var infoBox:InfoDisplay; //temp
 		
-		private var gameHadBeenWon:Boolean = false; //test
+		private var gameHadBeenWon:Boolean = false;
 		
 		private var playerScore:int = 0; //temp
 		private var playerHasAttackedSquare:Boolean = false; //temp
-		private var playerAttackInfo:AttackInfo = new AttackInfo(0, 0, 0, 0); //temp
+		private var playerAttackInfo:AttackInfo = new AttackInfo(0, 0, 0, 0, 0); //temp
 		
 		private var attackArrows:Array = new Array(); //contains 8 AttackArrows
 		
@@ -66,32 +66,51 @@ package puzzle
 				this.world.add(winnerDisplay);
 				gameHadBeenWon = true;
 			}
-			handleInput();
 			updateDisplay();
 		}
 		
-		private function handleInput():void 
+		public function getTileIndexAtCoordinates(mouseX:int, mouseY:int):int {
+				//get mouse position
+				var tileX:int;
+				var tileY:int;
+				if (squareGridRect.contains(mouseX, mouseY)) {
+					tileX = (mouseX - squareGridRect.x) / squareGridDisplay.tileWidth;
+					tileY = (mouseY - squareGridRect.y) / squareGridDisplay.tileHeight;
+					return tileX + tileY * gameRules.width;
+				}
+				else {
+					return -1;
+				}
+		}
+		
+		public function startNewGame():void {
+			gameHadBeenWon = false;
+			this.world.remove(winnerDisplay);
+			gameRules.resetGame();
+			updateSquareGridDisplay();
+			updateTimeDisplay(gameRules.timeRemaining);
+			
+		}
+		
+		public function getTileX(tileIndex:int):int {
+			return tileIndex % gameRules.width;
+		}
+		
+		public function getTileY(tileIndex:int):int {
+			return tileIndex / gameRules.width;
+		}
+		
+		//called by PlayerHuman class
+		public function handleInput(mouseX:int, mouseY:int):void 
 		{
 			playerHasAttackedSquare = false;
 			if (Input.mousePressed) {
-				//get mouse position
-				var tileX:int = -1;
-				var tileY:int = -1;
-				if (squareGridRect.contains(Input.mouseX, Input.mouseY)) {
-					tileX = (Input.mouseX - squareGridRect.x) / squareGridDisplay.tileWidth;
-					tileY = (Input.mouseY - squareGridRect.y) / squareGridDisplay.tileHeight;
-				}
 				//reset everything if new game just started
 				if (gameHadBeenWon) {
-					gameHadBeenWon = false;
-					this.world.remove(winnerDisplay);
-					gameRules.resetGame();
-					updateSquareGridDisplay();
-					updateTimeDisplay(gameRules.timeRemaining);
 				}
 				//check if pressed with boundaries of tilemap and accept input if so
 				else if (tileX != -1) {
-					var atkinfo:AttackInfo = gameRules.attackSquare(HUMAN_PLAYER_ID, tileX, tileY, true);
+					var atkinfo:AttackInfo = declareAttack(HUMAN_PLAYER_ID, tileX, tileY);
 					if (atkinfo) {
 						playerHasAttackedSquare = true;
 						playerAttackInfo.attackerID = HUMAN_PLAYER_ID;
@@ -100,7 +119,6 @@ package puzzle
 						playerAttackInfo.defenseValue = atkinfo.defenseValue;
 						playerAttackInfo.currentPoints = gameRules.getIndex(tileX, tileY).points; //acts as point requirement
 					}
-					updateSquareGridDisplay();
 				}
 			}
 		}
@@ -156,6 +174,7 @@ package puzzle
 			}
 		}
 		
+		//called only when tile captured
 		private function updateSquareGridDisplay():void 
 		{
 			var height:int = gameRules.height;
@@ -221,25 +240,29 @@ package puzzle
 			}
 		}
 		
-		public function capturePlayerSquare():void {
+		public function capturePlayerSquare():void { //make available to all players
 			gameRules.captureSquare(playerAttackInfo.attackerID, playerScore, playerAttackInfo.tileX, playerAttackInfo.tileY);
 			updateSquareGridDisplay();
 		}
 		
-		public function setPlayerScore(score:int):void {
+		public function setPlayerScore(score:int):void { //move to playerHuman
 			playerScore = score;
 		}
 		
-		public function hasPlayerAttackedSquare():Boolean {
+		public function hasPlayerAttackedSquare():Boolean { //move to playerHuman
 			return playerHasAttackedSquare;
 		}
 		
-		public function getCurrentPlayerAttack():AttackInfo {
+		public function getCurrentPlayerAttack():AttackInfo { //move to playerHuman
 			return playerAttackInfo;
 		}
 		
 		public function gameHasBeenWon():Boolean {
 			return gameHadBeenWon;
+		}
+		
+		public function declareAttack(playerID:int, tileX:int, tileY:int):AttackInfo {
+			return gameRules.attackSquare(HUMAN_PLAYER_ID, tileX, tileY, true);
 		}
 	}
 

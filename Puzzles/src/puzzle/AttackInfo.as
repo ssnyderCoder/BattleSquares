@@ -10,12 +10,14 @@ package puzzle
 		private var _tileX:int;
 		private var _tileY:int;
 		private var _currentPoints:int = 0;
+		private var _capturePoints:int;
 		private var _defenseValue:int;
-		public function AttackInfo(attackerID:int, tileX:int, tileY:int, defenseValue:int) 
+		public function AttackInfo(attackerID:int, tileX:int, tileY:int, capturePoints:int, defenseValue:int) 
 		{
 			_attackerID = attackerID;
 			_tileX = tileX;
 			_tileY = tileY;
+			_capturePoints = capturePoints;
 			_defenseValue = defenseValue;
 		}
 		
@@ -67,6 +69,16 @@ package puzzle
 		public function set defenseValue(value:int):void 
 		{
 			_defenseValue = value;
+		}
+		
+		public function get capturePoints():int 
+		{
+			return _capturePoints;
+		}
+		
+		public function set capturePoints(value:int):void 
+		{
+			_capturePoints = value;
 		}
 		
 	}
