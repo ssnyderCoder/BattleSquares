@@ -12,6 +12,7 @@ package puzzle
 		private var _currentPoints:int = 0;
 		private var _capturePoints:int;
 		private var _defenseValue:int;
+		private var _isValid:Boolean = true;
 		public function AttackInfo(attackerID:int, tileX:int, tileY:int, capturePoints:int, defenseValue:int) 
 		{
 			_attackerID = attackerID;
@@ -79,6 +80,16 @@ package puzzle
 		public function set capturePoints(value:int):void 
 		{
 			_capturePoints = value;
+		}
+		
+		public function get isValid():Boolean 
+		{
+			return _isValid;
+		}
+		
+		public function set isValid(value:Boolean):void 
+		{
+			_isValid = value;
 		}
 		
 	}

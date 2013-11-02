@@ -45,7 +45,7 @@ package puzzle
 			this.x = x;
 			this.y = y;
 			this.setHitbox(600, 600);
-			gameRules = new GameSpheresRules(8, 8, DEFAULT_NUM_COLORS);
+			gameRules = new GameSpheresRules(8, 8, 0);
 			
 			var background:Graphic = new Stamp(Assets.SPHERE_GAME_BACKGROUND);
 			scoreDisplay = new Text("Score: 0", 100, 550);
@@ -141,7 +141,7 @@ package puzzle
 						hasCaptured = true;
 					}
 					else{
-						gameRules.reset(DEFAULT_NUM_COLORS);
+						gameRules.reset();
 						updateSphereGridDisplay();
 					}
 				}
@@ -200,9 +200,9 @@ package puzzle
 			return this.active ? gameRules.score : 0;
 		}
 		
-		public function resetGame(pointsRequired:int, numColors:int = DEFAULT_NUM_COLORS):void {
+		public function resetGame(pointsRequired:int, numColorsBonus:int = 0):void {
 			this.pointsRequiredToCapture = pointsRequired;
-			gameRules.reset(numColors);
+			gameRules.resetBonus(numColorsBonus);
 			updateSphereGridDisplay();
 			hasCaptured = false;
 		}

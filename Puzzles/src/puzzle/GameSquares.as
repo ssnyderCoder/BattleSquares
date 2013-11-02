@@ -21,8 +21,7 @@ package puzzle
 		public static const SQUARE_WIDTH:int = 32;
 		public static const SQUARE_HEIGHT:int = 32;
 		private static const MAX_ARROWS:int = 8;
-		private static const NUM_PLAYERS:int = 3;
-		private static const HUMAN_PLAYER_ID:int = 0;
+		private static const NUM_PLAYERS:int = 4;
 		private var squareGridDisplay:Tilemap;
 		private var squareGridRect:Rectangle;
 		private var gameRules:GameSquaresRules;
@@ -32,19 +31,15 @@ package puzzle
 		
 		private var gameHadBeenWon:Boolean = false;
 		
-		private var playerScore:int = 0; //temp
-		private var playerHasAttackedSquare:Boolean = false; //temp
-		private var playerAttackInfo:AttackInfo = new AttackInfo(0, 0, 0, 0, 0); //temp
-		
 		private var attackArrows:Array = new Array(); //contains 8 AttackArrows
 		
-		//TODO: Add 6 Text and 6 square pictures to designate total ownership ; NOT STRICTLY NECESSARY
+		//TODO: Add 4 Text and 4 square pictures to designate total ownership ; NOT STRICTLY NECESSARY
 		public function GameSquares(x:Number=0, y:Number=0) 
 		{
 			this.x = x;
 			this.y = y;
 			this.setHitbox(300, 300);
-			gameRules = new GameSquaresRules(8, 8, NUM_PLAYERS);
+			gameRules = new GameSquaresRules(8, 8, NUM_PLAYERS, 80);
 			var background:Graphic = new Stamp(Assets.SQUARE_GAME_BACKGROUND);
 			squareGridDisplay = new Tilemap(Assets.SQUARES, 256, 256, SQUARE_WIDTH, SQUARE_HEIGHT);
 			squareGridDisplay.x = 21;
@@ -59,7 +54,9 @@ package puzzle
 		{
 			super.update();
 			gameRules.update();
-			gameRules.setPlayerPoints(HUMAN_PLAYER_ID, playerScore);
+			if (this.gameHadBeenWon && Input.mousePressed) {
+				startNewGame();
+			}
 			//if time is 0, check for winner
 			if (gameRules.timeRemaining <= 0 && !gameHadBeenWon) {
 				winnerDisplay = new WinnerDisplay(gameRules.getWinnerName(), 40, 40);
@@ -98,29 +95,6 @@ package puzzle
 		
 		public function getTileY(tileIndex:int):int {
 			return tileIndex / gameRules.width;
-		}
-		
-		//called by PlayerHuman class
-		public function handleInput(mouseX:int, mouseY:int):void 
-		{
-			playerHasAttackedSquare = false;
-			if (Input.mousePressed) {
-				//reset everything if new game just started
-				if (gameHadBeenWon) {
-				}
-				//check if pressed with boundaries of tilemap and accept input if so
-				else if (tileX != -1) {
-					var atkinfo:AttackInfo = declareAttack(HUMAN_PLAYER_ID, tileX, tileY);
-					if (atkinfo) {
-						playerHasAttackedSquare = true;
-						playerAttackInfo.attackerID = HUMAN_PLAYER_ID;
-						playerAttackInfo.tileX = tileX;
-						playerAttackInfo.tileY = tileY;
-						playerAttackInfo.defenseValue = atkinfo.defenseValue;
-						playerAttackInfo.currentPoints = gameRules.getIndex(tileX, tileY).points; //acts as point requirement
-					}
-				}
-			}
 		}
 		
 		private function updateDisplay():void {
@@ -204,33 +178,33 @@ package puzzle
 					var tileX:int = atkInfo.tileX;
 					var tileY:int = atkInfo.tileY;
 					var perc:Number = ((Number)(atkInfo.currentPoints)) / ((Number)(gameRules.getIndex(tileX, tileY).points));
-					arrow.setCompletionColor(perc);
-					if (GameWorld.TICKMSG) {
-						trace("Player " + (playerID + 1) + " -x: " + tileX + " -y: " + tileY + " -cp: " + atkInfo.currentPoints);
-					}
 					if (gameRules.getIndex(tileX - 1, tileY).ownerID == playerID) { //left
 						arrow.visible = true;
 						arrow.setDirection(AttackArrow.POINT_RIGHT);
 						arrow.x = squareGridRect.x + (squareGridDisplay.tileWidth * (tileX)) - 8;
 						arrow.y = squareGridRect.y + (squareGridDisplay.tileHeight * (tileY)) + 8;
+						arrow.setCompletionColor(perc);
 					}
 					else if (gameRules.getIndex(tileX + 1, tileY).ownerID == playerID) { //right
 						arrow.visible = true;
 						arrow.setDirection(AttackArrow.POINT_LEFT);
 						arrow.x = squareGridRect.x + (squareGridDisplay.tileWidth * (tileX + 1)) - 8;
 						arrow.y = squareGridRect.y + (squareGridDisplay.tileHeight * (tileY)) + 8;
+						arrow.setCompletionColor(perc);
 					}
 					else if (gameRules.getIndex(tileX, tileY - 1).ownerID == playerID) { //up
 						arrow.visible = true;
 						arrow.setDirection(AttackArrow.POINT_DOWN);
 						arrow.x = squareGridRect.x + (squareGridDisplay.tileWidth * (tileX)) + 8;
 						arrow.y = squareGridRect.y + (squareGridDisplay.tileHeight * (tileY)) - 8;
+						arrow.setCompletionColor(perc);
 					}
 					else if (gameRules.getIndex(tileX, tileY + 1).ownerID == playerID) { //down
 						arrow.visible = true;
 						arrow.setDirection(AttackArrow.POINT_UP);
 						arrow.x = squareGridRect.x + (squareGridDisplay.tileWidth * (tileX)) + 8;
 						arrow.y = squareGridRect.y + (squareGridDisplay.tileHeight * (tileY + 1)) - 8;
+						arrow.setCompletionColor(perc);
 					}
 					else {
 						arrow.visible = false;
@@ -240,21 +214,10 @@ package puzzle
 			}
 		}
 		
-		public function capturePlayerSquare():void { //make available to all players
-			gameRules.captureSquare(playerAttackInfo.attackerID, playerScore, playerAttackInfo.tileX, playerAttackInfo.tileY);
+		public function captureSquare(playerAttackInfo:AttackInfo):void {
+			gameRules.captureSquare(playerAttackInfo.attackerID, playerAttackInfo.currentPoints,
+									playerAttackInfo.tileX, playerAttackInfo.tileY);
 			updateSquareGridDisplay();
-		}
-		
-		public function setPlayerScore(score:int):void { //move to playerHuman
-			playerScore = score;
-		}
-		
-		public function hasPlayerAttackedSquare():Boolean { //move to playerHuman
-			return playerHasAttackedSquare;
-		}
-		
-		public function getCurrentPlayerAttack():AttackInfo { //move to playerHuman
-			return playerAttackInfo;
 		}
 		
 		public function gameHasBeenWon():Boolean {
@@ -262,7 +225,19 @@ package puzzle
 		}
 		
 		public function declareAttack(playerID:int, tileX:int, tileY:int):AttackInfo {
-			return gameRules.attackSquare(HUMAN_PLAYER_ID, tileX, tileY, true);
+			return gameRules.attackSquare(playerID, tileX, tileY, true);
+		}
+		
+		public function getIndex(x:int, y:int):SquareInfo {
+			return gameRules.getIndex(x, y);
+		}
+		
+		public function getRows():int {
+			return gameRules.height;
+		}
+		
+		public function getColumns():int {
+			return gameRules.width;
 		}
 	}
 

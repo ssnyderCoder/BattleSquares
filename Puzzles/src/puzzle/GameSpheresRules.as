@@ -12,6 +12,7 @@ package puzzle
 	public class GameSpheresRules 
 	{
 		public static const EMPTY_ID:int = 0;
+		public static const DEFAULT_NUM_COLORS:int = 4;
 		
 		private static const MAX_COLORS:int = 6;
 		
@@ -31,19 +32,27 @@ package puzzle
 		private var selectedSpheres:Array; //acts as 2d grid designating selected spheres
 		private var _score:int;
 		private var numSelectedSpheres:int = 0;
+		private var _numColors:int;
 		
-		public function GameSpheresRules(width:int, height:int, numColors:int)
+		public function GameSpheresRules(width:int, height:int, numColorsBonus:int)
 		{
 			this._width = width;
 			this._height = height;
 			this._score = 0;
 			this.spheres = new Array();
 			this.selectedSpheres = new Array();
-			generateSphereGrid(numColors);
+			this._numColors = DEFAULT_NUM_COLORS + numColorsBonus;
+			generateSphereGrid(_numColors);
 		}
 		
-		public function reset(numColors:int):void {
-			generateSphereGrid(numColors);
+		public function resetBonus(numColorsBonus:int):void {
+			this._numColors = DEFAULT_NUM_COLORS + numColorsBonus;
+			generateSphereGrid(_numColors);
+			_score = 0;
+		}
+		
+		public function reset():void {
+			generateSphereGrid(_numColors);
 			_score = 0;
 		}
 		
@@ -75,6 +84,11 @@ package puzzle
 		public function get height():int 
 		{
 			return _height;
+		}
+		
+		public function get numColors():int 
+		{
+			return _numColors;
 		}
 		
 		public function getIndex(x:int, y:int):int {

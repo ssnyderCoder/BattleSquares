@@ -26,6 +26,8 @@ package puzzle
 		public static const PLAYER_4:int = 3;
 		public static const PLAYER_NONE:int = 4;
 		public static const PLAYER_BLOCKED:int = 5;
+		private static const BLOCKED_SQUARE:SquareInfo = new SquareInfo(PLAYER_BLOCKED, 0, 0);
+		private static const BLOCKED_SQUARE_CHANCE:Number = 0.3;
 		
 		public static const STARTING_POINTS:int = 50;
 		
@@ -64,7 +66,8 @@ package puzzle
 			this._timeRemaining = timePerRound;
 			this.winnerID = PLAYER_NONE;
 			while (attackedSquares.length > 0) {
-				attackedSquares.pop();
+				var atkInfo:AttackInfo = attackedSquares.pop();
+				atkInfo.isValid = false;
 			}
 		}
 		
@@ -73,14 +76,16 @@ package puzzle
 		}
 		
 		public function getIndex(x:int, y:int):SquareInfo {
-			x = FP.clamp(x, 0, _width - 1);
-			y = FP.clamp(y, 0, _height - 1);
+			if (x < 0 || y < 0 || x >= _width || y >= _height) {
+				return BLOCKED_SQUARE;
+			}
 			return squares[x + y * _width];
 		}
 		
 		public function attackSquare(playerID:int, x:int, y:int, clearOtherAttacks:Boolean):AttackInfo {
 			//fail if player does not own nearby square or if already owns square
-			if (!doesPlayerOwnNearbySquare(playerID, x, y) || getIndex(x,y).ownerID == playerID) {
+			if (!doesPlayerOwnNearbySquare(playerID, x, y) || getIndex(x, y).ownerID == playerID
+				|| getIndex(x, y).ownerID == PLAYER_BLOCKED ) {
 				return null;
 			}
 			
@@ -98,9 +103,10 @@ package puzzle
 			}
 			//determine defense of square based on square owner
 			var squareOwner:int = getIndex(x, y).ownerID;
-			var defenseValue:int = getIndex(x, y).ownerID == PLAYER_NONE ? GameSpheres.DEFAULT_NUM_COLORS
-																		 : GameSpheres.DEFAULT_NUM_COLORS + 1;
-			var attack:AttackInfo = new AttackInfo(playerID, x, y, defenseValue);
+			var defenseValue:int = getIndex(x, y).ownerID == PLAYER_NONE ? 0
+																		 : 1;
+			var captureRequirement:int = getIndex(x, y).points;
+			var attack:AttackInfo = new AttackInfo(playerID, x, y, captureRequirement, defenseValue);
 			attackedSquares.push(attack);
 			return attack;
 		}
@@ -108,10 +114,10 @@ package puzzle
 		private function doesPlayerOwnNearbySquare(playerID:int, x:int, y:int):Boolean 
 		{
 			//check surrounding 4 squares
-			var leftSquareOwner:int = x == 0 ? PLAYER_NONE : getIndex(x - 1, y).ownerID;
-			var rightSquareOwner:int = x == _width - 1 ? PLAYER_NONE : getIndex(x + 1, y).ownerID;
-			var aboveSquareOwner:int = y == 0 ? PLAYER_NONE : getIndex(x, y - 1).ownerID;
-			var belowSquareOwner:int = y == _height - 1 ? PLAYER_NONE : getIndex(x, y + 1).ownerID;
+			var leftSquareOwner:int = x == 0 ? PLAYER_BLOCKED : getIndex(x - 1, y).ownerID;
+			var rightSquareOwner:int = x == _width - 1 ? PLAYER_BLOCKED  : getIndex(x + 1, y).ownerID;
+			var aboveSquareOwner:int = y == 0 ? PLAYER_BLOCKED  : getIndex(x, y - 1).ownerID;
+			var belowSquareOwner:int = y == _height - 1 ? PLAYER_BLOCKED  : getIndex(x, y + 1).ownerID;
 			return leftSquareOwner == playerID || rightSquareOwner == playerID ||
 					aboveSquareOwner == playerID || belowSquareOwner == playerID;
 		}
@@ -142,11 +148,13 @@ package puzzle
 				var atkInfo:AttackInfo = attackedSquares.pop();
 				//cancel any attack on this square
 				if (atkInfo.tileX == x && atkInfo.tileY == y) {
+					atkInfo.isValid = false;
 					continue;
 				}
 				//cancel newly invalid attacks by prev owner
 				else if (atkInfo.attackerID == prevOwnerID && 
-					!doesPlayerOwnNearbySquare(prevOwnerID, atkInfo.tileX, atkInfo.tileY)) {
+					!doesPlayerOwnNearbySquare(prevOwnerID, atkInfo.tileX, atkInfo.tileY)) {	
+					atkInfo.isValid = false;
 					continue;
 				}
 				validAttacks.push(atkInfo);
@@ -201,7 +209,8 @@ package puzzle
 			//reset grid
 			for (var j:int = 0; j < _height; j++) {
 				for (var i:int = 0; i < _width; i++) {
-					squares[i + j * _width] = new SquareInfo(PLAYER_NONE, STARTING_POINTS, BONUS_NONE);
+					var owner:int = i > 0 && i < width - 1 && j > 0 && j < height - 1 && Math.random() < BLOCKED_SQUARE_CHANCE ? 								PLAYER_BLOCKED : PLAYER_NONE;
+					squares[i + j * _width] = new SquareInfo(owner, STARTING_POINTS, BONUS_NONE);
 				}
 			}
 			ownershipCounts[PLAYER_NONE] = _height * _width;
@@ -213,7 +222,7 @@ package puzzle
 				square.ownerID = PLAYER_1;
 				ownershipCounts[PLAYER_1] = 1;
 				ownershipCounts[PLAYER_NONE] -= 1;
-				pointCounts[PLAYER_1] = 0;
+				pointCounts[PLAYER_1] = STARTING_POINTS;
 			}
 			//player 2 starting position = bottom right corner
 			if (_numPlayers > 1) {
@@ -221,7 +230,7 @@ package puzzle
 				square.ownerID = PLAYER_2;
 				ownershipCounts[PLAYER_2] = 1;
 				ownershipCounts[PLAYER_NONE] -= 1;
-				pointCounts[PLAYER_2] = 0;
+				pointCounts[PLAYER_2] = STARTING_POINTS;
 			}
 			//player 3 starting position = bottom left corner
 			if (_numPlayers > 2) {
@@ -229,7 +238,7 @@ package puzzle
 				square.ownerID = PLAYER_3;
 				ownershipCounts[PLAYER_3] = 1;
 				ownershipCounts[PLAYER_NONE] -= 1;
-				pointCounts[PLAYER_3] = 0;
+				pointCounts[PLAYER_3] = STARTING_POINTS;
 			}
 			//player 4 starting position = top right corner
 			if (_numPlayers > 3) {
@@ -237,7 +246,7 @@ package puzzle
 				square.ownerID = PLAYER_4;
 				ownershipCounts[PLAYER_4] = 1;
 				ownershipCounts[PLAYER_NONE] -= 1;
-				pointCounts[PLAYER_4] = 0;
+				pointCounts[PLAYER_4] = STARTING_POINTS;
 			}
 		}
 		
@@ -272,21 +281,13 @@ package puzzle
 			return attackedSquares;
 		}
 		
-		public function setPlayerPoints(playerID:int, points:int):void {
-			for (var i:int = 0; i < attackedSquares.length; i++) {
-				var atkInfo:AttackInfo = attackedSquares[i];
-				if (atkInfo.attackerID == playerID) {
-					atkInfo.currentPoints = points;
-				}
-			}
-		}
-		
 		private function resetPlayerAttacks(playerID:int):void {
 			var validAttacks:Array = new Array();
 			while(attackedSquares.length > 0) {
 				var atkInfo:AttackInfo = attackedSquares.pop();
 				//cancel any attack by this player
 				if (atkInfo.attackerID == playerID) {
+					atkInfo.isValid = false;
 					continue;
 				}
 				validAttacks.push(atkInfo);
