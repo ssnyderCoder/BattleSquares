@@ -27,7 +27,7 @@ package puzzle
 		public static const PLAYER_NONE:int = 4;
 		public static const PLAYER_BLOCKED:int = 5;
 		private static const BLOCKED_SQUARE:SquareInfo = new SquareInfo(PLAYER_BLOCKED, 0, 0);
-		private static const BLOCKED_SQUARE_CHANCE:Number = 0.3;
+		private static const BLOCKED_SQUARE_CHANCE:Number = 0.5;
 		
 		public static const STARTING_POINTS:int = 50;
 		
@@ -211,9 +211,9 @@ package puzzle
 				for (var i:int = 0; i < _width; i++) {
 					var owner:int = i > 0 && i < width - 1 && j > 0 && j < height - 1 && Math.random() < BLOCKED_SQUARE_CHANCE ? 								PLAYER_BLOCKED : PLAYER_NONE;
 					squares[i + j * _width] = new SquareInfo(owner, STARTING_POINTS, BONUS_NONE);
+					ownershipCounts[owner] += 1;
 				}
 			}
-			ownershipCounts[PLAYER_NONE] = _height * _width;
 			
 			var square:SquareInfo;
 			//player 1 starting position = top left corner

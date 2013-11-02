@@ -8,8 +8,8 @@ package puzzle
 	public class PlayerAI extends Player
 	{
 		private static const DECISION_TIME:Number = 3.0;
-		public static const EASY_DIFFICULTY:Number = 2.0;
-		public static const MEDIUM_DIFFICULTY:Number = 4.0;
+		public static const EASY_DIFFICULTY:Number = 1.5;
+		public static const MEDIUM_DIFFICULTY:Number = 3.0;
 		public static const HARD_DIFFICULTY:Number = 6.0;
 		private static const POINT_GAINS:Array = new Array(2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 6, 6, 7, 8, 9, 10, 11)
 		private var captureChance:Number;

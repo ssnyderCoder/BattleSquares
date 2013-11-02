@@ -21,9 +21,9 @@ package puzzle
 			playerHuman = new PlayerHuman(HUMAN_ID);
 			players = new Array();
 			players.push(playerHuman);
-			players.push(new PlayerAI(HUMAN_ID + 1, 0.2 + 0.7 * Math.random(), 0.2 + 0.7 * Math.random(), PlayerAI.MEDIUM_DIFFICULTY));
-			players.push(new PlayerAI(HUMAN_ID + 2, 0.2 + 0.7 * Math.random(), 0.2 + 0.7 * Math.random(), PlayerAI.MEDIUM_DIFFICULTY));
-			players.push(new PlayerAI(HUMAN_ID + 3, 0.2 + 0.7 * Math.random(), 0.2 + 0.7 * Math.random(), PlayerAI.MEDIUM_DIFFICULTY));
+			players.push(new PlayerAI(HUMAN_ID + 1, 0.2 + 0.7 * Math.random(), 0.2 + 0.7 * Math.random(), PlayerAI.HARD_DIFFICULTY));
+			players.push(new PlayerAI(HUMAN_ID + 2, 0.2 + 0.7 * Math.random(), 0.7 + 0.2 * Math.random(), PlayerAI.EASY_DIFFICULTY));
+			players.push(new PlayerAI(HUMAN_ID + 3, 0.2 + 0.7 * Math.random(), 0.5 + 0.4 * Math.random(), PlayerAI.MEDIUM_DIFFICULTY));
 			gameSpheres = new GameSpheres(350, 0);
 			gameSpheres.visible = false;
 			gameSpheres.active = false;
@@ -89,5 +89,4 @@ package puzzle
 			}
 		}
 	}
- //TODO: IMPLEMENT AI OPPONENTS
 }

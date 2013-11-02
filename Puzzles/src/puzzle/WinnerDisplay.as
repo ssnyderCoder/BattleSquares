@@ -9,6 +9,7 @@ package puzzle
 	import net.flashpunk.Tween;
 	import net.flashpunk.tweens.misc.ColorTween;
 	import net.flashpunk.utils.Ease;
+	import net.flashpunk.utils.Input;
 	
 	/**
 	 * ...
@@ -21,6 +22,7 @@ package puzzle
 		private var background:Image;
 		private var colorTween:ColorTween;
 		private var colorBackwards:Boolean = true;
+		private var _windowClicked:Boolean = false;
 		public function WinnerDisplay(winnerName:String, x:Number=0, y:Number=0) 
 		{
 			this.x = x;
@@ -30,6 +32,7 @@ package puzzle
 			background = new Image(Assets.SPHERE_GAME_BACKGROUND);
 			background.scaleX = 0.5;
 			background.scaleY = 0.25;
+			this.setHitbox(background.scaledWidth, background.scaledHeight);
 			this.graphic = new Graphiclist(background, winnerText);
 			colorTween = new ColorTween(swapTweenDirection, Tween.LOOPING);
 			swapTweenDirection();
@@ -41,6 +44,9 @@ package puzzle
 		{
 			super.update();
 			background.color = colorTween.color;
+			if (Input.mousePressed && this.collidePoint(this.x, this.y, Input.mouseX, Input.mouseY)) {
+				_windowClicked = true;
+			}
 		}
 		
 		private function swapTweenDirection():void {
@@ -63,6 +69,12 @@ package puzzle
 		{
 			super.removed();
 			colorTween.cancel();
+			_windowClicked = false;
+		}
+		
+		public function get windowClicked():Boolean 
+		{
+			return _windowClicked;
 		}
 		
 	}

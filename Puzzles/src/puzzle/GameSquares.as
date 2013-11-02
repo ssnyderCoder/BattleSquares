@@ -39,7 +39,7 @@ package puzzle
 			this.x = x;
 			this.y = y;
 			this.setHitbox(300, 300);
-			gameRules = new GameSquaresRules(8, 8, NUM_PLAYERS, 80);
+			gameRules = new GameSquaresRules(8, 8, NUM_PLAYERS, 3);
 			var background:Graphic = new Stamp(Assets.SQUARE_GAME_BACKGROUND);
 			squareGridDisplay = new Tilemap(Assets.SQUARES, 256, 256, SQUARE_WIDTH, SQUARE_HEIGHT);
 			squareGridDisplay.x = 21;
@@ -54,12 +54,12 @@ package puzzle
 		{
 			super.update();
 			gameRules.update();
-			if (this.gameHadBeenWon && Input.mousePressed) {
+			if (this.gameHadBeenWon && winnerDisplay.windowClicked) {
 				startNewGame();
 			}
 			//if time is 0, check for winner
 			if (gameRules.timeRemaining <= 0 && !gameHadBeenWon) {
-				winnerDisplay = new WinnerDisplay(gameRules.getWinnerName(), 40, 40);
+				winnerDisplay = new WinnerDisplay(gameRules.getWinnerName(), 300, 40);
 				this.world.add(winnerDisplay);
 				gameHadBeenWon = true;
 			}
