@@ -11,7 +11,7 @@ package puzzle
 	 * ...
 	 * @author Sean Snyder
 	 */
-	public class SquareScoreDisplay extends Entity 
+	public class LeaderboardDisplay extends Entity 
 	{
 		private static const LOAD_TIME:Number = 0.8;
 		private var gameRules:GameSquaresRules;
@@ -20,7 +20,7 @@ package puzzle
 		private var hasLoaded:Boolean = false;
 		private var numPlayers:int;
 		private var loadTween:Tween;
-		public function SquareScoreDisplay(xPos:Number, yPos:Number, gameSquaresRules:GameSquaresRules, numOfPlayers:int) 
+		public function LeaderboardDisplay(xPos:Number, yPos:Number, gameSquaresRules:GameSquaresRules, numOfPlayers:int) 
 		{
 			gameRules = gameSquaresRules;
 			numPlayers = numOfPlayers;
@@ -65,12 +65,17 @@ package puzzle
 			}
 		}
 		
+		//called whenever new territory captured
+		//updates the positions of each
 		private function updateDisplay():void 
 		{
-			/////called whenver new territory conquered;
-			//update counts
+			//get territory counts for all players
+			var territoryCounts:Array = new Array();
+			for (var i:int = 0; i < numPlayers; i++) {
+				var count:int = gameRules.getTerritoryCount(i);
+				//update counts
+			}
 			//if display in process of being updated, stop and flag for update after display processed
-			//get list of all territory counts
 			//sort list from highest to lowest
 			//compare list with previous sort list
 				//if changes, use tweens to move all modified-position counts/colors into proper positions
