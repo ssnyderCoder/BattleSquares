@@ -15,7 +15,7 @@ package puzzle
 	{
 		private static const LOAD_TIME:Number = 0.8;
 		private static const RANK_TRANSITION_TIME:Number = 0.5;
-		private static const DISPLAY_SPACE:int = 20;
+		private static const DISPLAY_SPACE:int = GameSquares.SQUARE_WIDTH + 10;
 		private var gameRules:GameSquaresRules;
 		private var playerCountGraphics:Array; //holds Text graphics for each player (total territory count)
 		private var playerColorGraphics:Array; //holds Stamp graphics for each player (player color count)
@@ -54,12 +54,14 @@ package puzzle
 				var text:Text = new Text("= 0", DISPLAY_SPACE, DISPLAY_SPACE * i);
 				text.scaleX = 0;
 				playerCountGraphics.push(text);
-				var sprite:Spritemap = new Spritemap(Assets.SQUARES, 16, 16);
+				graphicList.add(text);
+				
+				var sprite:Spritemap = new Spritemap(Assets.SQUARES, GameSquares.SQUARE_WIDTH, GameSquares.SQUARE_HEIGHT);
 				sprite.frame = i;
 				sprite.y = DISPLAY_SPACE * i;
 				sprite.scaleX = 0;
 				playerColorGraphics.push(sprite);
-				graphicList.add(sprite, text);
+				graphicList.add(sprite);
 				
 				playerRankings.push(i);
 				prevPlayerRankings.push(i);
@@ -71,6 +73,7 @@ package puzzle
 		public function reset():void {
 			hasLoaded = false;
 			loadTween.start();
+			updateDisplay();
 		}
 		
 		override public function update():void 
@@ -104,7 +107,7 @@ package puzzle
 		
 		//called whenever new territory captured
 		//updates the positions of each
-		private function updateDisplay():void 
+		public function updateDisplay():void 
 		{
 			//get and update territory counts for all players
 			var territoryCounts:Array = new Array();
@@ -125,7 +128,7 @@ package puzzle
 			}
 			
 			//arrange display from highest rank to lowest
-			territoryCounts.sortOn("count", Array.DESCENDING);
+			territoryCounts.sortOn("count", Array.DESCENDING | Array.NUMERIC);
 			for (var j:int = 0; j < numPlayers; j++) {
 				var playerID:int = territoryCounts[j].playerID;
 				prevPlayerRankings[playerID] = playerRankings[playerID];

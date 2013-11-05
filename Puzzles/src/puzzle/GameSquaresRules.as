@@ -93,7 +93,7 @@ package puzzle
 			//fail if attack already exists
 			for (var i:int = 0; i < attackedSquares.length; i++) {
 				var atkInfo:AttackInfo = attackedSquares[i];
-				if (atkInfo.attackerID == playerID && atkInfo.tileX == x && atkInfo.tileY == y) {
+				if (atkInfo.attackerID == playerID && atkInfo.tileX == x && atkInfo.tileY == y && atkInfo.isValid) {
 					return null;
 				}
 			}

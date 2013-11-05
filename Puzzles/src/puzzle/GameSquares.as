@@ -26,13 +26,15 @@ package puzzle
 		private var squareGridRect:Rectangle;
 		private var gameRules:GameSquaresRules;
 		private var timeDisplay:Text;
-		private var winnerDisplay:WinnerDisplay; //temp
-		private var infoBox:InfoDisplay; //temp
+		
+		//complementary displayed entities
+		private var winnerDisplay:WinnerDisplay;
+		private var infoBox:InfoDisplay;
+		private var leaderboard:LeaderboardDisplay;
 		
 		private var gameHadBeenWon:Boolean = false;
 		
 		private var attackArrows:Array = new Array(); //contains arrow graphics that designate player attacks
-		//leaderboard display - displayed right of game and updated when territory captured
 		
 		public function GameSquares(x:Number=0, y:Number=0) 
 		{
@@ -86,6 +88,7 @@ package puzzle
 			gameRules.resetGame();
 			updateSquareGridDisplay();
 			updateTimeDisplay(gameRules.timeRemaining);
+			leaderboard.reset();
 			
 		}
 		
@@ -136,6 +139,9 @@ package puzzle
 			infoBox = new InfoDisplay(30, 380);
 			infoBox.visible = false;
 			this.world.add(infoBox);
+			
+			leaderboard = new LeaderboardDisplay(322, 30, gameRules, NUM_PLAYERS);
+			this.world.add(leaderboard);
 		}
 		
 		private function initAttackArrows():void 
@@ -217,6 +223,7 @@ package puzzle
 		public function captureSquare(playerAttackInfo:AttackInfo):void {
 			gameRules.captureSquare(playerAttackInfo.attackerID, playerAttackInfo.currentPoints,
 									playerAttackInfo.tileX, playerAttackInfo.tileY);
+			leaderboard.updateDisplay();
 			updateSquareGridDisplay();
 		}
 		
