@@ -38,7 +38,6 @@ package puzzle
 				}
 				
 				if (currentAttack) {
-					trace("player " + this.playerID + " continued attacking");
 					continueAttack(game);
 				}
 				else{
@@ -121,9 +120,13 @@ package puzzle
 				numMoves = 0;
 			}
 			else { //gain points
-				var pointValue:int = FP.choose(POINT_GAINS) - (currentAttack.defenseValue * 2);
+				var difficultyModifier:int = difficulty == EASY_DIFFICULTY   ? -2 :
+											 difficulty == MEDIUM_DIFFICULTY ?  0 :
+											 difficulty == HARD_DIFFICULTY   ?  2 : 0;
+				var pointValue:int = FP.choose(POINT_GAINS) - (currentAttack.defenseValue * 2) + difficultyModifier;
 				pointValue = pointValue < 2 ? 2 : pointValue;
 				currentAttack.currentPoints += pointValue * (pointValue - 1);
+				trace("player " + this.playerID + " gained " + (pointValue * (pointValue - 1)) + " points");
 				numMoves++;
 			}
 		}

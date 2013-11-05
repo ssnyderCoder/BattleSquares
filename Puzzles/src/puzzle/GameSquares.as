@@ -61,7 +61,7 @@ package puzzle
 			}
 			//if time is 0, check for winner
 			if (gameRules.timeRemaining <= 0 && !gameHadBeenWon) {
-				winnerDisplay = new WinnerDisplay(gameRules.getWinnerName(), 300, 40);
+				winnerDisplay = new WinnerDisplay(gameRules.getWinnerName(), 300, 200);
 				this.world.add(winnerDisplay);
 				gameHadBeenWon = true;
 			}

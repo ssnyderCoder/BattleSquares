@@ -20,10 +20,11 @@ package puzzle
 			super();
 			playerHuman = new PlayerHuman(HUMAN_ID);
 			players = new Array();
-			players.push(playerHuman); //yellow
-			players.push(new PlayerAI(HUMAN_ID + 1, 0.1, 0.5, PlayerAI.HARD_DIFFICULTY)); //green
-			players.push(new PlayerAI(HUMAN_ID + 2, 0.5, 0.5, PlayerAI.HARD_DIFFICULTY)); //blue
-			players.push(new PlayerAI(HUMAN_ID + 3, 0.9, 0.5, PlayerAI.HARD_DIFFICULTY)); //red
+			//players.push(playerHuman); //yellow
+			players.push(new PlayerAI(HUMAN_ID + 0, 0.99, 0.99, PlayerAI.EASY_DIFFICULTY)); //yellow
+			players.push(new PlayerAI(HUMAN_ID + 1, 0.7, 0.3, PlayerAI.MEDIUM_DIFFICULTY)); //green
+			players.push(new PlayerAI(HUMAN_ID + 2, 0.3, 0.7, PlayerAI.MEDIUM_DIFFICULTY)); //blue
+			players.push(new PlayerAI(HUMAN_ID + 3, 0.5, 0.5, PlayerAI.HARD_DIFFICULTY)); //red
 			gameSpheres = new GameSpheres(400, 0);
 			gameSpheres.visible = false;
 			gameSpheres.active = false;
