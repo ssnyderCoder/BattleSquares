@@ -31,9 +31,9 @@ package puzzle
 		
 		private var gameHadBeenWon:Boolean = false;
 		
-		private var attackArrows:Array = new Array(); //contains 8 AttackArrows
+		private var attackArrows:Array = new Array(); //contains arrow graphics that designate player attacks
+		//leaderboard display - displayed right of game and updated when territory captured
 		
-		//TODO: Add 4 Text and 4 square pictures to designate total ownership ; NOT STRICTLY NECESSARY
 		public function GameSquares(x:Number=0, y:Number=0) 
 		{
 			this.x = x;
