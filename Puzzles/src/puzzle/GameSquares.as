@@ -39,7 +39,7 @@ package puzzle
 			this.x = x;
 			this.y = y;
 			this.setHitbox(300, 300);
-			gameRules = new GameSquaresRules(8, 8, NUM_PLAYERS, 3);
+			gameRules = new GameSquaresRules(8, 8, NUM_PLAYERS, 300);
 			var background:Graphic = new Stamp(Assets.SQUARE_GAME_BACKGROUND);
 			squareGridDisplay = new Tilemap(Assets.SQUARES, 256, 256, SQUARE_WIDTH, SQUARE_HEIGHT);
 			squareGridDisplay.x = 21;
