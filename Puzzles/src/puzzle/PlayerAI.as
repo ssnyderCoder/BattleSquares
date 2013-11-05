@@ -113,7 +113,8 @@ package puzzle
 				numMoves = 0;
 			}
 			//may fail attack if too many moves done
-			else if (numMoves > MAX_MOVES && Math.random() < EXTRA_MOVES_RATE * difficulty) {
+			else if (currentAttack.currentPoints <= currentAttack.capturePoints &&
+					 numMoves > MAX_MOVES && Math.random() < EXTRA_MOVES_RATE * difficulty) {
 				trace("player " + this.playerID + " failed his attack");
 				currentAttack.isValid = false;
 				currentAttack = null;
