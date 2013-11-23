@@ -79,20 +79,22 @@ package puzzle
 		
 		private function updateSphereGridDisplay():void 
 		{
+			//refactor pointsbox stuff into other function
 			var height:int = gameRules.height;
 			var width:int = gameRules.width;
-			var topLeftX:int = 999;
-			var topLeftY:int = 999;
+			var topLeftX:int = 999; //used for placing pointsBox
+			var topLeftY:int = 999; //used for placing pointsBox
 			for (var j:int = 0; j < height; j++) {
 				for (var i:int = 0; i < width; i++) {
 					var index:int = gameRules.getIndex(i, j);
 					sphereGridDisplay.setTile(i, j, index);
 					
+					//used for highlighting all selected spheres or entire sphere grid if game ended
 					var highlight:Boolean = gameRules.isIndexSelected(i, j);
 					sphereGridHighlight.setTile(i, j, 
 						newGameOnNextClick ? HIGHLIGHT_ROUND_OVER : (highlight ? HIGHLIGHT_ON : HIGHLIGHT_OFF));
 					if (highlight) {
-						if (topLeftX > i) {
+						if (topLeftX > i) { //show pointsbox at top left of the selected spheres
 							topLeftX = i;
 							topLeftY = j;
 						}
@@ -144,7 +146,7 @@ package puzzle
 						gameRules.reset();
 						updateSphereGridDisplay();
 					}
-				}
+				} //if new game
 				//capture if button is showing and clicked
 				else if (captureButton.visible && captureRect.contains(Input.mouseX, Input.mouseY)) {
 					hasCaptured = true;
@@ -171,6 +173,7 @@ package puzzle
 		//create shrinking spheres
 		private function transitionSphereGridDisplay():void 
 		{
+			Assets.SFX_SPHERE_CLEAR.play();
 			var height:int = gameRules.height;
 			var width:int = gameRules.width;
 			transitionSphereCount = 0;

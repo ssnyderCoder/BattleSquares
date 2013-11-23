@@ -20,17 +20,18 @@ package puzzle
 			super();
 			playerHuman = new PlayerHuman(HUMAN_ID);
 			players = new Array();
-			//players.push(playerHuman); //yellow
-			players.push(new PlayerAI(HUMAN_ID + 0, 0.99, 0.99, PlayerAI.EASY_DIFFICULTY)); //yellow
-			players.push(new PlayerAI(HUMAN_ID + 1, 0.7, 0.3, PlayerAI.MEDIUM_DIFFICULTY)); //green
-			players.push(new PlayerAI(HUMAN_ID + 2, 0.3, 0.7, PlayerAI.MEDIUM_DIFFICULTY)); //blue
-			players.push(new PlayerAI(HUMAN_ID + 3, 0.5, 0.5, PlayerAI.HARD_DIFFICULTY)); //red
+			players.push(playerHuman); //yellow
+			//players.push(new PlayerAI(HUMAN_ID + 0, 0.99, 0.99, PlayerAI.EASY_DIFFICULTY)); //yellow
+			players.push(new PlayerAI(HUMAN_ID + 1, 0.75, 0.99, PlayerAI.HARD_DIFFICULTY)); //green
+			players.push(new PlayerAI(HUMAN_ID + 2, 0.4, 0.99, PlayerAI.HARD_DIFFICULTY)); //blue
+			players.push(new PlayerAI(HUMAN_ID + 3, 0.1, 0.99, PlayerAI.HARD_DIFFICULTY)); //red
 			gameSpheres = new GameSpheres(400, 0);
 			gameSpheres.visible = false;
 			gameSpheres.active = false;
 			this.add(gameSpheres);
 			gameSquares = new GameSquares(20, 0);
 			this.add(gameSquares);
+			Assets.SFX_GAME_MUSIC.loop(0.25);
 		}
 		
 		override public function update():void 
@@ -46,6 +47,7 @@ package puzzle
 					var player:Player = players[i];
 					player.reset();
 				}
+				Assets.SFX_GAME_MUSIC.loop(0.25);
 			}
 			updateUI();
 			if (TICKMSG) {
@@ -83,6 +85,7 @@ package puzzle
 			if (gameSpheres.visible && gameSpheres.playerHasCaptured()) {
 				gameSpheres.deactivate();
 				gameSquares.captureSquare(playerHuman.currentAttack);
+				Assets.SFX_TILE_CAPTURE_PLAYER.play();
 			}
 			//if player's attack is no longer on the squares attack list or valid, end spheres game
 			if (gameSpheres.visible && (gameSquares.gameHasBeenWon() || !playerHuman.currentAttack || !playerHuman.currentAttack.isValid)) {

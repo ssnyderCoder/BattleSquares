@@ -1,5 +1,7 @@
 package puzzle 
 {
+	import flash.media.Sound;
+	import net.flashpunk.Sfx;
 	/**
 	 * ...
 	 * @author Sean Snyder
@@ -14,6 +16,19 @@ package puzzle
 		[Embed(source = "../../assets/art/PointBox.png")] public static const POINTS_BOX:Class;	
 		[Embed(source = "../../assets/art/CaptureButton.png")] public static const CAPTURE_BUTTON:Class;
 		[Embed(source = "../../assets/art/Directions.png")] public static const DIRECTIONS:Class;
+		
+		[Embed(source = "../../assets/sounds/GameMusic.mp3")] private static const GAME_MUSIC:Class;
+		[Embed(source = "../../assets/sounds/GameOver.mp3")] private static const GAME_OVER:Class;
+		[Embed(source = "../../assets/sounds/TileCaptureAI.mp3")] private static const TILE_CAPTURE_AI:Class;
+		[Embed(source = "../../assets/sounds/TileCapturePlayer.mp3")] private static const TILE_CAPTURE_PLAYER:Class;
+		[Embed(source = "../../assets/sounds/SphereClear.mp3")] private static const SPHERE_CLEAR:Class;
+		
+		public static const SFX_GAME_MUSIC:Sfx = new Sfx(GAME_MUSIC, null, "music");
+		public static const SFX_GAME_OVER:Sfx = new Sfx(GAME_OVER, null, "fx");
+		public static const SFX_TILE_CAPTURE_AI:Sfx = new Sfx(TILE_CAPTURE_AI, null, "fx");
+		public static const SFX_TILE_CAPTURE_PLAYER:Sfx = new Sfx(TILE_CAPTURE_PLAYER, null, "fx");
+		public static const SFX_SPHERE_CLEAR:Sfx = new Sfx(SPHERE_CLEAR, null, "fx");
+		
 	}
 
 }

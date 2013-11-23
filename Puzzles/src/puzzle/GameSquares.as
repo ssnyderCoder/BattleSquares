@@ -22,15 +22,15 @@ package puzzle
 		public static const SQUARE_HEIGHT:int = 32;
 		private static const MAX_ARROWS:int = 8;
 		private static const NUM_PLAYERS:int = 4;
+		private var gameRules:GameSquaresRules;
 		private var squareGridDisplay:Tilemap;
 		private var squareGridRect:Rectangle;
-		private var gameRules:GameSquaresRules;
 		private var timeDisplay:Text;
 		
 		//complementary displayed entities
-		private var winnerDisplay:WinnerDisplay;
 		private var infoBox:InfoDisplay;
 		private var leaderboard:LeaderboardDisplay;
+		private var winnerDisplay:WinnerDisplay;
 		
 		private var gameHadBeenWon:Boolean = false;
 		
@@ -64,6 +64,7 @@ package puzzle
 				winnerDisplay = new WinnerDisplay(gameRules.getWinnerName(), 300, 200);
 				this.world.add(winnerDisplay);
 				gameHadBeenWon = true;
+				Assets.SFX_GAME_OVER.play(0.8);
 			}
 			updateDisplay();
 		}

@@ -108,6 +108,7 @@ package puzzle
 			if (currentAttack.currentPoints > currentAttack.capturePoints && Math.random() < captureChance) {
 				trace("player " + this.playerID + " captured a square");
 				game.captureSquare(currentAttack);
+				Assets.SFX_TILE_CAPTURE_AI.play(0.5);
 				currentAttack = null;
 				numMoves = 0;
 			}
@@ -127,7 +128,9 @@ package puzzle
 				pointValue = pointValue < 2 ? 2 : pointValue;
 				currentAttack.currentPoints += pointValue * (pointValue - 1);
 				trace("player " + this.playerID + " gained " + (pointValue * (pointValue - 1)) + " points");
-				numMoves++;
+				numMoves += difficulty == EASY_DIFFICULTY && Math.random() < 0.5 ? 0 :
+							difficulty == HARD_DIFFICULTY && Math.random() < 0.5 ? 2 :
+																				   1;
 			}
 		}
 		

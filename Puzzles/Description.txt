@@ -1,3 +1,43 @@
+v 0.3 Plan - Polishing update
+---------------------------------------------
+-Add Sound / Music
+----Add sounds for: Tile Capture(AI), Clearing spheres in minigame, Tile Capture(Player), Music
+-Add Game Menu (New Game -> Choose Difficulty & Players)
+----New Game
+-------> Choose Players and Player Difficulty like so:
+----------Player 1 - Human -------------- CANNOT BE CHANGED
+----------Player 2 - CPU-Easy -------------- varies between None, CPU-Easy, CPU-Medium, CPU-Hard
+----------Player 3 - CPU-Hard --------------
+----------Player 4 - None --------------
+-Add more polish to gameplay
+----Tile Capture Animation, Points Required listing in minigame
+
+possible themes: Player is exterminator, AI is roaches, minigame involves clearing away trash
+
+v.0.2
+---------------------------------------------
+-Game now has main battlesquares set up as well as one minigame
+FEELINGS:
++Game now starting to become somewhat fun
+-A bit difficult to constantly move eyes between the minigame and the main game
++Hard player is a pretty decent challenge for me; probably just the right setting
++leaderboard has nice fluid mobile feeling
+-Green arrows blend in too much with green player (especially facing upward)
+
+AI TESTING NOTES:
+>low capture rate = slow expansion(50%), but many high(300+) value squares --- opponents can end up wasting much time versus this ai
+>medium capture rate = medium expansion, with some semi-high(150+) value squares
+>high capture rate = fast expansion(200%), but with very few decent(100+) value squares
+>action rate supplements difficulty; higher action rate means more actions taken
+>Difficulty affects number of actions per second & chance of conquering higher value squares
+
+
+
+
+
+
+---------------------------------------------
+v.0.1
 -----BattleSqaures(Working title)-----
 -------------------------------------
 A puzzle rts game where the player must capture more territory squares than his opponents.  Capturing a territory square involves gaining a high score in a puzzle game.

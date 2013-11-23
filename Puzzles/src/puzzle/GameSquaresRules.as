@@ -220,33 +220,37 @@ package puzzle
 			if (_numPlayers > 0) {
 				square = squares[0 + 0 * _width];
 				square.ownerID = PLAYER_1;
+				square.points = STARTING_POINTS * 4;
 				ownershipCounts[PLAYER_1] = 1;
 				ownershipCounts[PLAYER_NONE] -= 1;
-				pointCounts[PLAYER_1] = STARTING_POINTS;
+				pointCounts[PLAYER_1] = square.points;
 			}
 			//player 2 starting position = bottom right corner
 			if (_numPlayers > 1) {
 				square = squares[(_width - 1) + (_height - 1) * _width];
 				square.ownerID = PLAYER_2;
+				square.points = STARTING_POINTS * 4;
 				ownershipCounts[PLAYER_2] = 1;
 				ownershipCounts[PLAYER_NONE] -= 1;
-				pointCounts[PLAYER_2] = STARTING_POINTS;
+				pointCounts[PLAYER_2] = square.points;
 			}
 			//player 3 starting position = bottom left corner
 			if (_numPlayers > 2) {
 				square = squares[(_width - 1) + 0 * _width];
 				square.ownerID = PLAYER_3;
+				square.points = STARTING_POINTS * 4;
 				ownershipCounts[PLAYER_3] = 1;
 				ownershipCounts[PLAYER_NONE] -= 1;
-				pointCounts[PLAYER_3] = STARTING_POINTS;
+				pointCounts[PLAYER_3] = square.points;
 			}
 			//player 4 starting position = top right corner
 			if (_numPlayers > 3) {
 				square = squares[0 + (_height - 1) * _width];
 				square.ownerID = PLAYER_4;
+				square.points = STARTING_POINTS * 4;
 				ownershipCounts[PLAYER_4] = 1;
 				ownershipCounts[PLAYER_NONE] -= 1;
-				pointCounts[PLAYER_4] = STARTING_POINTS;
+				pointCounts[PLAYER_4] = square.points;
 			}
 		}
 		

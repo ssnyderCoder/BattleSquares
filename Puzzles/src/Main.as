@@ -7,6 +7,7 @@ package
 	import net.flashpunk.FP;
 	import net.flashpunk.utils.Input;
 	import net.flashpunk.utils.Key;
+	import puzzle.Assets;
 	import puzzle.GameWorld;
 	
 /**

@@ -13,7 +13,7 @@ package puzzle
 	 */
 	public class LeaderboardDisplay extends Entity 
 	{
-		private static const LOAD_TIME:Number = 0.8;
+		private static const LOAD_TIME:Number = 1.8;
 		private static const RANK_TRANSITION_TIME:Number = 0.5;
 		private static const DISPLAY_SPACE:int = GameSquares.SQUARE_WIDTH + 10;
 		private var gameRules:GameSquaresRules;
