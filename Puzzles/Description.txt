@@ -1,7 +1,7 @@
 v 0.3 Plan - Polishing update
 ---------------------------------------------
--Add Sound / Music
-----Add sounds for: Tile Capture(AI), Clearing spheres in minigame, Tile Capture(Player), Music
++Add Sound / Music
++++Add sounds for: Tile Capture(AI), Clearing spheres in minigame, Tile Capture(Player), Music
 -Add Game Menu (New Game -> Choose Difficulty & Players)
 ----New Game
 -------> Choose Players and Player Difficulty like so:

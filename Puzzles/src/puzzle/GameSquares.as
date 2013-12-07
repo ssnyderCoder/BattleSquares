@@ -27,7 +27,7 @@ package puzzle
 		private var squareGridRect:Rectangle;
 		private var timeDisplay:Text;
 		
-		//complementary displayed entities
+		//supplementary displayed entities
 		private var infoBox:InfoDisplay;
 		private var leaderboard:LeaderboardDisplay;
 		private var winnerDisplay:WinnerDisplay;
@@ -36,6 +36,7 @@ package puzzle
 		
 		private var attackArrows:Array = new Array(); //contains arrow graphics that designate player attacks
 		
+		//constructor
 		public function GameSquares(x:Number=0, y:Number=0) 
 		{
 			this.x = x;
@@ -59,7 +60,7 @@ package puzzle
 			if (this.gameHadBeenWon && winnerDisplay.windowClicked) {
 				startNewGame();
 			}
-			//if time is 0, check for winner
+			//if time is up, show winner
 			if (gameRules.timeRemaining <= 0 && !gameHadBeenWon) {
 				winnerDisplay = new WinnerDisplay(gameRules.getWinnerName(), 300, 200);
 				this.world.add(winnerDisplay);
@@ -69,47 +70,54 @@ package puzzle
 			updateDisplay();
 		}
 		
-		public function getTileIndexAtCoordinates(mouseX:int, mouseY:int):int {
+		//returns the combined xy index of the tile found at the provided mouse coordinates.
+		public function getTileAtCoordinates(mouseX:int, mouseY:int):SquareInfo {
 				//get mouse position
 				var tileX:int;
 				var tileY:int;
 				if (squareGridRect.contains(mouseX, mouseY)) {
 					tileX = (mouseX - squareGridRect.x) / squareGridDisplay.tileWidth;
 					tileY = (mouseY - squareGridRect.y) / squareGridDisplay.tileHeight;
-					return tileX + tileY * gameRules.width;
+					return getTileInfo(tileX, tileY);
 				}
 				else {
-					return -1;
+					return null;
 				}
 		}
 		
+		//begins a new game
 		public function startNewGame():void {
 			gameHadBeenWon = false;
 			this.world.remove(winnerDisplay);
 			gameRules.resetGame();
 			updateSquareGridDisplay();
-			updateTimeDisplay(gameRules.timeRemaining);
+			setTimeDisplay(gameRules.timeRemaining);
 			leaderboard.reset();
 			
 		}
 		
+		//returns of the x index of the provided xy tile index
 		public function getTileX(tileIndex:int):int {
 			return tileIndex % gameRules.width;
 		}
 		
+		//returns of the y index of the provided xy tile index
 		public function getTileY(tileIndex:int):int {
 			return tileIndex / gameRules.width;
 		}
 		
+		//updates the appearance of the dynamic displays, like the timer
 		private function updateDisplay():void {
-			updateTimeDisplay(gameRules.timeRemaining);
+			setTimeDisplay(gameRules.timeRemaining);
 			updateArrowDisplay();
 			updateInfoBoxDisplay();
 		}
 		
+		//updates the appearance and position of the info box that is displayed when the human player
+		//hovers over something
 		private function updateInfoBoxDisplay():void 
 		{
-			//show info box if player hovering over square
+			//show info box if player hovering over a tile
 			var tileX:int = -1;
 			var tileY:int = -1;
 			if (squareGridRect.contains(Input.mouseX, Input.mouseY)) {
@@ -123,7 +131,8 @@ package puzzle
 			}
 		}
 		
-		private function updateTimeDisplay(timeRemaining:int):void 
+		//sets the displayed timer to the provided time (in seconds)
+		private function setTimeDisplay(timeRemaining:int):void 
 		{
 			var minutes:int = timeRemaining / 60;
 			var seconds:int = timeRemaining % 60;
@@ -145,6 +154,7 @@ package puzzle
 			this.world.add(leaderboard);
 		}
 		
+		//initialize the arrows that show player attacks
 		private function initAttackArrows():void 
 		{
 			for (var i:int = 0; i < MAX_ARROWS; i++) {
@@ -155,7 +165,8 @@ package puzzle
 			}
 		}
 		
-		//called only when tile captured
+		//updates the game's main grid of player owned squares
+		//called only when a tile gains a new owner
 		private function updateSquareGridDisplay():void 
 		{
 			var height:int = gameRules.height;
@@ -168,57 +179,55 @@ package puzzle
 			}
 		}
 		
+		//updates the appearance of the arrows that show player attacks
 		//called every tick
 		private function updateArrowDisplay():void 
 		{
 			var attacks:Array = gameRules.getAttackedSquares();
-			for (var i:int = 0; i < MAX_ARROWS; i++) {
+			for (var i:int = 0; i < attacks.length && i < MAX_ARROWS; i++) {
 				var arrow:AttackArrow = attackArrows[i];
-				var atkInfo:AttackInfo =  i < attacks.length ? attacks[i] : null;
-				if (atkInfo == null) {
-					arrow.visible = false;
-					arrow.setCompletionColor(0);
-				}
-				else {
-					//find nearest player owned square
+				var atkInfo:AttackInfo =  attacks[i];
+				if (atkInfo) {
+					
+					//update arrow's appearance and position based on attacked square
 					var playerID:int = atkInfo.attackerID;
 					var tileX:int = atkInfo.tileX;
 					var tileY:int = atkInfo.tileY;
 					var perc:Number = ((Number)(atkInfo.currentPoints)) / ((Number)(gameRules.getIndex(tileX, tileY).points));
-					if (gameRules.getIndex(tileX - 1, tileY).ownerID == playerID) { //left
-						arrow.visible = true;
+					arrow.visible = true;
+					arrow.setCompletionColor(perc);
+					
+					//make the arrow point to the targeted square from an adjacent square the player already owns
+					if (gameRules.getIndex(tileX - 1, tileY).ownerID == playerID) { //left of targeted square
 						arrow.setDirection(AttackArrow.POINT_RIGHT);
 						arrow.x = squareGridRect.x + (squareGridDisplay.tileWidth * (tileX)) - 8;
 						arrow.y = squareGridRect.y + (squareGridDisplay.tileHeight * (tileY)) + 8;
-						arrow.setCompletionColor(perc);
 					}
-					else if (gameRules.getIndex(tileX + 1, tileY).ownerID == playerID) { //right
-						arrow.visible = true;
+					else if (gameRules.getIndex(tileX + 1, tileY).ownerID == playerID) { //right of targeted square
 						arrow.setDirection(AttackArrow.POINT_LEFT);
 						arrow.x = squareGridRect.x + (squareGridDisplay.tileWidth * (tileX + 1)) - 8;
 						arrow.y = squareGridRect.y + (squareGridDisplay.tileHeight * (tileY)) + 8;
-						arrow.setCompletionColor(perc);
 					}
-					else if (gameRules.getIndex(tileX, tileY - 1).ownerID == playerID) { //up
-						arrow.visible = true;
+					else if (gameRules.getIndex(tileX, tileY - 1).ownerID == playerID) { //above targeted square
 						arrow.setDirection(AttackArrow.POINT_DOWN);
 						arrow.x = squareGridRect.x + (squareGridDisplay.tileWidth * (tileX)) + 8;
 						arrow.y = squareGridRect.y + (squareGridDisplay.tileHeight * (tileY)) - 8;
-						arrow.setCompletionColor(perc);
 					}
-					else if (gameRules.getIndex(tileX, tileY + 1).ownerID == playerID) { //down
-						arrow.visible = true;
+					else if (gameRules.getIndex(tileX, tileY + 1).ownerID == playerID) { //below targeted square
 						arrow.setDirection(AttackArrow.POINT_UP);
 						arrow.x = squareGridRect.x + (squareGridDisplay.tileWidth * (tileX)) + 8;
 						arrow.y = squareGridRect.y + (squareGridDisplay.tileHeight * (tileY + 1)) - 8;
-						arrow.setCompletionColor(perc);
 					}
-					else {
+					else { //arrow does not appear if no adjacent player squares
 						arrow.visible = false;
 						arrow.setCompletionColor(0);
 					}
+				} //if
+				else {
+					arrow.visible = false;
+					arrow.setCompletionColor(0);
 				}
-			}
+			} //for
 		}
 		
 		public function captureSquare(playerAttackInfo:AttackInfo):void {
@@ -236,15 +245,15 @@ package puzzle
 			return gameRules.attackSquare(playerID, tileX, tileY, true);
 		}
 		
-		public function getIndex(x:int, y:int):SquareInfo {
+		public function getTileInfo(x:int, y:int):SquareInfo {
 			return gameRules.getIndex(x, y);
 		}
 		
-		public function getRows():int {
+		public function getNumberOfRows():int {
 			return gameRules.height;
 		}
 		
-		public function getColumns():int {
+		public function getNumberOfColumns():int {
 			return gameRules.width;
 		}
 	}

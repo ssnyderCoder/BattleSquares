@@ -18,11 +18,9 @@ package puzzle
 			super.update(game);
 			_hasDeclaredAttack = false;
 			if (Input.mousePressed) { //declare attack or clear game end screen
-				var tileIndex:int = game.getTileIndexAtCoordinates(Input.mouseX, Input.mouseY);
-				if (tileIndex != -1) {
-					var tileX:int = game.getTileX(tileIndex);
-					var tileY:int = game.getTileY(tileIndex);
-					var atkInfo:AttackInfo = game.declareAttack(this.playerID, tileX, tileY);
+				var tileInfo:SquareInfo = game.getTileAtCoordinates(Input.mouseX, Input.mouseY);
+				if (tileInfo) {
+					var atkInfo:AttackInfo = game.declareAttack(this.playerID, tileInfo.xIndex, tileInfo.yIndex);
 					if (atkInfo) {
 						currentAttack = atkInfo;
 						_hasDeclaredAttack = true;

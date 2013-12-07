@@ -53,11 +53,11 @@ package puzzle
 			var indexes:Array = new Array();
 			var i:int;
 			var j:int;
-			const width:int = game.getColumns();
-			const height:int = game.getRows();
+			const width:int = game.getNumberOfColumns();
+			const height:int = game.getNumberOfRows();
 			for (i = 0; i < width; i++) {
 				for (j = 0; j < height; j++) {
-					var square:SquareInfo = game.getIndex(i, j);
+					var square:SquareInfo = game.getTileInfo(i, j);
 					if (square.ownerID == this.playerID) {
 						if (canCaptureAdjacentSquare(game, i, j)){
 							indexes.push(i + j * width);
@@ -74,8 +74,8 @@ package puzzle
 			var chosenIndex:int = FP.choose(indexes);
 			var xIndex:int = chosenIndex % width;
 			var yIndex:int = chosenIndex / width;
-			var ownerIDs:Array = new Array(game.getIndex(xIndex - 1, yIndex).ownerID, game.getIndex(xIndex + 1, yIndex).ownerID,
-										   game.getIndex(xIndex, yIndex - 1).ownerID, game.getIndex(xIndex, yIndex + 1).ownerID);
+			var ownerIDs:Array = new Array(game.getTileInfo(xIndex - 1, yIndex).ownerID, game.getTileInfo(xIndex + 1, yIndex).ownerID,
+										   game.getTileInfo(xIndex, yIndex - 1).ownerID, game.getTileInfo(xIndex, yIndex + 1).ownerID);
 			var randomIndex:int = (int) (Math.floor(Math.random() * ownerIDs.length));
 			while (ownerIDs[randomIndex] == this.playerID || ownerIDs[randomIndex] == GameSquaresRules.PLAYER_BLOCKED) {
 				randomIndex = randomIndex == ownerIDs.length - 1 ? 0 : randomIndex + 1;
@@ -92,10 +92,10 @@ package puzzle
 		
 		private function canCaptureAdjacentSquare(game:GameSquares, i:int, j:int):Boolean 
 		{
-			var leftSquareOwner:int = game.getIndex(i - 1, j).ownerID;
-			var rightSquareOwner:int = game.getIndex(i + 1, j).ownerID;
-			var upperSquareOwner:int = game.getIndex(i, j - 1).ownerID;
-			var lowerSquareOwner:int = game.getIndex(i, j + 1).ownerID;
+			var leftSquareOwner:int = game.getTileInfo(i - 1, j).ownerID;
+			var rightSquareOwner:int = game.getTileInfo(i + 1, j).ownerID;
+			var upperSquareOwner:int = game.getTileInfo(i, j - 1).ownerID;
+			var lowerSquareOwner:int = game.getTileInfo(i, j + 1).ownerID;
 			return (leftSquareOwner != this.playerID && leftSquareOwner != GameSquaresRules.PLAYER_BLOCKED) ||
 				   (rightSquareOwner != this.playerID && rightSquareOwner != GameSquaresRules.PLAYER_BLOCKED) ||
 				   (upperSquareOwner != this.playerID && upperSquareOwner != GameSquaresRules.PLAYER_BLOCKED) ||
