@@ -8,6 +8,7 @@ package puzzle.minigames.squares
 	import puzzle.minigames.squares.gui.AttackArrow;
 	import puzzle.minigames.squares.gui.InfoDisplay;
 	import puzzle.minigames.squares.gui.LeaderboardDisplay;
+	import puzzle.minigames.squares.gui.SingleSquare;
 	import puzzle.minigames.squares.gui.WinnerDisplay;
 	
 	/**
@@ -20,6 +21,10 @@ package puzzle.minigames.squares
 		public static const SQUARE_HEIGHT:int = 32;
 		private static const MAX_ARROWS:int = 8;
 		private static const NUM_PLAYERS:int = 4;
+		
+		private static const COLOR_WHITE:uint = 0xdddddd;
+		private static const COLOR_RED:uint = 0xcc1111;
+		
 		private var gameRules:GameSquaresRules;
 		private var squareGridDisplay:Tilemap;
 		private var squareGridRect:Rectangle;
@@ -89,7 +94,7 @@ package puzzle.minigames.squares
 			this.world.remove(winnerDisplay);
 			gameRules.resetGame();
 			updateSquareGridDisplay();
-			setTimeDisplay(gameRules.timeRemaining);
+			setTimeDisplay(gameRules.timeRemaining, gameRules.clockTickingFaster);
 			leaderboard.reset();
 			
 		}
@@ -106,7 +111,7 @@ package puzzle.minigames.squares
 		
 		//updates the appearance of the dynamic displays, like the timer
 		private function updateDisplay():void {
-			setTimeDisplay(gameRules.timeRemaining);
+			setTimeDisplay(gameRules.timeRemaining, gameRules.clockTickingFaster);
 			updateArrowDisplay();
 			updateInfoBoxDisplay();
 		}
@@ -130,11 +135,12 @@ package puzzle.minigames.squares
 		}
 		
 		//sets the displayed timer to the provided time (in seconds)
-		private function setTimeDisplay(timeRemaining:int):void 
+		private function setTimeDisplay(timeRemaining:int, clockTickingFaster:Boolean):void 
 		{
 			var minutes:int = timeRemaining / 60;
 			var seconds:int = timeRemaining % 60;
 			timeDisplay.text = "Time: " + minutes + ":" + (seconds < 10 ? "0" + seconds : seconds);
+			timeDisplay.color = clockTickingFaster ? COLOR_RED : COLOR_WHITE;
 		}
 		
 		override public function added():void 
@@ -229,10 +235,21 @@ package puzzle.minigames.squares
 		}
 		
 		public function captureSquare(playerAttackInfo:AttackInfo):void {
+			createShrinkingSquare(playerAttackInfo.attackerID, playerAttackInfo.tileX, playerAttackInfo.tileY);
 			gameRules.captureSquare(playerAttackInfo.attackerID, playerAttackInfo.currentPoints,
 									playerAttackInfo.tileX, playerAttackInfo.tileY);
 			leaderboard.updateDisplay();
 			updateSquareGridDisplay();
+		}
+		
+		private function createShrinkingSquare(newOwnerID:int, tileX:int, tileY:int):void 
+		{
+			var prevTile:SquareInfo = gameRules.getIndex(tileX, tileY);
+			var prevOwnerID:int = prevTile.ownerID;
+			var xPos:Number = squareGridRect.x + (squareGridDisplay.tileWidth * (tileX + 0.5));
+			var yPos:Number = squareGridRect.y + (squareGridDisplay.tileHeight * (tileY + 0.5));
+			var square:SingleSquare = new SingleSquare(xPos, yPos, prevOwnerID, newOwnerID);
+			this.world.add(square);
 		}
 		
 		public function gameHasBeenWon():Boolean {

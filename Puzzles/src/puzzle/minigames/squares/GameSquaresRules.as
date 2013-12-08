@@ -37,6 +37,7 @@ package puzzle.minigames.squares
 		private var _height:int;
 		private var _numPlayers:int;
 		private var _timeRemaining:Number; //seconds
+		private var _clockTickingFaster:Boolean = false;
 		
 		private var timePerRound:int; //seconds
 		private var winnerID:int;
@@ -64,6 +65,7 @@ package puzzle.minigames.squares
 		public function resetGame():void {
 			generateSquareGrid();
 			this._timeRemaining = timePerRound;
+			this._clockTickingFaster = false;
 			this.winnerID = PLAYER_NONE;
 			while (attackedSquares.length > 0) {
 				var atkInfo:AttackInfo = attackedSquares.pop();
@@ -194,6 +196,7 @@ package puzzle.minigames.squares
 		private function countDownTime():void 
 		{
 			_timeRemaining -= ownershipCounts[PLAYER_NONE] > 0 ? FP.elapsed : FP.elapsed * 10;
+			_clockTickingFaster = ownershipCounts[PLAYER_NONE] > 0 ? false : true;
 			if (_timeRemaining < 0) {
 				_timeRemaining = 0;
 			}
@@ -272,6 +275,11 @@ package puzzle.minigames.squares
 		public function get timeRemaining():int 
 		{
 			return (int)(Math.ceil(_timeRemaining));
+		}
+		
+		public function get clockTickingFaster():Boolean 
+		{
+			return _clockTickingFaster;
 		}
 		
 		public function getTerritoryCount(playerID:int):int {

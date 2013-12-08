@@ -35,7 +35,7 @@ package puzzle.minigames.spheres.gui
 		{
 			super.update();
 			sprite.scale = 1 - scaleTween.scale;
-			if (sprite.scale <= 0) {
+			if (!scaleTween.active) {
 				this.world.remove(this);
 			}
 		}

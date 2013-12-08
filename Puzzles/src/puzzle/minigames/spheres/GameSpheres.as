@@ -157,8 +157,8 @@ package puzzle.minigames.spheres
 		private function updateScoreDisplay():void 
 		{
 			scoreDisplay.text = "Score: " + gameRules.score;
-			requiredScoreDisplay.text = "Required: " + pointsRequiredToCapture;
-			scoreDisplay.color = gameRules.score >= pointsRequiredToCapture ? COLOR_GREEN : COLOR_RED;
+			requiredScoreDisplay.text = "Required: " + (pointsRequiredToCapture + 1);
+			scoreDisplay.color = gameRules.score > pointsRequiredToCapture ? COLOR_GREEN : COLOR_RED;
 		}
 		
 		private function updateScoreDisplaySize():void {
