@@ -1,6 +1,9 @@
-package puzzle 
+package puzzle.minigames.squares.player 
 {
 	import net.flashpunk.utils.Input;
+	import puzzle.minigames.squares.AttackInfo;
+	import puzzle.minigames.squares.GameSquares;
+	import puzzle.minigames.squares.SquareInfo;
 	/**
 	 * ...
 	 * @author Sean Snyder

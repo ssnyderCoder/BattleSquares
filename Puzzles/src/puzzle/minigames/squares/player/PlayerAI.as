@@ -1,6 +1,10 @@
-package puzzle 
+package puzzle.minigames.squares.player 
 {
 	import net.flashpunk.FP;
+	import puzzle.Assets;
+	import puzzle.minigames.squares.GameSquares;
+	import puzzle.minigames.squares.GameSquaresRules;
+	import puzzle.minigames.squares.SquareInfo;
 	/**
 	 * ...
 	 * @author Sean Snyder

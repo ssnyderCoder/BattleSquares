@@ -1,5 +1,7 @@
-package puzzle 
+package puzzle.minigames.squares.player 
 {
+	import puzzle.minigames.squares.AttackInfo;
+	import puzzle.minigames.squares.GameSquares;
 	/**
 	 * ...
 	 * @author Sean Snyder

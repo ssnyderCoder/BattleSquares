@@ -1,10 +1,12 @@
-package puzzle 
+package puzzle.minigames.spheres.gui 
 {
 	import net.flashpunk.Entity;
 	import net.flashpunk.FP;
 	import net.flashpunk.graphics.Spritemap;
 	import net.flashpunk.Tween;
 	import net.flashpunk.utils.Ease;
+	import puzzle.Assets;
+	import puzzle.minigames.spheres.GameSpheres;
 	/**
 	 * ...
 	 * @author Sean Snyder

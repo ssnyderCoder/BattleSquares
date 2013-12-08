@@ -1,4 +1,4 @@
-package puzzle 
+package puzzle.minigames.spheres 
 {
 	import flash.geom.Point;
 	import net.flashpunk.FP;

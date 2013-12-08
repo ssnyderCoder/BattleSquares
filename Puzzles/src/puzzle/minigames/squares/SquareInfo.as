@@ -1,4 +1,4 @@
-package puzzle 
+package puzzle.minigames.squares 
 {
 	/**
 	 * Used by GameSquaresRules to store information on each square of grid:

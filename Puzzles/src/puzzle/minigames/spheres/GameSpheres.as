@@ -1,4 +1,4 @@
-package puzzle 
+package puzzle.minigames.spheres 
 {
 	import flash.geom.Rectangle;
 	import net.flashpunk.Entity;
@@ -11,6 +11,9 @@ package puzzle
 	import net.flashpunk.graphics.Tilemap;
 	import net.flashpunk.Mask;
 	import net.flashpunk.utils.Input;
+	import puzzle.Assets;
+	import puzzle.minigames.spheres.gui.PointsBox;
+	import puzzle.minigames.spheres.gui.SingleSphere;
 	
 	/**
 	 * ...

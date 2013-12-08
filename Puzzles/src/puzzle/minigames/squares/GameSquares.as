@@ -1,16 +1,14 @@
-package puzzle 
+package puzzle.minigames.squares 
 {
-	import flash.display.Sprite;
-	import flash.geom.Rectangle;
-	import net.flashpunk.Entity;
-	import net.flashpunk.Graphic;
-	import net.flashpunk.graphics.Graphiclist;
-	import net.flashpunk.graphics.Spritemap;
-	import net.flashpunk.graphics.Stamp;
-	import net.flashpunk.graphics.Text;
-	import net.flashpunk.graphics.Tilemap;
-	import net.flashpunk.Mask;
-	import net.flashpunk.utils.Input;
+	import flash.geom.*;
+	import net.flashpunk.*;
+	import net.flashpunk.graphics.*;
+	import net.flashpunk.utils.*;
+	import puzzle.Assets;
+	import puzzle.minigames.squares.gui.AttackArrow;
+	import puzzle.minigames.squares.gui.InfoDisplay;
+	import puzzle.minigames.squares.gui.LeaderboardDisplay;
+	import puzzle.minigames.squares.gui.WinnerDisplay;
 	
 	/**
 	 * ...

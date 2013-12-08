@@ -1,12 +1,12 @@
-package puzzle 
+package puzzle.minigames.squares.gui 
 {
 	import flash.display.BitmapData;
-	import flash.display.Sprite;
 	import flash.geom.Rectangle;
 	import net.flashpunk.Entity;
 	import net.flashpunk.graphics.Graphiclist;
 	import net.flashpunk.graphics.Image;
 	import net.flashpunk.graphics.Spritemap;
+	import puzzle.Assets;
 	
 	/**
 	 * ...

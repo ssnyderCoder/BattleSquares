@@ -1,4 +1,4 @@
-package puzzle 
+package puzzle.minigames.squares.gui 
 {
 	import net.flashpunk.Entity;
 	import net.flashpunk.graphics.Graphiclist;
@@ -6,6 +6,9 @@ package puzzle
 	import net.flashpunk.graphics.Text;
 	import net.flashpunk.Tween;
 	import net.flashpunk.utils.Ease;
+	import puzzle.Assets;
+	import puzzle.minigames.squares.GameSquares;
+	import puzzle.minigames.squares.GameSquaresRules;
 	
 	/**
 	 * ...

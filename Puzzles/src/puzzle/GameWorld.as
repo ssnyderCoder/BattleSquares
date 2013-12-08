@@ -1,6 +1,12 @@
 package puzzle 
 {
 	import net.flashpunk.World;
+	import puzzle.minigames.spheres.GameSpheres;
+	import puzzle.minigames.squares.AttackInfo;
+	import puzzle.minigames.squares.GameSquares;
+	import puzzle.minigames.squares.player.Player;
+	import puzzle.minigames.squares.player.PlayerAI;
+	import puzzle.minigames.squares.player.PlayerHuman;
 	
 	/**
 	 * ...
