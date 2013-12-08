@@ -25,24 +25,31 @@ package puzzle.minigames.spheres
 		public static const SPHERE_HEIGHT:int = 64;
 		
 		public static const DEFAULT_NUM_COLORS:int = 3;
+		
 		private static const HIGHLIGHT_OFF:int = 0;
 		private static const HIGHLIGHT_ON:int = 1;
 		private static const HIGHLIGHT_ROUND_OVER:int = 2;
 		
+		//gui
 		private var sphereGridDisplay:Tilemap;
 		private var sphereGridHighlight:Tilemap;
-		private var sphereGridRect:Rectangle;
-		private var gameRules:GameSpheresRules;
 		private var scoreDisplay:Text;
-		private var newGameOnNextClick:Boolean = false;
-		private var pointBox:PointsBox;
-		private var pointsRequiredToCapture:int = 0;
-		
+		private var requiredScoreDisplay:Text;
 		private var captureButton:Image;
+		private var pointBox:PointsBox;
+		private var transitionSphereCount:int = 0;
+		
+		//user input related
+		private var sphereGridRect:Rectangle;
 		private var captureRect:Rectangle;
+		private var newGameOnNextClick:Boolean = false;
+		
+		private var pointsRequiredToCapture:int = 0;
 		private var hasCaptured:Boolean = false;
 		
-		private var transitionSphereCount:int = 0;
+		private var gameRules:GameSpheresRules;
+		
+	
 		public function GameSpheres(x:Number=0, y:Number=0) 
 		{
 			this.x = x;
@@ -50,8 +57,10 @@ package puzzle.minigames.spheres
 			this.setHitbox(600, 600);
 			gameRules = new GameSpheresRules(8, 8, 0);
 			
+			//gui
 			var background:Graphic = new Stamp(Assets.SPHERE_GAME_BACKGROUND);
 			scoreDisplay = new Text("Score: 0", 100, 550);
+			requiredScoreDisplay = new Text("Required: 0", 74, 565);
 			sphereGridDisplay = new Tilemap(Assets.SPHERES, 512, 512, SPHERE_WIDTH, SPHERE_HEIGHT);
 			sphereGridDisplay.x = 43;
 			sphereGridDisplay.y = 0;
@@ -63,13 +72,15 @@ package puzzle.minigames.spheres
 			captureButton.x = 250;
 			captureButton.y = 550;
 			captureButton.visible = false;
-			this.graphic = new Graphiclist(background, sphereGridDisplay, sphereGridHighlight, scoreDisplay, captureButton);
+			this.graphic = new Graphiclist( background, sphereGridDisplay, sphereGridHighlight,
+											scoreDisplay, requiredScoreDisplay, captureButton);
+			pointBox = new PointsBox(0, 0);
+			pointBox.visible = false;
+			
+			//user input related
 			sphereGridRect = new Rectangle(sphereGridDisplay.x + x, sphereGridDisplay.y + y,
 											sphereGridDisplay.width, sphereGridDisplay.height);
 			captureRect = new Rectangle(captureButton.x + x, captureButton.y + y, captureButton.width, captureButton.height);
-			
-			pointBox = new PointsBox(0, 0);
-			pointBox.visible = false;
 		}
 		
 		override public function added():void 
@@ -109,6 +120,7 @@ package puzzle.minigames.spheres
 			}
 			
 			scoreDisplay.text = "Score: " + gameRules.score;
+			requiredScoreDisplay.text = "Required: " + pointsRequiredToCapture;
 			
 			//setup points box if valid situation for it
 			var selectedSpheresScore:int = gameRules.getSelectedSpheresTotalScore();
