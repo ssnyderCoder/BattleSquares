@@ -10,6 +10,8 @@ package puzzle.minigames.spheres
 	import net.flashpunk.graphics.Text;
 	import net.flashpunk.graphics.Tilemap;
 	import net.flashpunk.Mask;
+	import net.flashpunk.Tween;
+	import net.flashpunk.utils.Ease;
 	import net.flashpunk.utils.Input;
 	import puzzle.Assets;
 	import puzzle.minigames.spheres.gui.PointsBox;
@@ -30,11 +32,15 @@ package puzzle.minigames.spheres
 		private static const HIGHLIGHT_ON:int = 1;
 		private static const HIGHLIGHT_ROUND_OVER:int = 2;
 		
+		private static const COLOR_GREEN:uint = 0x11cc11;
+		private static const COLOR_RED:uint = 0xcc1111;
+		
 		//gui
 		private var sphereGridDisplay:Tilemap;
 		private var sphereGridHighlight:Tilemap;
 		private var scoreDisplay:Text;
 		private var requiredScoreDisplay:Text;
+		private var scoreTween:Tween;
 		private var captureButton:Image;
 		private var pointBox:PointsBox;
 		private var transitionSphereCount:int = 0;
@@ -61,6 +67,7 @@ package puzzle.minigames.spheres
 			var background:Graphic = new Stamp(Assets.SPHERE_GAME_BACKGROUND);
 			scoreDisplay = new Text("Score: 0", 100, 550);
 			requiredScoreDisplay = new Text("Required: 0", 74, 565);
+			scoreTween = new Tween(0.25, Tween.PERSIST, null, Ease.circOut);
 			sphereGridDisplay = new Tilemap(Assets.SPHERES, 512, 512, SPHERE_WIDTH, SPHERE_HEIGHT);
 			sphereGridDisplay.x = 43;
 			sphereGridDisplay.y = 0;
@@ -87,6 +94,7 @@ package puzzle.minigames.spheres
 		{
 			super.added();
 			this.world.add(pointBox);
+			this.addTween(scoreTween);
 			
 			updateSphereGridDisplay();
 		}
@@ -119,8 +127,7 @@ package puzzle.minigames.spheres
 				}
 			}
 			
-			scoreDisplay.text = "Score: " + gameRules.score;
-			requiredScoreDisplay.text = "Required: " + pointsRequiredToCapture;
+			updateScoreDisplay();
 			
 			//setup points box if valid situation for it
 			var selectedSpheresScore:int = gameRules.getSelectedSpheresTotalScore();
@@ -147,10 +154,27 @@ package puzzle.minigames.spheres
 			}
 		}
 		
+		private function updateScoreDisplay():void 
+		{
+			scoreDisplay.text = "Score: " + gameRules.score;
+			requiredScoreDisplay.text = "Required: " + pointsRequiredToCapture;
+			scoreDisplay.color = gameRules.score >= pointsRequiredToCapture ? COLOR_GREEN : COLOR_RED;
+		}
+		
+		private function updateScoreDisplaySize():void {
+			if (scoreTween.active) {
+				var scale:Number = scoreTween.scale > 0.5 ? 1 - scoreTween.scale : scoreTween.scale; 
+				scoreDisplay.scale = (scale * 0.8) + 1;
+			}
+			else {
+				scoreDisplay.scale = 1;
+			}
+		}
 		override public function update():void 
 		{
 			super.update();
 			hasCaptured = false;
+			updateScoreDisplaySize();
 			if (Input.mousePressed) {
 				if (newGameOnNextClick) { //TO DO: REMOVE
 					newGameOnNextClick = false;
@@ -189,6 +213,7 @@ package puzzle.minigames.spheres
 		private function transitionSphereGridDisplay():void 
 		{
 			Assets.SFX_SPHERE_CLEAR.play();
+			scoreTween.start();
 			var height:int = gameRules.height;
 			var width:int = gameRules.width;
 			transitionSphereCount = 0;

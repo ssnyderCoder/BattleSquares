@@ -10,9 +10,15 @@ v 0.3 Plan - Polishing update
 ----------Player 3 - CPU-Hard --------------
 ----------Player 4 - None --------------
 -Add more polish to gameplay
-----Tile Capture Animation, Points Required listing in minigame
+----Squares: Tile Capture Animation
+----Spheres: colored Moving points label
+++++Spheres: Points Required listing in minigame
 
 possible themes: Player is exterminator, AI is roaches, minigame involves clearing away trash
+
+label possible solutions:
+	-Label is red while not enough points, and green when enough; whenever points collected, use a tweening animation to make the
+	 label increase and decrease in size.
 
 v.0.2
 ---------------------------------------------
