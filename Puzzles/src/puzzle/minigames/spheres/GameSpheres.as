@@ -246,8 +246,9 @@ package puzzle.minigames.spheres
 		public function resetGame(pointsRequired:int, numColorsBonus:int = 0):void {
 			this.pointsRequiredToCapture = pointsRequired;
 			gameRules.resetBonus(numColorsBonus);
-			updateSphereGridDisplay();
 			hasCaptured = false;
+			newGameOnNextClick = false;
+			updateSphereGridDisplay();
 		}
 		
 		public function playerHasCaptured():Boolean {

@@ -27,7 +27,7 @@ package puzzle.minigames.squares
 		public static const PLAYER_NONE:int = 4;
 		public static const PLAYER_BLOCKED:int = 5;
 		private static const BLOCKED_SQUARE:SquareInfo = new SquareInfo(-1, -1, PLAYER_BLOCKED, 0, 0);
-		private static const BLOCKED_SQUARE_CHANCE:Number = 0.2;
+		private static const BLOCKED_SQUARE_CHANCE:Number = 0.6;
 		
 		public static const STARTING_POINTS:int = 50;
 		

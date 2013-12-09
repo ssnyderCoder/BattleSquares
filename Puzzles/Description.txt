@@ -14,11 +14,13 @@ v 0.3 Plan - Polishing update
 ++++Squares: Timer coloring
 ++++Spheres: colored Moving points label
 ++++Spheres: Points Required listed
--Fix Bug:
-	-Attack Arrows not always colored properly
-	-Attack Arrows remain in last position during new game until every player targets a square
++Fixed Bugs:
+	+Attack Arrows not always colored properly
+	+Attack Arrows remain in last position during new game until every player targets a square
 	-If the Squares game ends while the Spheres game is in the click_for_new_game phase, then it stays like that during new game
-possible themes: Player is exterminator, AI is roaches, minigame involves clearing away trash
+
+	
+	possible themes: Player is exterminator, AI is roaches, minigame involves clearing away trash
 
 
 v.0.2
