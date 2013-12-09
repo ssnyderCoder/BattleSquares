@@ -95,7 +95,7 @@ package puzzle.minigames.squares
 			this.world.remove(winnerDisplay);
 			gameRules.resetGame();
 			updateSquareGridDisplay();
-			setTimeDisplay(gameRules.timeRemaining, gameRules.clockTickingFaster);
+			setTimeDisplay(gameRules.timeRemaining);
 			leaderboard.reset();
 			
 		}
@@ -112,7 +112,7 @@ package puzzle.minigames.squares
 		
 		//updates the appearance of the dynamic displays, like the timer
 		private function updateDisplay():void {
-			setTimeDisplay(gameRules.timeRemaining, gameRules.clockTickingFaster);
+			setTimeDisplay(gameRules.timeRemaining);
 			updateInfoBoxDisplay();
 		}
 		
@@ -135,12 +135,12 @@ package puzzle.minigames.squares
 		}
 		
 		//sets the displayed timer to the provided time (in seconds)
-		private function setTimeDisplay(timeRemaining:int, clockTickingFaster:Boolean):void 
+		private function setTimeDisplay(timeRemaining:int):void 
 		{
 			var minutes:int = timeRemaining / 60;
 			var seconds:int = timeRemaining % 60;
 			timeDisplay.text = "Time: " + minutes + ":" + (seconds < 10 ? "0" + seconds : seconds);
-			timeDisplay.color = clockTickingFaster ? COLOR_RED : COLOR_WHITE;
+			timeDisplay.color = isClockTickingFaster() ? COLOR_RED : COLOR_WHITE;
 		}
 		
 		override public function added():void 
@@ -222,6 +222,10 @@ package puzzle.minigames.squares
 		
 		public function getNumberOfColumns():int {
 			return gameRules.width;
+		}
+		
+		public function isClockTickingFaster():Boolean {
+			return gameRules.clockTickingFaster;
 		}
 	}
 

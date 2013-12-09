@@ -46,6 +46,11 @@ package puzzle
 			if (!gameSquares.gameHasBeenWon()) {
 				updatePlayers();
 				gameReset = false;
+				//change music when time counting down faster
+				if (gameSquares.isClockTickingFaster() && Assets.SFX_GAME_MUSIC.playing) {
+					Assets.SFX_GAME_MUSIC.stop();
+					Assets.SFX_GAME_MUSIC_SPED_UP.loop(0.35);
+				}
 			}
 			else if (!gameReset) {
 				gameReset = true;
@@ -54,6 +59,7 @@ package puzzle
 					player.reset();
 				}
 				Assets.SFX_GAME_MUSIC.loop(0.25);
+				Assets.SFX_GAME_MUSIC_SPED_UP.stop();
 			}
 			updateUI();
 			if (TICKMSG) {

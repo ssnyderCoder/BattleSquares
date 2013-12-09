@@ -18,12 +18,14 @@ package puzzle
 		[Embed(source = "../../assets/art/Directions.png")] public static const DIRECTIONS:Class;
 		
 		[Embed(source = "../../assets/sounds/GameMusic.mp3")] private static const GAME_MUSIC:Class;
+		[Embed(source = "../../assets/sounds/GameMusicSpedUp.mp3")] private static const GAME_MUSIC_SPED_UP:Class;
 		[Embed(source = "../../assets/sounds/GameOver.mp3")] private static const GAME_OVER:Class;
 		[Embed(source = "../../assets/sounds/TileCaptureAI.mp3")] private static const TILE_CAPTURE_AI:Class;
 		[Embed(source = "../../assets/sounds/TileCapturePlayer.mp3")] private static const TILE_CAPTURE_PLAYER:Class;
 		[Embed(source = "../../assets/sounds/SphereClear.mp3")] private static const SPHERE_CLEAR:Class;
 		
 		public static const SFX_GAME_MUSIC:Sfx = new Sfx(GAME_MUSIC, null, "music");
+		public static const SFX_GAME_MUSIC_SPED_UP:Sfx = new Sfx(GAME_MUSIC_SPED_UP, null, "music");
 		public static const SFX_GAME_OVER:Sfx = new Sfx(GAME_OVER, null, "fx");
 		public static const SFX_TILE_CAPTURE_AI:Sfx = new Sfx(TILE_CAPTURE_AI, null, "fx");
 		public static const SFX_TILE_CAPTURE_PLAYER:Sfx = new Sfx(TILE_CAPTURE_PLAYER, null, "fx");
