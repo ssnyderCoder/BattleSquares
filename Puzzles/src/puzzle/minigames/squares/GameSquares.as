@@ -31,13 +31,13 @@ package puzzle.minigames.squares
 		private var timeDisplay:Text;
 		
 		//supplementary displayed entities
-		private var infoBox:InfoDisplay;
-		private var leaderboard:LeaderboardDisplay;
-		private var winnerDisplay:WinnerDisplay;
+		private var infoBox:InfoDisplay; //displays info about squares that player hovers over
+		private var leaderboard:LeaderboardDisplay; //displays the number of tiles each player owns
+		private var winnerDisplay:WinnerDisplay; //displays the winner when the game ends
+		private var attackArrows:Array = new Array(); //
 		
 		private var gameHadBeenWon:Boolean = false;
 		
-		private var attackArrows:Array = new Array(); //contains arrow graphics that designate player attacks
 		
 		//constructor
 		public function GameSquares(x:Number=0, y:Number=0) 
