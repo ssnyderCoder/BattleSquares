@@ -6,6 +6,7 @@ package puzzle.minigames.squares
 	import net.flashpunk.utils.*;
 	import puzzle.Assets;
 	import puzzle.minigames.squares.gui.AttackArrow;
+	import puzzle.minigames.squares.gui.AttackArrowDisplay;
 	import puzzle.minigames.squares.gui.InfoDisplay;
 	import puzzle.minigames.squares.gui.LeaderboardDisplay;
 	import puzzle.minigames.squares.gui.SingleSquare;
@@ -19,13 +20,13 @@ package puzzle.minigames.squares
 	{
 		public static const SQUARE_WIDTH:int = 32;
 		public static const SQUARE_HEIGHT:int = 32;
-		private static const MAX_ARROWS:int = 8;
 		private static const NUM_PLAYERS:int = 4;
 		
 		private static const COLOR_WHITE:uint = 0xdddddd;
 		private static const COLOR_RED:uint = 0xcc1111;
 		
 		private var gameRules:GameSquaresRules;
+		
 		private var squareGridDisplay:Tilemap;
 		private var squareGridRect:Rectangle;
 		private var timeDisplay:Text;
@@ -34,7 +35,7 @@ package puzzle.minigames.squares
 		private var infoBox:InfoDisplay; //displays info about squares that player hovers over
 		private var leaderboard:LeaderboardDisplay; //displays the number of tiles each player owns
 		private var winnerDisplay:WinnerDisplay; //displays the winner when the game ends
-		private var attackArrows:Array = new Array(); //
+		private var atkArrowDisplay:AttackArrowDisplay; //displays the arrows designating the player attacks
 		
 		private var gameHadBeenWon:Boolean = false;
 		
@@ -65,7 +66,7 @@ package puzzle.minigames.squares
 			}
 			//if time is up, show winner
 			if (gameRules.timeRemaining <= 0 && !gameHadBeenWon) {
-				winnerDisplay = new WinnerDisplay(gameRules.getWinnerName(), 300, 200);
+				winnerDisplay = new WinnerDisplay(gameRules.getWinnerName(), this.x + 280, this.y + 200);
 				this.world.add(winnerDisplay);
 				gameHadBeenWon = true;
 				Assets.SFX_GAME_OVER.play(0.8);
@@ -112,7 +113,6 @@ package puzzle.minigames.squares
 		//updates the appearance of the dynamic displays, like the timer
 		private function updateDisplay():void {
 			setTimeDisplay(gameRules.timeRemaining, gameRules.clockTickingFaster);
-			updateArrowDisplay();
 			updateInfoBoxDisplay();
 		}
 		
@@ -147,27 +147,30 @@ package puzzle.minigames.squares
 		{
 			super.added();
 			
-			initAttackArrows();
 			updateSquareGridDisplay();
 			
-			infoBox = new InfoDisplay(30, 380);
+			infoBox = new InfoDisplay(this.x + 10, this.y + 380);
 			infoBox.visible = false;
 			this.world.add(infoBox);
 			
-			leaderboard = new LeaderboardDisplay(322, 30, gameRules, NUM_PLAYERS);
+			leaderboard = new LeaderboardDisplay(this.x + 302, this.y + 30, gameRules, NUM_PLAYERS);
 			this.world.add(leaderboard);
+			
+			atkArrowDisplay = new AttackArrowDisplay(squareGridRect.x, squareGridRect.y,
+													 squareGridDisplay.tileWidth, squareGridDisplay.tileHeight,
+													 gameRules);
+			this.world.add(atkArrowDisplay);
 		}
 		
-		//initialize the arrows that show player attacks
-		private function initAttackArrows():void 
+		override public function removed():void 
 		{
-			for (var i:int = 0; i < MAX_ARROWS; i++) {
-				var arrow:AttackArrow = new AttackArrow(0, 0, 0);
-				arrow.visible = false;
-				this.world.add(arrow);
-				attackArrows[i] = arrow;
-			}
+			super.removed();
+			this.world.remove(infoBox);
+			this.world.remove(leaderboard);
+			this.world.remove(atkArrowDisplay);
 		}
+		
+
 		
 		//updates the game's main grid of player owned squares
 		//called only when a tile gains a new owner
@@ -181,57 +184,6 @@ package puzzle.minigames.squares
 					squareGridDisplay.setTile(i, j, square.ownerID);
 				}
 			}
-		}
-		
-		//updates the appearance of the arrows that show player attacks
-		//called every tick
-		private function updateArrowDisplay():void 
-		{
-			var attacks:Array = gameRules.getAttackedSquares();
-			for (var i:int = 0; i < attacks.length && i < MAX_ARROWS; i++) {
-				var arrow:AttackArrow = attackArrows[i];
-				var atkInfo:AttackInfo =  attacks[i];
-				if (atkInfo) {
-					
-					//update arrow's appearance and position based on attacked square
-					var playerID:int = atkInfo.attackerID;
-					var tileX:int = atkInfo.tileX;
-					var tileY:int = atkInfo.tileY;
-					var perc:Number = ((Number)(atkInfo.currentPoints)) / ((Number)(gameRules.getIndex(tileX, tileY).points));
-					arrow.visible = true;
-					arrow.setCompletionColor(perc);
-					
-					//make the arrow point to the targeted square from an adjacent square the player already owns
-					if (gameRules.getIndex(tileX - 1, tileY).ownerID == playerID) { //left of targeted square
-						arrow.setDirection(AttackArrow.POINT_RIGHT);
-						arrow.x = squareGridRect.x + (squareGridDisplay.tileWidth * (tileX)) - 8;
-						arrow.y = squareGridRect.y + (squareGridDisplay.tileHeight * (tileY)) + 8;
-					}
-					else if (gameRules.getIndex(tileX + 1, tileY).ownerID == playerID) { //right of targeted square
-						arrow.setDirection(AttackArrow.POINT_LEFT);
-						arrow.x = squareGridRect.x + (squareGridDisplay.tileWidth * (tileX + 1)) - 8;
-						arrow.y = squareGridRect.y + (squareGridDisplay.tileHeight * (tileY)) + 8;
-					}
-					else if (gameRules.getIndex(tileX, tileY - 1).ownerID == playerID) { //above targeted square
-						arrow.setDirection(AttackArrow.POINT_DOWN);
-						arrow.x = squareGridRect.x + (squareGridDisplay.tileWidth * (tileX)) + 8;
-						arrow.y = squareGridRect.y + (squareGridDisplay.tileHeight * (tileY)) - 8;
-					}
-					else if (gameRules.getIndex(tileX, tileY + 1).ownerID == playerID) { //below targeted square
-						arrow.setDirection(AttackArrow.POINT_UP);
-						arrow.x = squareGridRect.x + (squareGridDisplay.tileWidth * (tileX)) + 8;
-						arrow.y = squareGridRect.y + (squareGridDisplay.tileHeight * (tileY + 1)) - 8;
-					}
-					else { //arrow does not appear if no adjacent player squares
-						arrow.visible = false;
-						arrow.setCompletionColor(0);
-					}
-				} //if
-				else {
-					arrow.visible = false;
-					arrow.setCompletionColor(0);
-				}
-			} //for
 		}
 		
 		public function captureSquare(playerAttackInfo:AttackInfo):void {

@@ -42,8 +42,11 @@ package puzzle.minigames.squares.gui
 		}
 		
 		public function setDirection(direction:int):void {
-			sprite.frame = direction;
-			overlayArrow.frame = direction;
+			if(sprite.frame != direction){
+				sprite.frame = direction;
+				overlayArrow.frame = direction;
+				setCompletionColor(0);
+			}
 		}
 	
 		public function setCompletionColor(percent:Number):void {
