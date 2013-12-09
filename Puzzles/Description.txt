@@ -9,7 +9,7 @@ v 0.3 Plan - Polishing update
 ----------Player 2 - CPU-Easy -------------- varies between None, CPU-Easy, CPU-Medium, CPU-Hard
 ----------Player 3 - CPU-Hard --------------
 ----------Player 4 - None --------------
--Add more polish to gameplay
++Add more polish to gameplay
 ++++Squares: Tile Capture Animation
 ++++Squares: Timer coloring
 ++++Spheres: colored Moving points label
@@ -17,7 +17,7 @@ v 0.3 Plan - Polishing update
 +Fixed Bugs:
 	+Attack Arrows not always colored properly
 	+Attack Arrows remain in last position during new game until every player targets a square
-	-If the Squares game ends while the Spheres game is in the click_for_new_game phase, then it stays like that during new game
+	+If the Squares game ends while the Spheres game is in the click_for_new_game phase, then it stays like that during new game
 
 	
 	possible themes: Player is exterminator, AI is roaches, minigame involves clearing away trash

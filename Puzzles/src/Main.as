@@ -9,6 +9,7 @@ package
 	import net.flashpunk.utils.Key;
 	import puzzle.Assets;
 	import puzzle.GameWorld;
+	import puzzle.MenuWorld;
 	
 /**
 	 * ...
@@ -22,7 +23,7 @@ package
 		public function Main():void 
 		{
 			super(SCREEN_WIDTH, SCREEN_HEIGHT, 60, false);
-			FP.world = new GameWorld();
+			FP.world = new MenuWorld();
 		}
 		
 		
