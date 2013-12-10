@@ -15,7 +15,7 @@ package puzzle
 	public class GameWorld extends World 
 	{
 		public static var TICKMSG:Boolean = false; //temp
-		private static const HUMAN_ID:int = 0;
+		public static const HUMAN_ID:int = 0;
 		private var gameSpheres:GameSpheres;
 		private var gameSquares:GameSquares;
 		private var playerHuman:PlayerHuman;
@@ -26,11 +26,7 @@ package puzzle
 			super();
 			playerHuman = new PlayerHuman(HUMAN_ID);
 			players = new Array();
-			players.push(playerHuman); //yellow
-			//players.push(new PlayerAI(HUMAN_ID + 0, 0.99, 0.99, PlayerAI.EASY_DIFFICULTY)); //yellow
-			players.push(new PlayerAI(HUMAN_ID + 1, 0.75, 0.99, PlayerAI.HARD_DIFFICULTY)); //green
-			players.push(new PlayerAI(HUMAN_ID + 2, 0.4, 0.99, PlayerAI.HARD_DIFFICULTY)); //blue
-			players.push(new PlayerAI(HUMAN_ID + 3, 0.1, 0.99, PlayerAI.HARD_DIFFICULTY)); //red
+			players.push(playerHuman);
 			gameSpheres = new GameSpheres(400, 0);
 			gameSpheres.visible = false;
 			gameSpheres.active = false;
@@ -68,11 +64,31 @@ package puzzle
 			}
 		}
 		
+		public function setPlayerDifficulty(playerID:int, playerDifficulty:int):void {
+			var ai:PlayerAI = null;
+			if (playerDifficulty == MenuWorld.DIFFICULTY_EASY) {
+				ai = new PlayerAI(playerID, 0.7, 0.25, PlayerAI.EASY_DIFFICULTY)
+			}
+			else if (playerDifficulty == MenuWorld.DIFFICULTY_MEDIUM) {
+				ai = new PlayerAI(playerID, 0.6, 0.45, PlayerAI.MEDIUM_DIFFICULTY)
+			}
+			else if (playerDifficulty == MenuWorld.DIFFICULTY_HARD) {
+				ai = new PlayerAI(playerID, 0.5, 0.65, PlayerAI.HARD_DIFFICULTY)
+			}
+			
+			
+			if (ai) {
+				players[playerID] = ai;
+			}
+		}
+		
 		private function updatePlayers():void 
 		{
 			for (var i:int = 0; i < players.length; i++){
 				var player:Player = players[i];
-				player.update(gameSquares);
+				if (player) {
+					player.update(gameSquares);
+				}
 			}
 			updateHumanScore();
 		}

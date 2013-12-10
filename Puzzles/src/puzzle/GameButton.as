@@ -27,6 +27,7 @@ package puzzle
 			textImg.resizable = false;
 			textImg.size = 20;
 			this.graphic = new Graphiclist(stamp, textImg);
+			this.setHitbox(stamp.width, stamp.height);
 		}
 		
 		public function setText(text:String):void {
@@ -38,6 +39,9 @@ package puzzle
 			super.update();
 			if (!_hasBeenClicked && Input.mouseDown && this.collidePoint(this.x, this.y, Input.mouseX, Input.mouseY)) {
 				_hasBeenClicked = true;
+			}
+			else if (_hasBeenClicked && !Input.mouseDown) {
+				_hasBeenClicked = false;
 			}
 		}
 		
