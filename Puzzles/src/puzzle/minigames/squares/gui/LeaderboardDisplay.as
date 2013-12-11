@@ -22,7 +22,6 @@ package puzzle.minigames.squares.gui
 		private var gameRules:GameSquaresRules;
 		private var playerCountGraphics:Array; //holds Text graphics for each player (total territory count)
 		private var playerColorGraphics:Array; //holds Stamp graphics for each player (player color count)
-		private var numPlayers:int;
 		
 		//used for initially loading the display
 		private var loadTween:Tween;
@@ -32,13 +31,15 @@ package puzzle.minigames.squares.gui
 		private var playerRankings:Array;
 		private var prevPlayerRankings:Array;
 		
+		private var graphicList:Graphiclist;
+		
 		private var rankingTween:Tween;
 		private var rankingsUpdating:Boolean = false;
 		
-		public function LeaderboardDisplay(xPos:Number, yPos:Number, gameSquaresRules:GameSquaresRules, numOfPlayers:int) 
+		public function LeaderboardDisplay(xPos:Number, yPos:Number, gameSquaresRules:GameSquaresRules) 
 		{
+			//CHANGE SO THAT ANY CONFIGURATION OF PLAYERS CAN BE USED
 			gameRules = gameSquaresRules;
-			numPlayers = numOfPlayers;
 			this.x = xPos;
 			this.y = yPos;
 			loadTween = new Tween(LOAD_TIME, Tween.PERSIST, null, Ease.backOut);
@@ -49,26 +50,9 @@ package puzzle.minigames.squares.gui
 			//initialize graphics & player rankings
 			playerColorGraphics = new Array();
 			playerCountGraphics = new Array();
-			var graphicList:Graphiclist = new Graphiclist();
+			graphicList = new Graphiclist();
 			playerRankings = new Array();
 			prevPlayerRankings = new Array();
-			
-			for (var i:int = 0; i < numPlayers; i++) {
-				var text:Text = new Text("= 0", DISPLAY_SPACE, DISPLAY_SPACE * i);
-				text.scaleX = 0;
-				playerCountGraphics.push(text);
-				graphicList.add(text);
-				
-				var sprite:Spritemap = new Spritemap(Assets.SQUARES, GameSquares.SQUARE_WIDTH, GameSquares.SQUARE_HEIGHT);
-				sprite.frame = i;
-				sprite.y = DISPLAY_SPACE * i;
-				sprite.scaleX = 0;
-				playerColorGraphics.push(sprite);
-				graphicList.add(sprite);
-				
-				playerRankings.push(i);
-				prevPlayerRankings.push(i);
-			}
 			
 			this.graphic = graphicList;
 		}
@@ -79,7 +63,24 @@ package puzzle.minigames.squares.gui
 			updateDisplay();
 		}
 		
-		override public function update():void 
+		public function addPlayer(playerID:int):void {
+			var text:Text = new Text("= 0", DISPLAY_SPACE, DISPLAY_SPACE * playerID);
+			text.scaleX = 0;
+			playerCountGraphics[playerID] = text;
+			graphicList.add(text);
+			
+			var sprite:Spritemap = new Spritemap(Assets.SQUARES, GameSquares.SQUARE_WIDTH, GameSquares.SQUARE_HEIGHT);
+			sprite.frame = playerID;
+			sprite.y = DISPLAY_SPACE * playerID;
+			sprite.scaleX = 0;
+			playerColorGraphics[playerID] = sprite;
+			graphicList.add(sprite);
+			
+			playerRankings[playerID] = playerID;
+			prevPlayerRankings[playerID] = playerID;
+		}
+		
+		override public function update():void  //not displaying properly
 		{
 			super.update();
 			if (!hasLoaded) {
@@ -93,7 +94,10 @@ package puzzle.minigames.squares.gui
 		private function updateRankings():void 
 		{
 			//gradually shift all player rankings into proper position
-			for (var i:int = 0; i < numPlayers; i++) {
+			for (var i:int = 0; i < playerRankings.length; i++) {
+				if (playerRankings[i] == null) {
+					continue;
+				}
 				var yGoal:Number = playerRankings[i] * DISPLAY_SPACE;
 				var yPrev:Number = prevPlayerRankings[i] * DISPLAY_SPACE;
 				var text:Text = playerCountGraphics[i];
@@ -114,9 +118,12 @@ package puzzle.minigames.squares.gui
 		{
 			//get and update territory counts for all players
 			var territoryCounts:Array = new Array();
-			for (var i:int = 0; i < numPlayers; i++) {
+			for (var i:int = 0; i < playerRankings.length; i++) {
+				if (playerRankings[i] == null) {
+					continue;
+				}
 				var playerData:Object = { count:0, playerID:0 };
-				playerData.count = gameRules.getTerritoryCount(i);
+				playerData.count = gameRules.getTerritoryCount(i); //null
 				playerData.playerID = i;
 				territoryCounts.push(playerData);
 				
@@ -132,7 +139,10 @@ package puzzle.minigames.squares.gui
 			
 			//arrange display from highest rank to lowest
 			territoryCounts.sortOn("count", Array.DESCENDING | Array.NUMERIC);
-			for (var j:int = 0; j < numPlayers; j++) {
+			for (var j:int = 0; j < playerRankings.length; j++) {
+				if (playerRankings[i] == null) {
+					continue;
+				}
 				var playerID:int = territoryCounts[j].playerID;
 				prevPlayerRankings[playerID] = playerRankings[playerID];
 				playerRankings[playerID] = j;
@@ -148,7 +158,10 @@ package puzzle.minigames.squares.gui
 		private function gradualLoad():void 
 		{
 			//gradually make all graphics appear
-			for (var i:int = 0; i < numPlayers; i++) {
+			for (var i:int = 0; i < playerRankings.length; i++) {
+				if (playerRankings[i] == null) {
+					continue;
+				}
 				var text:Text = playerCountGraphics[i];
 				text.scaleX = loadTween.scale;
 				var sprite:Spritemap = playerColorGraphics[i];

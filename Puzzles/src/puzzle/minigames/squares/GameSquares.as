@@ -20,7 +20,7 @@ package puzzle.minigames.squares
 	{
 		public static const SQUARE_WIDTH:int = 32;
 		public static const SQUARE_HEIGHT:int = 32;
-		private static const NUM_PLAYERS:int = 4;
+		//private static const NUM_PLAYERS:int = 4;
 		private static const SECONDS_PER_ROUND:int = 60;
 		
 		private static const COLOR_WHITE:uint = 0xdddddd;
@@ -42,12 +42,14 @@ package puzzle.minigames.squares
 		
 		
 		//constructor
-		public function GameSquares(x:Number=0, y:Number=0) 
+		public function GameSquares(x:Number=0, y:Number=0, numPlayers:int=4) 
 		{
 			this.x = x;
 			this.y = y;
 			this.setHitbox(300, 300);
-			gameRules = new GameSquaresRules(8, 8, NUM_PLAYERS, SECONDS_PER_ROUND);
+			
+			gameRules = new GameSquaresRules(8, 8, numPlayers, SECONDS_PER_ROUND);
+			leaderboard = new LeaderboardDisplay(this.x + 302, this.y + 30, gameRules); //added to world after this game added
 			var background:Graphic = new Stamp(Assets.SQUARE_GAME_BACKGROUND);
 			squareGridDisplay = new Tilemap(Assets.SQUARES, 256, 256, SQUARE_WIDTH, SQUARE_HEIGHT);
 			squareGridDisplay.x = 21;
@@ -154,7 +156,6 @@ package puzzle.minigames.squares
 			infoBox.visible = false;
 			this.world.add(infoBox);
 			
-			leaderboard = new LeaderboardDisplay(this.x + 302, this.y + 30, gameRules, NUM_PLAYERS);
 			this.world.add(leaderboard);
 			
 			atkArrowDisplay = new AttackArrowDisplay(squareGridRect.x, squareGridRect.y,
@@ -170,6 +171,7 @@ package puzzle.minigames.squares
 			this.world.remove(leaderboard);
 			this.world.remove(atkArrowDisplay);
 		}
+	
 		
 
 		
@@ -227,6 +229,11 @@ package puzzle.minigames.squares
 		
 		public function isClockTickingFaster():Boolean {
 			return gameRules.clockTickingFaster;
+		}
+		
+		public function addPlayer(playerID:int):void {
+			gameRules.addPlayer(playerID);
+			leaderboard.addPlayer(playerID);
 		}
 	}
 

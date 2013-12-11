@@ -217,10 +217,12 @@ package puzzle.minigames.squares
 					ownershipCounts[owner] += 1;
 				}
 			}
-			
+		}
+		
+		public function addPlayer(playerID:int):void {
 			var square:SquareInfo;
 			//player 1 starting position = top left corner
-			if (_numPlayers > 0) {
+			if (playerID == PLAYER_1) {
 				square = squares[0 + 0 * _width];
 				square.ownerID = PLAYER_1;
 				square.points = STARTING_POINTS * 4;
@@ -229,7 +231,7 @@ package puzzle.minigames.squares
 				pointCounts[PLAYER_1] = square.points;
 			}
 			//player 2 starting position = bottom right corner
-			if (_numPlayers > 1) {
+			else if (playerID == PLAYER_2) {
 				square = squares[(_width - 1) + (_height - 1) * _width];
 				square.ownerID = PLAYER_2;
 				square.points = STARTING_POINTS * 4;
@@ -238,7 +240,7 @@ package puzzle.minigames.squares
 				pointCounts[PLAYER_2] = square.points;
 			}
 			//player 3 starting position = bottom left corner
-			if (_numPlayers > 2) {
+			else if (playerID == PLAYER_3) {
 				square = squares[(_width - 1) + 0 * _width];
 				square.ownerID = PLAYER_3;
 				square.points = STARTING_POINTS * 4;
@@ -247,7 +249,7 @@ package puzzle.minigames.squares
 				pointCounts[PLAYER_3] = square.points;
 			}
 			//player 4 starting position = top right corner
-			if (_numPlayers > 3) {
+			else if (playerID == PLAYER_4) {
 				square = squares[0 + (_height - 1) * _width];
 				square.ownerID = PLAYER_4;
 				square.points = STARTING_POINTS * 4;

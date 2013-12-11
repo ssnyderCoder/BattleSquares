@@ -21,19 +21,32 @@ package puzzle
 		private var playerHuman:PlayerHuman;
 		private var players:Array;
 		private var gameReset:Boolean = false;
+		private var numPlayers:int = 0;
 		public function GameWorld() 
 		{
 			super();
 			playerHuman = new PlayerHuman(HUMAN_ID);
 			players = new Array();
 			players.push(playerHuman);
+			numPlayers++;
 			gameSpheres = new GameSpheres(400, 0);
 			gameSpheres.visible = false;
 			gameSpheres.active = false;
 			this.add(gameSpheres);
-			gameSquares = new GameSquares(20, 0);
-			this.add(gameSquares);
 			Assets.SFX_GAME_MUSIC.loop(0.25);
+		}
+		
+		override public function begin():void 
+		{
+			super.begin();
+			gameSquares = new GameSquares(20, 0, numPlayers);
+			for (var i:int = 0; i < players.length; i++){
+				var player:Player = players[i];
+				if (player) {
+					gameSquares.addPlayer(i);
+				}
+			}
+			this.add(gameSquares);
 		}
 		
 		override public function update():void 
@@ -70,14 +83,16 @@ package puzzle
 				ai = new PlayerAI(playerID, 0.7, 0.25, PlayerAI.EASY_DIFFICULTY)
 			}
 			else if (playerDifficulty == MenuWorld.DIFFICULTY_MEDIUM) {
-				ai = new PlayerAI(playerID, 0.6, 0.45, PlayerAI.MEDIUM_DIFFICULTY)
+				ai = new PlayerAI(playerID, 0.6, 0.65, PlayerAI.MEDIUM_DIFFICULTY)
 			}
 			else if (playerDifficulty == MenuWorld.DIFFICULTY_HARD) {
-				ai = new PlayerAI(playerID, 0.5, 0.65, PlayerAI.HARD_DIFFICULTY)
+				ai = new PlayerAI(playerID, 0.5, 0.95, PlayerAI.HARD_DIFFICULTY)
 			}
 			
-			
 			if (ai) {
+				if (!players[playerID]) {
+					numPlayers++;
+				}
 				players[playerID] = ai;
 			}
 		}
