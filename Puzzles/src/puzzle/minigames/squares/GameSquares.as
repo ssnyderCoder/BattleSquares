@@ -65,7 +65,7 @@ package puzzle.minigames.squares
 			super.update();
 			gameRules.update();
 			if (this.gameHadBeenWon && winnerDisplay.windowClicked) {
-				startNewGame();
+				shutdownGame();
 			}
 			//if time is up, show winner
 			if (gameRules.timeRemaining <= 0 && !gameHadBeenWon) {
@@ -92,15 +92,10 @@ package puzzle.minigames.squares
 				}
 		}
 		
-		//begins a new game
-		public function startNewGame():void {
-			gameHadBeenWon = false;
+		//Shuts the game down
+		public function shutdownGame():void {
 			this.world.remove(winnerDisplay);
-			gameRules.resetGame();
-			updateSquareGridDisplay();
-			setTimeDisplay(gameRules.timeRemaining);
-			leaderboard.reset();
-			
+			this.active = false;
 		}
 		
 		//returns of the x index of the provided xy tile index

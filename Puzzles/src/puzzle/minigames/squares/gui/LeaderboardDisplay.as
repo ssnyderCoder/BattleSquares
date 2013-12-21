@@ -20,6 +20,7 @@ package puzzle.minigames.squares.gui
 		private static const RANK_TRANSITION_TIME:Number = 0.5;
 		private static const DISPLAY_SPACE:int = GameSquares.SQUARE_WIDTH + 10;
 		private var gameRules:GameSquaresRules;
+		private var numPlayers:int = 0;
 		private var playerCountGraphics:Array; //holds Text graphics for each player (total territory count)
 		private var playerColorGraphics:Array; //holds Stamp graphics for each player (player color count)
 		
@@ -38,7 +39,6 @@ package puzzle.minigames.squares.gui
 		
 		public function LeaderboardDisplay(xPos:Number, yPos:Number, gameSquaresRules:GameSquaresRules) 
 		{
-			//CHANGE SO THAT ANY CONFIGURATION OF PLAYERS CAN BE USED
 			gameRules = gameSquaresRules;
 			this.x = xPos;
 			this.y = yPos;
@@ -64,20 +64,21 @@ package puzzle.minigames.squares.gui
 		}
 		
 		public function addPlayer(playerID:int):void {
-			var text:Text = new Text("= 0", DISPLAY_SPACE, DISPLAY_SPACE * playerID);
+			var text:Text = new Text("= 1", DISPLAY_SPACE, DISPLAY_SPACE * numPlayers);
 			text.scaleX = 0;
 			playerCountGraphics[playerID] = text;
 			graphicList.add(text);
 			
 			var sprite:Spritemap = new Spritemap(Assets.SQUARES, GameSquares.SQUARE_WIDTH, GameSquares.SQUARE_HEIGHT);
 			sprite.frame = playerID;
-			sprite.y = DISPLAY_SPACE * playerID;
+			sprite.y = DISPLAY_SPACE * numPlayers;
 			sprite.scaleX = 0;
 			playerColorGraphics[playerID] = sprite;
 			graphicList.add(sprite);
 			
-			playerRankings[playerID] = playerID;
-			prevPlayerRankings[playerID] = playerID;
+			playerRankings[playerID] = numPlayers;
+			prevPlayerRankings[playerID] = numPlayers;
+			numPlayers++;
 		}
 		
 		override public function update():void  //not displaying properly
@@ -106,7 +107,7 @@ package puzzle.minigames.squares.gui
 				sprite.y = yPrev + ((yGoal - yPrev) * rankingTween.scale);
 			}
 			
-			if(rankingTween.scale >= 1){
+			if(!rankingTween.active){
 				updateDisplay();
 				rankingsUpdating = false;
 			}
@@ -123,7 +124,7 @@ package puzzle.minigames.squares.gui
 					continue;
 				}
 				var playerData:Object = { count:0, playerID:0 };
-				playerData.count = gameRules.getTerritoryCount(i); //null
+				playerData.count = gameRules.getTerritoryCount(i);
 				playerData.playerID = i;
 				territoryCounts.push(playerData);
 				
@@ -140,7 +141,7 @@ package puzzle.minigames.squares.gui
 			//arrange display from highest rank to lowest
 			territoryCounts.sortOn("count", Array.DESCENDING | Array.NUMERIC);
 			for (var j:int = 0; j < playerRankings.length; j++) {
-				if (playerRankings[i] == null) {
+				if (playerRankings[j] == null) {
 					continue;
 				}
 				var playerID:int = territoryCounts[j].playerID;

@@ -14,13 +14,11 @@ package puzzle
 	 */
 	public class GameWorld extends World 
 	{
-		public static var TICKMSG:Boolean = false; //temp
 		public static const HUMAN_ID:int = 0;
 		private var gameSpheres:GameSpheres;
 		private var gameSquares:GameSquares;
 		private var playerHuman:PlayerHuman;
 		private var players:Array;
-		private var gameReset:Boolean = false;
 		private var numPlayers:int = 0;
 		public function GameWorld() 
 		{
@@ -52,28 +50,17 @@ package puzzle
 		override public function update():void 
 		{
 			super.update();
-			if (!gameSquares.gameHasBeenWon()) {
-				updatePlayers();
-				gameReset = false;
-				
-				if (gameSquares.isClockTickingFaster() && Assets.SFX_GAME_MUSIC.playing) {
-					Assets.SFX_GAME_MUSIC.stop();
-					Assets.SFX_GAME_MUSIC_SPED_UP.loop(0.35);
-				}
-			}
-			else if (!gameReset) {
-				gameReset = true;
-				for (var i:int = 0; i < players.length; i++){
-					var player:Player = players[i];
-					player.reset();
-				}
-				Assets.SFX_GAME_MUSIC.loop(0.25);
-				Assets.SFX_GAME_MUSIC_SPED_UP.stop();
-			}
+			updatePlayers();
+			updateMusic();
 			updateUI();
-			if (TICKMSG) {
-				trace("TICK COMPLETE");
-				TICKMSG = false;
+			
+		}
+		
+		private function updateMusic():void 
+		{
+			if (gameSquares.isClockTickingFaster() && Assets.SFX_GAME_MUSIC.playing) {
+				Assets.SFX_GAME_MUSIC.stop();
+				Assets.SFX_GAME_MUSIC_SPED_UP.loop(0.35);
 			}
 		}
 		
@@ -99,6 +86,8 @@ package puzzle
 		
 		private function updatePlayers():void 
 		{
+			if (gameSquares.gameHasBeenWon()) { return; }
+			
 			for (var i:int = 0; i < players.length; i++){
 				var player:Player = players[i];
 				if (player) {
