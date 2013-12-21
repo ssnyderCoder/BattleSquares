@@ -1,5 +1,6 @@
 package puzzle 
 {
+	import net.flashpunk.FP;
 	import net.flashpunk.World;
 	import puzzle.minigames.spheres.GameSpheres;
 	import puzzle.minigames.squares.AttackInfo;
@@ -53,7 +54,6 @@ package puzzle
 			updatePlayers();
 			updateMusic();
 			updateUI();
-			
 		}
 		
 		private function updateMusic():void 
@@ -61,26 +61,6 @@ package puzzle
 			if (gameSquares.isClockTickingFaster() && Assets.SFX_GAME_MUSIC.playing) {
 				Assets.SFX_GAME_MUSIC.stop();
 				Assets.SFX_GAME_MUSIC_SPED_UP.loop(0.35);
-			}
-		}
-		
-		public function setPlayerDifficulty(playerID:int, playerDifficulty:int):void {
-			var ai:PlayerAI = null;
-			if (playerDifficulty == MenuWorld.DIFFICULTY_EASY) {
-				ai = new PlayerAI(playerID, 0.7, 0.25, PlayerAI.EASY_DIFFICULTY)
-			}
-			else if (playerDifficulty == MenuWorld.DIFFICULTY_MEDIUM) {
-				ai = new PlayerAI(playerID, 0.6, 0.65, PlayerAI.MEDIUM_DIFFICULTY)
-			}
-			else if (playerDifficulty == MenuWorld.DIFFICULTY_HARD) {
-				ai = new PlayerAI(playerID, 0.5, 0.95, PlayerAI.HARD_DIFFICULTY)
-			}
-			
-			if (ai) {
-				if (!players[playerID]) {
-					numPlayers++;
-				}
-				players[playerID] = ai;
 			}
 		}
 		
@@ -122,6 +102,32 @@ package puzzle
 			//if player's attack is no longer on the squares attack list or valid, end spheres game
 			if (gameSpheres.visible && (gameSquares.gameHasBeenWon() || !playerHuman.currentAttack || !playerHuman.currentAttack.isValid)) {
 				gameSpheres.deactivate();
+			}
+			//if the squares game is done, return to menu
+			if (!gameSquares.active) {
+				FP.world = new MenuWorld();
+				Assets.SFX_GAME_MUSIC.stop();
+				Assets.SFX_GAME_MUSIC_SPED_UP.stop();
+			}
+		}
+				
+		public function setPlayerDifficulty(playerID:int, playerDifficulty:int):void {
+			var ai:PlayerAI = null;
+			if (playerDifficulty == MenuWorld.DIFFICULTY_EASY) {
+				ai = new PlayerAI(playerID, 0.7, 0.25, PlayerAI.EASY_DIFFICULTY)
+			}
+			else if (playerDifficulty == MenuWorld.DIFFICULTY_MEDIUM) {
+				ai = new PlayerAI(playerID, 0.6, 0.65, PlayerAI.MEDIUM_DIFFICULTY)
+			}
+			else if (playerDifficulty == MenuWorld.DIFFICULTY_HARD) {
+				ai = new PlayerAI(playerID, 0.5, 0.95, PlayerAI.HARD_DIFFICULTY)
+			}
+			
+			if (ai) {
+				if (!players[playerID]) {
+					numPlayers++;
+				}
+				players[playerID] = ai;
 			}
 		}
 	}
