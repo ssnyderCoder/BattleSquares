@@ -1,6 +1,7 @@
 package puzzle 
 {
 	import net.flashpunk.FP;
+	import net.flashpunk.graphics.Image;
 	import net.flashpunk.utils.Input;
 	import net.flashpunk.World;
 	
@@ -34,7 +35,9 @@ package puzzle
 		public function MenuWorld() 
 		{
 			super();
-			
+			var background:Image = new Image(Assets.MAIN_BACKGROUND);
+			background.scale = 5;
+			this.addGraphic(background, DisplayLayers.BACKGROUND_LAYER);
 			player2Difficulty = DIFFICULTY_EASY;
 			player3Difficulty = DIFFICULTY_NONE;
 			player4Difficulty = DIFFICULTY_NONE;

@@ -1,6 +1,7 @@
 package puzzle 
 {
 	import net.flashpunk.FP;
+	import net.flashpunk.graphics.Image;
 	import net.flashpunk.World;
 	import puzzle.minigames.spheres.GameSpheres;
 	import puzzle.minigames.squares.AttackInfo;
@@ -24,6 +25,10 @@ package puzzle
 		public function GameWorld() 
 		{
 			super();
+			var background:Image = new Image(Assets.MAIN_BACKGROUND);
+			background.scale = 5;
+			this.addGraphic(background, DisplayLayers.BACKGROUND_LAYER);
+			
 			playerHuman = new PlayerHuman(HUMAN_ID);
 			players = new Array();
 			players.push(playerHuman);

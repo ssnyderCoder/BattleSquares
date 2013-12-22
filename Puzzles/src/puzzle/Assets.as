@@ -17,6 +17,7 @@ package puzzle
 		[Embed(source = "../../assets/art/CaptureButton.png")] public static const CAPTURE_BUTTON:Class;
 		[Embed(source = "../../assets/art/Directions.png")] public static const DIRECTIONS:Class;
 		[Embed(source = "../../assets/art/Button.png")] public static const BUTTON:Class;
+		[Embed(source = "../../assets/art/MainBackground.png")] public static const MAIN_BACKGROUND:Class;
 		
 		[Embed(source = "../../assets/sounds/GameMusic.mp3")] private static const GAME_MUSIC:Class;
 		[Embed(source = "../../assets/sounds/GameMusicSpedUp.mp3")] private static const GAME_MUSIC_SPED_UP:Class;
