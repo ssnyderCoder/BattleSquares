@@ -2,6 +2,7 @@ v 0.4 Plan - Tutorial & Level update
 ---------------------------------------------
 -Add Tutorial Levels that teach the game
 -Add Campaign Levels
+-Add some sort of theme to the game
 
 
 v 0.3 Plan - Polishing update
