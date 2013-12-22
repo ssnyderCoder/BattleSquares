@@ -120,13 +120,13 @@ package puzzle
 		public function setPlayerDifficulty(playerID:int, playerDifficulty:int):void {
 			var ai:PlayerAI = null;
 			if (playerDifficulty == MenuWorld.DIFFICULTY_EASY) {
-				ai = new PlayerAI(playerID, 0.7, 0.25, PlayerAI.EASY_DIFFICULTY)
+				ai = new PlayerAI(playerID, 0.7 + (Math.random() * 0.25), 0.30 + (Math.random() * 0.25), PlayerAI.EASY_DIFFICULTY)
 			}
 			else if (playerDifficulty == MenuWorld.DIFFICULTY_MEDIUM) {
-				ai = new PlayerAI(playerID, 0.6, 0.65, PlayerAI.MEDIUM_DIFFICULTY)
+				ai = new PlayerAI(playerID, 0.6 + (Math.random() * 0.35), 0.55 + (Math.random() * 0.25), PlayerAI.MEDIUM_DIFFICULTY)
 			}
 			else if (playerDifficulty == MenuWorld.DIFFICULTY_HARD) {
-				ai = new PlayerAI(playerID, 0.5, 0.95, PlayerAI.HARD_DIFFICULTY)
+				ai = new PlayerAI(playerID, 0.5 + (Math.random() * 0.45), 0.80 + (Math.random() * 0.15), PlayerAI.HARD_DIFFICULTY)
 			}
 			
 			if (ai) {
