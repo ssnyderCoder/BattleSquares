@@ -20,8 +20,6 @@ package puzzle.minigames.squares
 	{
 		public static const SQUARE_WIDTH:int = 32;
 		public static const SQUARE_HEIGHT:int = 32;
-		//private static const NUM_PLAYERS:int = 4;
-		private static const SECONDS_PER_ROUND:int = 60;
 		
 		private static const COLOR_WHITE:uint = 0xdddddd;
 		private static const COLOR_RED:uint = 0xcc1111;
@@ -42,13 +40,13 @@ package puzzle.minigames.squares
 		
 		
 		//constructor
-		public function GameSquares(x:Number=0, y:Number=0, numPlayers:int=4) 
+		public function GameSquares(x:Number=0, y:Number=0, numPlayers:int=4, secondsPerRound:int=60) 
 		{
 			this.x = x;
 			this.y = y;
 			this.setHitbox(300, 300);
 			
-			gameRules = new GameSquaresRules(8, 8, numPlayers, SECONDS_PER_ROUND);
+			gameRules = new GameSquaresRules(8, 8, numPlayers, secondsPerRound);
 			leaderboard = new LeaderboardDisplay(this.x + 302, this.y + 30, gameRules); //added to world after this game added
 			var background:Graphic = new Stamp(Assets.SQUARE_GAME_BACKGROUND);
 			squareGridDisplay = new Tilemap(Assets.SQUARES, 256, 256, SQUARE_WIDTH, SQUARE_HEIGHT);

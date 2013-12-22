@@ -22,6 +22,7 @@ package puzzle
 		private var playerHuman:PlayerHuman;
 		private var players:Array;
 		private var numPlayers:int = 0;
+		private var secondsPerRound:int = 60;
 		public function GameWorld() 
 		{
 			super();
@@ -43,7 +44,7 @@ package puzzle
 		override public function begin():void 
 		{
 			super.begin();
-			gameSquares = new GameSquares(20, 0, numPlayers);
+			gameSquares = new GameSquares(20, 0, numPlayers, secondsPerRound);
 			for (var i:int = 0; i < players.length; i++){
 				var player:Player = players[i];
 				if (player) {
@@ -134,6 +135,10 @@ package puzzle
 				}
 				players[playerID] = ai;
 			}
+		}
+		
+		public function setTimeInSeconds(time:int):void {
+			secondsPerRound = time;
 		}
 	}
 }
