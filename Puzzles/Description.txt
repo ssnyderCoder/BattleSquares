@@ -1,6 +1,20 @@
 v 0.4 Plan - Tutorial & Level update
 ---------------------------------------------
 -Add Tutorial Levels that teach the game
+--***: Squares Game: Bot automatically declares an attack for each Sphere tutorial(Has own Bot mouse pointer)
+----1: Spheres Game: Click on a set of touching objects to clear it and gain points (simplified to a 4 x 4 grid of 4 block types)
+---------------------Lesson: How to play and gain points in spheres game
+----2: Spheres Game: Gain 30 points (board set up so that only 1 possible move at a time with new fallen blocks opening up new moves)
+---------------------Lesson: Falling Tile Mechanic & More touching tiles equal more points
+--***: Squares Game: Bot attacks enemy Square
+----3: Spheres Game: Gain 50 points (same as [2], except 5 block types)
+---------------------Lesson: Enemy Squares are tougher to capture and take more time
+--***: Spheres Game: Bot now takes over playing spheres game
+----4: Squares Game: Click on a Square to attack
+---------------------Lesson: Player learns how to target squares
+----5: Squares Game: Click on an enemy Square to attack that is attacking other square
+---------------------Lessson: Player learns how to disrupt enemy attacks
+
 -Add Campaign Levels
 -Add some sort of theme to the game
 

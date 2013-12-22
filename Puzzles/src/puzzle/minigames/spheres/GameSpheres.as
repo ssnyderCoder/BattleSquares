@@ -106,16 +106,32 @@ package puzzle.minigames.spheres
 			this.addTween(scoreTween);
 			this.addTween(fadeTween);
 			
-			updateSphereGridDisplay();
+			updateDisplay();
 		}
 		
-		private function updateSphereGridDisplay():void 
+		private function updateDisplay():void 
 		{
-			//refactor pointsbox stuff into other function
+			updateGridDisplay();
+			updateScoreDisplay();
+			updatePointBoxDisplay();
+			updateCaptureButtonDisplay();
+		}
+		
+		private function updateCaptureButtonDisplay():void 
+		{
+			//show capture button if enough points
+			if (!captureButton.visible && gameRules.score > pointsRequiredToCapture) {
+				captureButton.visible = true;
+				captureButton.alpha = 0;
+				fadeStatus = FADE_IN_CAPTURE_BUTTON;
+				fadeTween.start();
+			}
+		}
+		
+		private function updateGridDisplay():void 
+		{
 			var height:int = gameRules.height;
 			var width:int = gameRules.width;
-			var topLeftX:int = 999; //used for placing pointsBox
-			var topLeftY:int = 999; //used for placing pointsBox
 			for (var j:int = 0; j < height; j++) {
 				for (var i:int = 0; i < width; i++) {
 					var index:int = gameRules.getIndex(i, j);
@@ -125,8 +141,32 @@ package puzzle.minigames.spheres
 					var highlight:Boolean = gameRules.isIndexSelected(i, j);
 					sphereGridHighlight.setTile(i, j, 
 						newGameOnNextClick ? HIGHLIGHT_ROUND_OVER : (highlight ? HIGHLIGHT_ON : HIGHLIGHT_OFF));
-					if (highlight) {
-						if (topLeftX > i) { //show pointsbox at top left of the selected spheres
+				}
+			}
+		}
+		
+		private function updatePointBoxDisplay():void 
+		{
+			//setup points box if any spheres selected
+			var selectedSpheresScore:int = gameRules.getSelectedSpheresTotalScore();
+			if (selectedSpheresScore > 0) {
+				displayPointsBox(selectedSpheresScore);
+			}
+			else { //hide points box when not needed
+				pointBox.visible = false;
+			}
+		}
+		
+		private function displayPointsBox(selectedSpheresScore:int) : void
+		{
+			var height:int = gameRules.height;
+			var width:int = gameRules.width;
+			var topLeftX:int = 999; //used for placing pointsBox
+			var topLeftY:int = 999; //used for placing pointsBox
+			for (var j:int = 0; j < height; j++) {
+				for (var i:int = 0; i < width; i++) {
+					if (gameRules.isIndexSelected(i, j)) {
+						if (topLeftX > i) {
 							topLeftX = i;
 							topLeftY = j;
 						}
@@ -137,31 +177,14 @@ package puzzle.minigames.spheres
 				}
 			}
 			
-			updateScoreDisplay();
-			
-			//setup points box if valid situation for it
-			var selectedSpheresScore:int = gameRules.getSelectedSpheresTotalScore();
-			if (selectedSpheresScore > 0) {
-				pointBox.visible = true;
-				pointBox.setPoints(selectedSpheresScore);
-				//set location to top left of top leftmost block
-				pointBox.x = sphereGridRect.x + (sphereGridDisplay.tileWidth * topLeftX) -
-					(sphereGridDisplay.tileWidth / 2);
-				pointBox.y = sphereGridRect.y + (sphereGridDisplay.tileHeight * topLeftY) -
-					(sphereGridDisplay.tileHeight / 2);
-				FP.clampInRect(pointBox, this.x, this.y, this.width, this.height);
-			}
-			else { //hide points box when not needed
-				pointBox.visible = false;
-			}
-			
-			//show capture button if enough points
-			if (!captureButton.visible && gameRules.score > pointsRequiredToCapture) {
-				captureButton.visible = true;
-				captureButton.alpha = 0;
-				fadeStatus = FADE_IN_CAPTURE_BUTTON;
-				fadeTween.start();
-			}
+			//setup pointbox and show it at top left of selected spheres
+			pointBox.visible = true;
+			pointBox.setPoints(selectedSpheresScore);
+			pointBox.x = sphereGridRect.x + (sphereGridDisplay.tileWidth * topLeftX) -
+				(sphereGridDisplay.tileWidth / 2);
+			pointBox.y = sphereGridRect.y + (sphereGridDisplay.tileHeight * topLeftY) -
+				(sphereGridDisplay.tileHeight / 2);
+			FP.clampInRect(pointBox, this.x, this.y, this.width, this.height);
 		}
 		
 		private function updateScoreDisplay():void 
@@ -180,46 +203,58 @@ package puzzle.minigames.spheres
 				scoreDisplay.scale = 1;
 			}
 		}
+		
 		override public function update():void 
 		{
 			super.update();
 			handleFading();
 			updateScoreDisplaySize();
 			if (Input.mousePressed) {
-				if (newGameOnNextClick) { //TO DO: REMOVE
-					newGameOnNextClick = false;
-					if (captureButton.visible) {
-						hasCaptured = true;
-					}
-					else{
-						gameRules.reset();
-						updateSphereGridDisplay();
-					}
-				} //if new game
-				//capture if button is showing and clicked
-				else if (!hasCaptured && captureButton.visible && captureRect.contains(Input.mouseX, Input.mouseY)) {
-					hasCaptured = true;
-					fadeTween.start();
-					fadeStatus = FADE_OUT;
-					captureButton.visible = false;
+				handleMouseInput();
+			}
+		}
+		
+		private function handleMouseInput():void 
+		{
+			//either capture or begin new game if player cannot make any more moves
+			if (newGameOnNextClick) {
+				newGameOnNextClick = false;
+				if (captureButton.visible) {
+					beginCapture();
 				}
-				//check if pressed with boundaries of tilemap and accept input if so
-				else if (sphereGridRect.contains(Input.mouseX, Input.mouseY)) {
-					var tileX:int = (Input.mouseX - sphereGridRect.x) / sphereGridDisplay.tileWidth;
-					var tileY:int = (Input.mouseY - sphereGridRect.y) / sphereGridDisplay.tileHeight;
-					var result:int = gameRules.selectSphere(tileX, tileY);
-					if (result == GameSpheresRules.SPHERE_SELECTION) {
-						updateSphereGridDisplay();
-					}
-					else if (result == GameSpheresRules.GRID_CHANGED) {
-						transitionSphereGridDisplay();
-					}
-					else if (result == GameSpheresRules.IS_FINISHED) {
-						newGameOnNextClick = true;
-						transitionSphereGridDisplay();
-					}
+				else{
+					gameRules.reset();
+					updateDisplay();
 				}
 			}
+			//capture if button is showing and clicked
+			else if (!hasCaptured && captureButton.visible && captureRect.contains(Input.mouseX, Input.mouseY)) {
+				beginCapture();
+			}
+			//check if pressed with boundaries of tilemap and accept input if so
+			else if (sphereGridRect.contains(Input.mouseX, Input.mouseY)) {
+				var tileX:int = (Input.mouseX - sphereGridRect.x) / sphereGridDisplay.tileWidth;
+				var tileY:int = (Input.mouseY - sphereGridRect.y) / sphereGridDisplay.tileHeight;
+				var result:int = gameRules.selectSphere(tileX, tileY);
+				if (result == GameSpheresRules.SPHERE_SELECTION) {
+					updateDisplay();
+				}
+				else if (result == GameSpheresRules.GRID_CHANGED) {
+					transitionSphereGridDisplay();
+				}
+				else if (result == GameSpheresRules.IS_FINISHED) {
+					newGameOnNextClick = true;
+					transitionSphereGridDisplay();
+				}
+			}
+		}
+		
+		private function beginCapture():void 
+		{
+			hasCaptured = true;
+			fadeTween.start();
+			fadeStatus = FADE_OUT;
+			captureButton.visible = false;
 		}
 		
 		private function handleFading():void 
@@ -281,7 +316,7 @@ package puzzle.minigames.spheres
 		private function sphereHasFinishedShrinking():void {
 			transitionSphereCount--;
 			if (transitionSphereCount <= 0) {
-				updateSphereGridDisplay();
+				updateDisplay();
 			}
 		}
 		
@@ -295,7 +330,7 @@ package puzzle.minigames.spheres
 			hasCaptured = false;
 			newGameOnNextClick = false;
 			captureButton.visible = false;
-			updateSphereGridDisplay();
+			updateDisplay();
 		}
 		
 		public function playerHasCaptured():Boolean {
