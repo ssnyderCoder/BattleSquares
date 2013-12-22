@@ -1,14 +1,21 @@
+v 0.4 Plan - Tutorial & Level update
+---------------------------------------------
+-Add Tutorial Levels that teach the game
+-Add Campaign Levels
+
+
 v 0.3 Plan - Polishing update
 ---------------------------------------------
 +Add Sound / Music
 +++Add sounds for: Tile Capture(AI), Clearing spheres in minigame, Tile Capture(Player), Music
--Add Game Menu (New Game -> Choose Difficulty & Players)
-----New Game
--------> Choose Players and Player Difficulty like so:
-----------Player 1 - Human -------------- CANNOT BE CHANGED
-----------Player 2 - CPU-Easy -------------- varies between None, CPU-Easy, CPU-Medium, CPU-Hard
-----------Player 3 - CPU-Hard --------------
-----------Player 4 - None --------------
++Add Game Menu (New Game -> Choose Difficulty & Players)
+++++New Game
++++++++> Choose Players, Time, and Player Difficulty like so:
++---------Player 1 - Human -------------- CANNOT BE CHANGED
++---------Player 2 - CPU-Easy -------------- varies between None, CPU-Easy, CPU-Medium, CPU-Hard
++---------Player 3 - CPU-Hard --------------
++---------Player 4 - None --------------
++---------Time - 1 Minute -------------- Can be set to 1, 2, 3, 4 or 5 minutes
 +Add more polish to gameplay
 ++++Squares: Tile Capture Animation
 ++++Squares: Timer coloring
@@ -18,7 +25,7 @@ v 0.3 Plan - Polishing update
 	+Attack Arrows not always colored properly
 	+Attack Arrows remain in last position during new game until every player targets a square
 	+If the Squares game ends while the Spheres game is in the click_for_new_game phase, then it stays like that during new game
-
+    +Can now use any configuration of players
 	
 	possible themes: Player is exterminator, AI is roaches, minigame involves clearing away trash
 
