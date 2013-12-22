@@ -140,10 +140,7 @@ package puzzle.minigames.squares.gui
 			
 			//arrange display from highest rank to lowest
 			territoryCounts.sortOn("count", Array.DESCENDING | Array.NUMERIC);
-			for (var j:int = 0; j < playerRankings.length; j++) {
-				if (playerRankings[j] == null) {
-					continue;
-				}
+			for (var j:int = 0; j < territoryCounts.length; j++) {
 				var playerID:int = territoryCounts[j].playerID;
 				prevPlayerRankings[playerID] = playerRankings[playerID];
 				playerRankings[playerID] = j;

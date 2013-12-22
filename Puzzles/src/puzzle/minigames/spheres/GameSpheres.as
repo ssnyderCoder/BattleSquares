@@ -32,18 +32,26 @@ package puzzle.minigames.spheres
 		private static const HIGHLIGHT_ON:int = 1;
 		private static const HIGHLIGHT_ROUND_OVER:int = 2;
 		
+		private static const FADE_NONE:int = 0;
+		private static const FADE_IN:int = 1;
+		private static const FADE_OUT:int = 2;
+		private static const FADE_IN_CAPTURE_BUTTON:int = 3;
+		
 		private static const COLOR_GREEN:uint = 0x11cc11;
 		private static const COLOR_RED:uint = 0xcc1111;
 		
 		//gui
+		private var background:Image;
 		private var sphereGridDisplay:Tilemap;
 		private var sphereGridHighlight:Tilemap;
 		private var scoreDisplay:Text;
 		private var requiredScoreDisplay:Text;
-		private var scoreTween:Tween;
 		private var captureButton:Image;
 		private var pointBox:PointsBox;
 		private var transitionSphereCount:int = 0;
+		private var scoreTween:Tween;
+		private var fadeTween:Tween;
+		private var fadeStatus:int = FADE_NONE;
 		
 		//user input related
 		private var sphereGridRect:Rectangle;
@@ -64,10 +72,9 @@ package puzzle.minigames.spheres
 			gameRules = new GameSpheresRules(8, 8, 0);
 			
 			//gui
-			var background:Graphic = new Stamp(Assets.SPHERE_GAME_BACKGROUND);
+			background = new Image(Assets.SPHERE_GAME_BACKGROUND);
 			scoreDisplay = new Text("Score: 0", 100, 550);
 			requiredScoreDisplay = new Text("Required: 0", 74, 565);
-			scoreTween = new Tween(0.25, Tween.PERSIST, null, Ease.circOut);
 			sphereGridDisplay = new Tilemap(Assets.SPHERES, 512, 512, SPHERE_WIDTH, SPHERE_HEIGHT);
 			sphereGridDisplay.x = 43;
 			sphereGridDisplay.y = 0;
@@ -83,6 +90,8 @@ package puzzle.minigames.spheres
 											scoreDisplay, requiredScoreDisplay, captureButton);
 			pointBox = new PointsBox(0, 0);
 			pointBox.visible = false;
+			scoreTween = new Tween(0.25, Tween.PERSIST, null, Ease.circOut);
+			fadeTween = new Tween(0.25, Tween.PERSIST, null, Ease.circOut);
 			
 			//user input related
 			sphereGridRect = new Rectangle(sphereGridDisplay.x + x, sphereGridDisplay.y + y,
@@ -95,6 +104,7 @@ package puzzle.minigames.spheres
 			super.added();
 			this.world.add(pointBox);
 			this.addTween(scoreTween);
+			this.addTween(fadeTween);
 			
 			updateSphereGridDisplay();
 		}
@@ -146,11 +156,11 @@ package puzzle.minigames.spheres
 			}
 			
 			//show capture button if enough points
-			if (gameRules.score > pointsRequiredToCapture) {
+			if (!captureButton.visible && gameRules.score > pointsRequiredToCapture) {
 				captureButton.visible = true;
-			}
-			else {
-				captureButton.visible = false;
+				captureButton.alpha = 0;
+				fadeStatus = FADE_IN_CAPTURE_BUTTON;
+				fadeTween.start();
 			}
 		}
 		
@@ -173,7 +183,7 @@ package puzzle.minigames.spheres
 		override public function update():void 
 		{
 			super.update();
-			hasCaptured = false;
+			handleFading();
 			updateScoreDisplaySize();
 			if (Input.mousePressed) {
 				if (newGameOnNextClick) { //TO DO: REMOVE
@@ -187,8 +197,11 @@ package puzzle.minigames.spheres
 					}
 				} //if new game
 				//capture if button is showing and clicked
-				else if (captureButton.visible && captureRect.contains(Input.mouseX, Input.mouseY)) {
+				else if (!hasCaptured && captureButton.visible && captureRect.contains(Input.mouseX, Input.mouseY)) {
 					hasCaptured = true;
+					fadeTween.start();
+					fadeStatus = FADE_OUT;
+					captureButton.visible = false;
 				}
 				//check if pressed with boundaries of tilemap and accept input if so
 				else if (sphereGridRect.contains(Input.mouseX, Input.mouseY)) {
@@ -207,6 +220,39 @@ package puzzle.minigames.spheres
 					}
 				}
 			}
+		}
+		
+		private function handleFading():void 
+		{
+			if (fadeStatus == FADE_IN) {
+				fadeIn();
+			}
+			else if (fadeStatus == FADE_IN_CAPTURE_BUTTON) {
+				fadeCaptureButtonIn();
+			}
+			else if (fadeStatus == FADE_OUT) {
+				fadeOut();
+			}
+			//stop fading if done
+			if (fadeStatus != FADE_NONE && fadeStatus != FADE_OUT && !fadeTween.active) {
+				fadeStatus = FADE_NONE;
+			}
+		}
+		
+		private function fadeIn():void {
+			var fadeInPerc:Number = fadeTween.active ? fadeTween.scale : 1.0;
+			setUIAlpha(fadeInPerc);
+		}
+		
+		private function fadeCaptureButtonIn():void {
+			var fadeInPerc:Number = fadeTween.active ? fadeTween.scale : 1.0;
+			captureButton.alpha = fadeInPerc;
+		}
+		
+		private function fadeOut():void 
+		{
+			var fadeInPerc:Number = fadeTween.active ? fadeTween.scale : 1.0;
+			setUIAlpha(1.0 - fadeInPerc);
 		}
 		
 		//create shrinking spheres
@@ -248,22 +294,37 @@ package puzzle.minigames.spheres
 			gameRules.resetBonus(numColorsBonus);
 			hasCaptured = false;
 			newGameOnNextClick = false;
+			captureButton.visible = false;
 			updateSphereGridDisplay();
 		}
 		
 		public function playerHasCaptured():Boolean {
-			return hasCaptured;
+			return hasCaptured && hasFadedOut();
 		}
 		
 		public function activate():void {
 			this.visible = true;
 			this.active = true;
+			this.fadeStatus = FADE_IN;
+			this.fadeTween.start();
+			setUIAlpha(0);
 		}
 		
 		public function deactivate():void {
 			this.visible = false;
 			this.active = false;
 			this.pointBox.visible = false;
+		}
+		
+		private function setUIAlpha(alpha:Number):void {
+			background.alpha = alpha;
+			sphereGridDisplay.alpha = alpha;
+			scoreDisplay.alpha = alpha;
+			requiredScoreDisplay.alpha = alpha;
+		}
+		
+		private function hasFadedOut():Boolean {
+			return fadeStatus == FADE_OUT && !fadeTween.active;
 		}
 	}
 
