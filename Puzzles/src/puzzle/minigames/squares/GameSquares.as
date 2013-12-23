@@ -69,7 +69,7 @@ package puzzle.minigames.squares
 				shutdownGame();
 			}
 			//if time is up, show winner
-			if (gameRules.timeRemaining <= 0 && !gameHadBeenWon) {
+			if (gameRules.isGameDone() && !gameHadBeenWon) {
 				winnerDisplay = new WinnerDisplay(gameRules.getWinnerName(), this.x + 280, this.y + 200);
 				this.world.add(winnerDisplay);
 				gameHadBeenWon = true;

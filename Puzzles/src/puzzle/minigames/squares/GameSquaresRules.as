@@ -191,9 +191,26 @@ package puzzle.minigames.squares
 		
 		public function update():void {
 			countDownTime();
-			if (_timeRemaining == 0 && this.winnerID == PLAYER_NONE) {
+			if ((timeIsUp() || onlyOnePlayerLeft()) && this.winnerID == PLAYER_NONE) {
 				finishGame();
 			}
+		}
+		
+		private function onlyOnePlayerLeft():Boolean 
+		{
+			var playersLeft:int = 0;
+			for (var n:int = 0; n < PLAYER_NONE; n++) {
+				var count:int = ownershipCounts[n];
+				if (count > 0) {
+					playersLeft++;
+				}
+			}
+			return playersLeft <= 1;
+		}
+		
+		private function timeIsUp():Boolean 
+		{
+			return _timeRemaining == 0;
 		}
 		
 		private function finishGame():void 
@@ -291,6 +308,10 @@ package puzzle.minigames.squares
 		public function get timeRemaining():int 
 		{
 			return (int)(Math.ceil(_timeRemaining));
+		}
+		
+		public function isGameDone():Boolean {
+			return winnerID != PLAYER_NONE;
 		}
 		
 		public function get clockTickingFaster():Boolean 
