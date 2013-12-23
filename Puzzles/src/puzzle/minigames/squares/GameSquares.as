@@ -20,6 +20,8 @@ package puzzle.minigames.squares
 	{
 		public static const SQUARE_WIDTH:int = 32;
 		public static const SQUARE_HEIGHT:int = 32;
+		public static const SQUARE_2X_ID:int = 6;
+		public static const SQUARE_50_ALL_ID:int = 7;
 		
 		private static const COLOR_WHITE:uint = 0xdddddd;
 		private static const COLOR_RED:uint = 0xcc1111;
@@ -177,7 +179,14 @@ package puzzle.minigames.squares
 			for (var j:int = 0; j < height; j++) {
 				for (var i:int = 0; i < width; i++) {
 					var square:SquareInfo = gameRules.getIndex(i, j);
-					squareGridDisplay.setTile(i, j, square.ownerID);
+					var ownerID:int = square.ownerID;
+					if (square.bonusID == GameSquaresRules.BONUS_2X) {
+						ownerID = SQUARE_2X_ID;
+					}
+					else if (square.bonusID == GameSquaresRules.BONUS_50_ALL) {
+						ownerID = SQUARE_50_ALL_ID;
+					}
+					squareGridDisplay.setTile(i, j, ownerID);
 				}
 			}
 		}
@@ -192,8 +201,7 @@ package puzzle.minigames.squares
 		
 		private function createShrinkingSquare(newOwnerID:int, tileX:int, tileY:int):void 
 		{
-			var prevTile:SquareInfo = gameRules.getIndex(tileX, tileY);
-			var prevOwnerID:int = prevTile.ownerID;
+			var prevOwnerID:int = squareGridDisplay.getTile(tileX, tileY);
 			var xPos:Number = squareGridRect.x + (squareGridDisplay.tileWidth * (tileX + 0.5));
 			var yPos:Number = squareGridRect.y + (squareGridDisplay.tileHeight * (tileY + 0.5));
 			var square:SingleSquare = new SingleSquare(xPos, yPos, prevOwnerID, newOwnerID);

@@ -27,11 +27,15 @@ package puzzle.minigames.squares
 		public static const PLAYER_NONE:int = 4;
 		public static const PLAYER_BLOCKED:int = 5;
 		private static const BLOCKED_SQUARE:SquareInfo = new SquareInfo(-1, -1, PLAYER_BLOCKED, 0, 0);
-		private static const BLOCKED_SQUARE_CHANCE:Number = 0.6;
+		private static const BLOCKED_SQUARE_CHANCE:Number = 0.5;
 		
 		public static const STARTING_POINTS:int = 50;
 		
 		public static const BONUS_NONE:int = 0;
+		public static const BONUS_2X:int = 1;
+		public static const BONUS_50_ALL:int = 2;
+		public static const BONUS_ALL_POINTS:int = 50;
+		private static const BONUS_CHANCE:Number = 0.4;
 		
 		private var _width:int;
 		private var _height:int;
@@ -105,9 +109,9 @@ package puzzle.minigames.squares
 			}
 			//determine defense of square based on square owner
 			var squareOwner:int = getIndex(x, y).ownerID;
-			var defenseValue:int = getIndex(x, y).ownerID == PLAYER_NONE ? 0
-																		 : 1;
+			var bonusType:int = getIndex(x, y).bonusID;
 			var captureRequirement:int = getIndex(x, y).points;
+			var defenseValue:int = squareOwner == PLAYER_NONE && bonusType == BONUS_NONE ? 0 : 1;
 			var attack:AttackInfo = new AttackInfo(playerID, x, y, captureRequirement, defenseValue);
 			attackedSquares.push(attack);
 			return attack;
@@ -131,17 +135,22 @@ package puzzle.minigames.squares
 				return false;
 			}
 			
+			var bonusID:int = square.bonusID;
+			var totalPoints:int = bonusID == BONUS_2X ? points * 2 : points;
 			var prevOwnerID:int = square.ownerID;
 			var prevOwnerCount:int = ownershipCounts[prevOwnerID];
 			var newOwnerCount:int = ownershipCounts[playerID];
 			ownershipCounts[square.ownerID] = prevOwnerCount - 1;
 			ownershipCounts[playerID] = newOwnerCount + 1;
 			pointCounts[square.ownerID] -= square.points;
-			pointCounts[playerID] += points;
+			pointCounts[playerID] += totalPoints;
 			
 			square.ownerID = playerID;
-			square.points = points;
-			
+			square.points = totalPoints;
+			if (bonusID == BONUS_50_ALL) {
+				addPointsToAllSquares(playerID, BONUS_ALL_POINTS);
+			}
+			square.bonusID = BONUS_NONE;
 			//cancel all attacks on this square
 			//check any attacks by prevOwner and cancel if captured square was only neabry square
 			//fail if attack already exists
@@ -163,6 +172,18 @@ package puzzle.minigames.squares
 			}
 			attackedSquares = validAttacks;
 			return true;
+		}
+		
+		private function addPointsToAllSquares(playerID:int, points:int):void 
+		{
+			for (var j:int = 0; j < _height; j++) {
+				for (var i:int = 0; i < _width; i++) {
+					var square:SquareInfo = squares[i + j * _width];
+					if (square.ownerID == playerID) {
+						square.points += points;
+					}
+				}
+			}
 		}
 		
 		public function update():void {
@@ -213,7 +234,10 @@ package puzzle.minigames.squares
 			for (var j:int = 0; j < _height; j++) {
 				for (var i:int = 0; i < _width; i++) {
 					var owner:int = i > 0 && i < width - 1 && j > 0 && j < height - 1 && Math.random() < BLOCKED_SQUARE_CHANCE ? 								PLAYER_BLOCKED : PLAYER_NONE;
-					squares[i + j * _width] = new SquareInfo(i, j, owner, STARTING_POINTS, BONUS_NONE);
+					var bonus:int = owner == PLAYER_NONE && Math.random() < BONUS_CHANCE ? 
+										(Math.random() < 0.75 ? BONUS_2X : BONUS_50_ALL) :
+										BONUS_NONE;
+					squares[i + j * _width] = new SquareInfo(i, j, owner, STARTING_POINTS, bonus);
 					ownershipCounts[owner] += 1;
 				}
 			}
@@ -224,39 +248,26 @@ package puzzle.minigames.squares
 			//player 1 starting position = top left corner
 			if (playerID == PLAYER_1) {
 				square = squares[0 + 0 * _width];
-				square.ownerID = PLAYER_1;
-				square.points = STARTING_POINTS * 4;
-				ownershipCounts[PLAYER_1] = 1;
-				ownershipCounts[PLAYER_NONE] -= 1;
-				pointCounts[PLAYER_1] = square.points;
 			}
 			//player 2 starting position = bottom right corner
 			else if (playerID == PLAYER_2) {
 				square = squares[(_width - 1) + (_height - 1) * _width];
-				square.ownerID = PLAYER_2;
-				square.points = STARTING_POINTS * 4;
-				ownershipCounts[PLAYER_2] = 1;
-				ownershipCounts[PLAYER_NONE] -= 1;
-				pointCounts[PLAYER_2] = square.points;
 			}
 			//player 3 starting position = bottom left corner
 			else if (playerID == PLAYER_3) {
 				square = squares[(_width - 1) + 0 * _width];
-				square.ownerID = PLAYER_3;
-				square.points = STARTING_POINTS * 4;
-				ownershipCounts[PLAYER_3] = 1;
-				ownershipCounts[PLAYER_NONE] -= 1;
-				pointCounts[PLAYER_3] = square.points;
 			}
 			//player 4 starting position = top right corner
 			else if (playerID == PLAYER_4) {
 				square = squares[0 + (_height - 1) * _width];
-				square.ownerID = PLAYER_4;
-				square.points = STARTING_POINTS * 4;
-				ownershipCounts[PLAYER_4] = 1;
-				ownershipCounts[PLAYER_NONE] -= 1;
-				pointCounts[PLAYER_4] = square.points;
 			}
+			
+			square.ownerID = playerID;
+			square.points = STARTING_POINTS * 4;
+			square.bonusID = BONUS_NONE;
+			ownershipCounts[playerID] = 1;
+			ownershipCounts[PLAYER_NONE] -= 1;
+			pointCounts[playerID] = square.points;
 		}
 		
 		public function get width():int 
@@ -308,17 +319,7 @@ package puzzle.minigames.squares
 			}
 			attackedSquares = validAttacks;
 		}
-		
-/*	<>+Countdown() - called each tick; ticks clock down (1x or 4x); if clock 0, EndGame()
-	<>-EndGame():- Stop gameplay; Declare winner based on total tiles (& points if needed) owned by each player
-	<>+ResetGame() - Resets all squares to default state, and reverts time
-	<>+AttackSquare(playerID,x,y):bool - add attack to list; true if successful; false if square out of reach
-	<>+CaptureSquare(playerID,points,x,y) - square taken off atked list (canceling other atks); square changes owner and points; bonus applied
-	--(adjust player owner counters)
-	<>+GetIndex(x,y):SquareInfo
-	<>+GetAttackedSquares:list<AttackedSquare(playerID,x,y)>
-	FIELDS
-	->list<SquareInfo>, list<AttackedSquare>, list<PlayerStats(numSquares, totalScore)>, time:int*/
+
 	}
 
 }
