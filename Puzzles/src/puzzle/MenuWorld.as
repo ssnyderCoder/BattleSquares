@@ -54,6 +54,8 @@ package puzzle
 			var background:Image = new Image(Assets.MAIN_BACKGROUND);
 			background.scale = 5;
 			this.addGraphic(background, DisplayLayers.BACKGROUND_LAYER);
+			var title:Image = new Image(Assets.TITLE);
+			this.addGraphic(title, 0, 200, 50);
 			
 			player2Difficulty = DIFFICULTY_EASY;
 			player3Difficulty = DIFFICULTY_NONE;
@@ -70,16 +72,16 @@ package puzzle
 		
 		private function initButtons():void 
 		{
-			newGameButton = new GameButton("new", 250, 50, "New Game");
-			player1Button = new GameButton("p1", 250, 50, "Player 1: Human");
-			player2Button = new GameButton("p2", 250, 150, "Player 2: " + DIFFICULTY_TEXTS[player2Difficulty]);
-			player3Button = new GameButton("p3", 250, 250, "Player 3: " + DIFFICULTY_TEXTS[player3Difficulty]);
-			player4Button = new GameButton("p4", 250, 350, "Player 4: " + DIFFICULTY_TEXTS[player4Difficulty]);
-			beginButton = new GameButton("begin", 250, 450, "Begin");
-			backButton = new GameButton("back", 250, 550, "Back to Main Menu");
-			timeButton = new GameButton("time", 600, 50, "Game Length: " + timeSettingInMinutes + " Minute(s)");
-			blockedRarityButton = new GameButton("blocked", 600, 150, "Blocked Tiles: " + RARITY_TEXTS[blockedRarityIndex]);
-			bonusRarityButton = new GameButton("bonus", 600, 250, "Bonus Tiles: " + RARITY_TEXTS[blockedRarityIndex]);
+			newGameButton = new GameButton("new", 300, 125, "New Game");
+			player1Button = new GameButton("p1", 200, 125, "Player 1: Human");
+			player2Button = new GameButton("p2", 200, 200, "Player 2: " + DIFFICULTY_TEXTS[player2Difficulty]);
+			player3Button = new GameButton("p3", 200, 275, "Player 3: " + DIFFICULTY_TEXTS[player3Difficulty]);
+			player4Button = new GameButton("p4", 200, 350, "Player 4: " + DIFFICULTY_TEXTS[player4Difficulty]);
+			beginButton = new GameButton("begin", 200, 425, "Begin");
+			backButton = new GameButton("back", 200, 500, "Back to Main Menu");
+			timeButton = new GameButton("time", 550, 125, "Game Length: " + timeSettingInMinutes + " Minute(s)");
+			blockedRarityButton = new GameButton("blocked", 550, 200, "Blocked Tiles: " + RARITY_TEXTS[blockedRarityIndex]);
+			bonusRarityButton = new GameButton("bonus", 550, 275, "Bonus Tiles: " + RARITY_TEXTS[blockedRarityIndex]);
 			
 			this.add(newGameButton);
 			this.add(player1Button);
