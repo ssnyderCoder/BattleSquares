@@ -5,6 +5,7 @@ package puzzle.minigames.squares
 	import net.flashpunk.graphics.*;
 	import net.flashpunk.utils.*;
 	import puzzle.Assets;
+	import puzzle.minigames.GameConfig;
 	import puzzle.minigames.squares.gui.AttackArrow;
 	import puzzle.minigames.squares.gui.AttackArrowDisplay;
 	import puzzle.minigames.squares.gui.InfoDisplay;
@@ -42,13 +43,13 @@ package puzzle.minigames.squares
 		
 		
 		//constructor
-		public function GameSquares(x:Number=0, y:Number=0, numPlayers:int=4, secondsPerRound:int=60) 
+		public function GameSquares(x:Number, y:Number, gameConfig:GameConfig) 
 		{
 			this.x = x;
 			this.y = y;
 			this.setHitbox(300, 300);
 			
-			gameRules = new GameSquaresRules(8, 8, numPlayers, secondsPerRound);
+			gameRules = new GameSquaresRules(8, 8, gameConfig);
 			leaderboard = new LeaderboardDisplay(this.x + 302, this.y + 30, gameRules); //added to world after this game added
 			var background:Graphic = new Stamp(Assets.SQUARE_GAME_BACKGROUND);
 			squareGridDisplay = new Tilemap(Assets.SQUARES, 256, 256, SQUARE_WIDTH, SQUARE_HEIGHT);

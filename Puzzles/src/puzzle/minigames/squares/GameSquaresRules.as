@@ -1,6 +1,7 @@
 package puzzle.minigames.squares 
 {
 	import net.flashpunk.FP;
+	import puzzle.minigames.GameConfig;
 	/**
 	 * A custom size grid with a custom number of square colors.
 	 * 
@@ -27,7 +28,6 @@ package puzzle.minigames.squares
 		public static const PLAYER_NONE:int = 4;
 		public static const PLAYER_BLOCKED:int = 5;
 		private static const BLOCKED_SQUARE:SquareInfo = new SquareInfo(-1, -1, PLAYER_BLOCKED, 0, 0);
-		private static const BLOCKED_SQUARE_CHANCE:Number = 0.5;
 		
 		public static const STARTING_POINTS:int = 50;
 		
@@ -35,7 +35,6 @@ package puzzle.minigames.squares
 		public static const BONUS_2X:int = 1;
 		public static const BONUS_50_ALL:int = 2;
 		public static const BONUS_ALL_POINTS:int = 50;
-		private static const BONUS_CHANCE:Number = 0.4;
 		
 		private var _width:int;
 		private var _height:int;
@@ -44,6 +43,8 @@ package puzzle.minigames.squares
 		private var _clockTickingFaster:Boolean = false;
 		
 		private var timePerRound:int; //seconds
+		private var blockedSquareChance:Number;
+		private var bonusSquareChance:Number;
 		private var winnerID:int;
 		
 		private var squares:Array; //acts as 2d grid containing square information
@@ -51,16 +52,18 @@ package puzzle.minigames.squares
 		private var pointCounts:Array; //contains total points for each player
 		private var attackedSquares:Array; //contains information on each attack being done
 		
-		public function GameSquaresRules(width:int, height:int, numPlayers:int, secondsPerRound:int = 40) 
+		public function GameSquaresRules(width:int, height:int, config:GameConfig) 
 		{
 			this._width = width;
 			this._height = height;
-			this._numPlayers = numPlayers > MAX_PLAYERS ? MAX_PLAYERS : numPlayers;
+			this._numPlayers = config.numPlayers > MAX_PLAYERS ? MAX_PLAYERS : config.numPlayers;
 			this.squares = new Array();
 			this.ownershipCounts = new Array();
 			this.pointCounts = new Array();
 			this.attackedSquares = new Array();
-			this.timePerRound = secondsPerRound;
+			this.blockedSquareChance = config.blockedTileChance;
+			this.bonusSquareChance = config.bonusTileChance;
+			this.timePerRound = config.secondsPerRound;
 			this._timeRemaining = timePerRound;
 			this.winnerID = PLAYER_NONE;
 			generateSquareGrid();
@@ -233,10 +236,10 @@ package puzzle.minigames.squares
 			//reset grid
 			for (var j:int = 0; j < _height; j++) {
 				for (var i:int = 0; i < _width; i++) {
-					var owner:int = i > 0 && i < width - 1 && j > 0 && j < height - 1 && Math.random() < BLOCKED_SQUARE_CHANCE ? 								PLAYER_BLOCKED : PLAYER_NONE;
-					var bonus:int = owner == PLAYER_NONE && Math.random() < BONUS_CHANCE ? 
-										(Math.random() < 0.75 ? BONUS_2X : BONUS_50_ALL) :
-										BONUS_NONE;
+					var owner:int = i > 0 && i < width - 1 && j > 0 && j < height - 1 && Math.random() < blockedSquareChance ? 								PLAYER_BLOCKED : PLAYER_NONE;
+					var bonus:int = owner == PLAYER_NONE && Math.random() < bonusSquareChance ? 
+											 (Math.random() < 0.75 ? BONUS_2X : BONUS_50_ALL) :
+											 BONUS_NONE;
 					squares[i + j * _width] = new SquareInfo(i, j, owner, STARTING_POINTS, bonus);
 					ownershipCounts[owner] += 1;
 				}

@@ -3,6 +3,7 @@ package puzzle
 	import net.flashpunk.FP;
 	import net.flashpunk.graphics.Image;
 	import net.flashpunk.World;
+	import puzzle.minigames.GameConfig;
 	import puzzle.minigames.spheres.GameSpheres;
 	import puzzle.minigames.squares.AttackInfo;
 	import puzzle.minigames.squares.GameSquares;
@@ -21,9 +22,8 @@ package puzzle
 		private var gameSquares:GameSquares;
 		private var playerHuman:PlayerHuman;
 		private var players:Array;
-		private var numPlayers:int = 0;
-		private var secondsPerRound:int = 60;
-		public function GameWorld() 
+		private var gameConfig:GameConfig;
+		public function GameWorld(gameConfig:GameConfig) 
 		{
 			super();
 			var background:Image = new Image(Assets.MAIN_BACKGROUND);
@@ -33,7 +33,7 @@ package puzzle
 			playerHuman = new PlayerHuman(HUMAN_ID);
 			players = new Array();
 			players.push(playerHuman);
-			numPlayers++;
+			this.gameConfig = gameConfig;
 			gameSpheres = new GameSpheres(400, 0);
 			gameSpheres.visible = false;
 			gameSpheres.active = false;
@@ -44,7 +44,7 @@ package puzzle
 		override public function begin():void 
 		{
 			super.begin();
-			gameSquares = new GameSquares(20, 0, numPlayers, secondsPerRound);
+			gameSquares = new GameSquares(20, 0, gameConfig);
 			for (var i:int = 0; i < players.length; i++){
 				var player:Player = players[i];
 				if (player) {
@@ -130,15 +130,8 @@ package puzzle
 			}
 			
 			if (ai) {
-				if (!players[playerID]) {
-					numPlayers++;
-				}
 				players[playerID] = ai;
 			}
-		}
-		
-		public function setTimeInSeconds(time:int):void {
-			secondsPerRound = time;
 		}
 	}
 }
