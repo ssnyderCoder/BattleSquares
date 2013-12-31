@@ -7,7 +7,7 @@ package puzzle.minigames.squares.gui
 	import net.flashpunk.Tween;
 	import net.flashpunk.utils.Ease;
 	import puzzle.Assets;
-	import puzzle.minigames.squares.GameSquares;
+	import puzzle.minigames.squares.GameSquaresConstants;
 	import puzzle.minigames.squares.GameSquaresRules;
 	
 	/**
@@ -18,7 +18,7 @@ package puzzle.minigames.squares.gui
 	{
 		private static const LOAD_TIME:Number = 1.8;
 		private static const RANK_TRANSITION_TIME:Number = 0.5;
-		private static const DISPLAY_SPACE:int = GameSquares.SQUARE_WIDTH + 10;
+		private static const DISPLAY_SPACE:int = GameSquaresConstants.SQUARE_WIDTH + 10;
 		private var gameRules:GameSquaresRules;
 		private var numPlayers:int = 0;
 		private var playerCountGraphics:Array; //holds Text graphics for each player (total territory count)
@@ -69,7 +69,7 @@ package puzzle.minigames.squares.gui
 			playerCountGraphics[playerID] = text;
 			graphicList.add(text);
 			
-			var sprite:Spritemap = new Spritemap(Assets.SQUARES, GameSquares.SQUARE_WIDTH, GameSquares.SQUARE_HEIGHT);
+			var sprite:Spritemap = new Spritemap(Assets.SQUARES, GameSquaresConstants.SQUARE_WIDTH, GameSquaresConstants.SQUARE_HEIGHT);
 			sprite.frame = playerID;
 			sprite.y = DISPLAY_SPACE * numPlayers;
 			sprite.scaleX = 0;

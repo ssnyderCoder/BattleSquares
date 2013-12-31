@@ -18,12 +18,7 @@ package puzzle.minigames.squares
 	 * @author Sean Snyder
 	 */
 	public class GameSquares extends Entity 
-	{
-		public static const SQUARE_WIDTH:int = 32;
-		public static const SQUARE_HEIGHT:int = 32;
-		public static const SQUARE_2X_ID:int = 6;
-		public static const SQUARE_50_ALL_ID:int = 7;
-		
+	{	
 		private static const COLOR_WHITE:uint = 0xdddddd;
 		private static const COLOR_RED:uint = 0xcc1111;
 		
@@ -52,7 +47,8 @@ package puzzle.minigames.squares
 			gameRules = new GameSquaresRules(8, 8, gameConfig);
 			leaderboard = new LeaderboardDisplay(this.x + 302, this.y + 30, gameRules); //added to world after this game added
 			var background:Graphic = new Stamp(Assets.SQUARE_GAME_BACKGROUND);
-			squareGridDisplay = new Tilemap(Assets.SQUARES, 256, 256, SQUARE_WIDTH, SQUARE_HEIGHT);
+			squareGridDisplay = new Tilemap(Assets.SQUARES, 256, 256,
+											GameSquaresConstants.SQUARE_WIDTH, GameSquaresConstants.SQUARE_HEIGHT);
 			squareGridDisplay.x = 21;
 			squareGridDisplay.y = 21;
 			squareGridRect = new Rectangle(squareGridDisplay.x + x, squareGridDisplay.y + y,
@@ -182,10 +178,10 @@ package puzzle.minigames.squares
 					var square:SquareInfo = gameRules.getIndex(i, j);
 					var ownerID:int = square.ownerID;
 					if (square.bonusID == GameSquaresRules.BONUS_2X) {
-						ownerID = SQUARE_2X_ID;
+						ownerID = GameSquaresConstants.SQUARE_2X_ID;
 					}
 					else if (square.bonusID == GameSquaresRules.BONUS_50_ALL) {
-						ownerID = SQUARE_50_ALL_ID;
+						ownerID = GameSquaresConstants.SQUARE_50_ALL_ID;
 					}
 					squareGridDisplay.setTile(i, j, ownerID);
 				}

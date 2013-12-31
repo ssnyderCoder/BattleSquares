@@ -6,7 +6,7 @@ package puzzle.minigames.squares.gui
 	import net.flashpunk.Tween;
 	import net.flashpunk.utils.Ease;
 	import puzzle.Assets;
-	import puzzle.minigames.squares.GameSquares;
+	import puzzle.minigames.squares.GameSquaresConstants;
 	
 	/**
 	 * ...
@@ -22,14 +22,15 @@ package puzzle.minigames.squares.gui
 		{
 			this.x = x;
 			this.y = y;
-			var originalSprite:Spritemap = new Spritemap(Assets.SQUARES, GameSquares.SQUARE_WIDTH, GameSquares.SQUARE_HEIGHT);
+			var originalSprite:Spritemap = new Spritemap(Assets.SQUARES, GameSquaresConstants.SQUARE_WIDTH,
+														GameSquaresConstants.SQUARE_HEIGHT);
 			originalSprite.frame = prevPlayerID;
-			originalSprite.originX = GameSquares.SQUARE_WIDTH / 2;
-			originalSprite.originY = GameSquares.SQUARE_HEIGHT / 2;
-			sprite = new Spritemap(Assets.SQUARES, GameSquares.SQUARE_WIDTH, GameSquares.SQUARE_HEIGHT);
+			originalSprite.originX = GameSquaresConstants.SQUARE_WIDTH / 2;
+			originalSprite.originY = GameSquaresConstants.SQUARE_HEIGHT / 2;
+			sprite = new Spritemap(Assets.SQUARES, GameSquaresConstants.SQUARE_WIDTH, GameSquaresConstants.SQUARE_HEIGHT);
 			sprite.frame = newPlayerID;
-			sprite.originX = GameSquares.SQUARE_WIDTH / 2;
-			sprite.originY = GameSquares.SQUARE_HEIGHT / 2;
+			sprite.originX = GameSquaresConstants.SQUARE_WIDTH / 2;
+			sprite.originY = GameSquaresConstants.SQUARE_HEIGHT / 2;
 			sprite.scale = 0;
 			this.graphic = new Graphiclist(originalSprite, sprite);
 			

@@ -50,7 +50,7 @@ package puzzle.minigames.squares.gui
 		}
 		
 		//updates the appearance of the arrows that show player attacks
-		public function updateArrowDisplay():void 
+		private function updateArrowDisplay():void 
 		{
 			var attacks:Array = gameRules.getAttackedSquares();
 			for (var i:int = 0; i < MAX_ARROWS; i++) {
