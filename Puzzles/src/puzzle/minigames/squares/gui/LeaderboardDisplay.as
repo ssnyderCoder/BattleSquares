@@ -81,7 +81,7 @@ package puzzle.minigames.squares.gui
 			numPlayers++;
 		}
 		
-		override public function update():void  //not displaying properly
+		override public function update():void
 		{
 			super.update();
 			if (!hasLoaded) {
