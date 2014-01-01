@@ -11,6 +11,7 @@ package puzzle.minigames.squares
 	import puzzle.minigames.squares.gui.InfoDisplay;
 	import puzzle.minigames.squares.gui.LeaderboardDisplay;
 	import puzzle.minigames.squares.gui.SingleSquare;
+	import puzzle.minigames.squares.gui.TimeDisplay;
 	import puzzle.minigames.squares.gui.WinnerDisplay;
 	
 	/**
@@ -19,20 +20,18 @@ package puzzle.minigames.squares
 	 */
 	public class GameSquares extends Entity 
 	{	
-		private static const COLOR_WHITE:uint = 0xdddddd;
-		private static const COLOR_RED:uint = 0xcc1111;
 		
 		private var gameRules:GameSquaresRules;
 		
 		private var squareGridDisplay:Tilemap;
 		private var squareGridRect:Rectangle;
-		private var timeDisplay:Text;
 		
 		//supplementary displayed entities
 		private var infoBox:InfoDisplay; //displays info about squares that player hovers over
 		private var leaderboard:LeaderboardDisplay; //displays the number of tiles each player owns
 		private var winnerDisplay:WinnerDisplay; //displays the winner when the game ends
 		private var atkArrowDisplay:AttackArrowDisplay; //displays the arrows designating the player attacks
+		private var timeDisplay:TimeDisplay; //displays how much time remains
 		
 		private var gameHadBeenWon:Boolean = false;
 		
@@ -45,7 +44,6 @@ package puzzle.minigames.squares
 			this.setHitbox(300, 300);
 			
 			gameRules = new GameSquaresRules(8, 8, gameConfig);
-			leaderboard = new LeaderboardDisplay(this.x + 302, this.y + 30, gameRules); //added to world after this game added
 			var background:Graphic = new Stamp(Assets.SQUARE_GAME_BACKGROUND);
 			squareGridDisplay = new Tilemap(Assets.SQUARES, 256, 256,
 											GameSquaresConstants.SQUARE_WIDTH, GameSquaresConstants.SQUARE_HEIGHT);
@@ -53,8 +51,20 @@ package puzzle.minigames.squares
 			squareGridDisplay.y = 21;
 			squareGridRect = new Rectangle(squareGridDisplay.x + x, squareGridDisplay.y + y,
 											squareGridDisplay.width, squareGridDisplay.height);
-			timeDisplay = new Text("Time: 0", this.width / 2, this.height + 20);
-			this.graphic = new Graphiclist(background, squareGridDisplay, timeDisplay);
+			this.graphic = new Graphiclist(background, squareGridDisplay);
+			initHelperEntities();
+		}
+		
+		private function initHelperEntities():void 
+		{	
+			
+			infoBox = new InfoDisplay(this.x + 10, this.y + 380);
+			infoBox.visible = false;
+			atkArrowDisplay = new AttackArrowDisplay(squareGridRect.x, squareGridRect.y,
+													 squareGridDisplay.tileWidth, squareGridDisplay.tileHeight,
+													 gameRules);
+			timeDisplay = new TimeDisplay(this.x + this.width / 2, this.y + this.height + 20);
+			leaderboard = new LeaderboardDisplay(this.x + 302, this.y + 30, gameRules);
 		}
 		
 		override public function update():void 
@@ -107,7 +117,7 @@ package puzzle.minigames.squares
 		
 		//updates the appearance of the dynamic displays, like the timer
 		private function updateDisplay():void {
-			setTimeDisplay(gameRules.timeRemaining);
+			timeDisplay.setTime(gameRules.timeRemaining, isClockTickingFaster())
 			updateInfoBoxDisplay();
 		}
 		
@@ -129,31 +139,14 @@ package puzzle.minigames.squares
 			}
 		}
 		
-		//sets the displayed timer to the provided time (in seconds)
-		private function setTimeDisplay(timeRemaining:int):void 
-		{
-			var minutes:int = timeRemaining / 60;
-			var seconds:int = timeRemaining % 60;
-			timeDisplay.text = "Time: " + minutes + ":" + (seconds < 10 ? "0" + seconds : seconds);
-			timeDisplay.color = isClockTickingFaster() ? COLOR_RED : COLOR_WHITE;
-		}
-		
 		override public function added():void 
 		{
 			super.added();
-			
-			updateSquareGridDisplay();
-			
-			infoBox = new InfoDisplay(this.x + 10, this.y + 380);
-			infoBox.visible = false;
 			this.world.add(infoBox);
-			
 			this.world.add(leaderboard);
-			
-			atkArrowDisplay = new AttackArrowDisplay(squareGridRect.x, squareGridRect.y,
-													 squareGridDisplay.tileWidth, squareGridDisplay.tileHeight,
-													 gameRules);
 			this.world.add(atkArrowDisplay);
+			this.world.add(timeDisplay);
+			updateSquareGridDisplay();
 		}
 		
 		override public function removed():void 
@@ -162,6 +155,7 @@ package puzzle.minigames.squares
 			this.world.remove(infoBox);
 			this.world.remove(leaderboard);
 			this.world.remove(atkArrowDisplay);
+			this.world.remove(timeDisplay);
 		}
 	
 		
