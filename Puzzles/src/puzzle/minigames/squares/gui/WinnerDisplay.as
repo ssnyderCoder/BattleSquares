@@ -28,7 +28,7 @@ package puzzle.minigames.squares.gui
 		{
 			this.x = x;
 			this.y = y;
-			winnerText = new Text(winnerName + " has won!", 20, 50);
+			winnerText = new Text(winnerName + " has won!", 30, 50);
 			winnerText.size = 24;
 			background = new Image(Assets.SPHERE_GAME_BACKGROUND);
 			background.scaleX = 0.5;

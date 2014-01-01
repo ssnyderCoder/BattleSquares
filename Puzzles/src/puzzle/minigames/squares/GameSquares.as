@@ -8,6 +8,7 @@ package puzzle.minigames.squares
 	import puzzle.minigames.GameConfig;
 	import puzzle.minigames.squares.gui.AttackArrow;
 	import puzzle.minigames.squares.gui.AttackArrowDisplay;
+	import puzzle.minigames.squares.gui.BonusIcon;
 	import puzzle.minigames.squares.gui.InfoDisplay;
 	import puzzle.minigames.squares.gui.LeaderboardDisplay;
 	import puzzle.minigames.squares.gui.SingleSquare;
@@ -183,12 +184,53 @@ package puzzle.minigames.squares
 		}
 		
 		public function captureSquare(playerAttackInfo:AttackInfo):void {
-			createShrinkingSquare(playerAttackInfo.attackerID, playerAttackInfo.tileX, playerAttackInfo.tileY);
-			gameRules.captureSquare(playerAttackInfo.attackerID, playerAttackInfo.currentPoints,
-									playerAttackInfo.tileX, playerAttackInfo.tileY);
-			leaderboard.updateDisplay();
-			updateSquareGridDisplay();
+			var tile:SquareInfo = gameRules.getIndex(playerAttackInfo.tileX, playerAttackInfo.tileY);
+			var bonusID:int = tile.bonusID;
+			if(gameRules.captureSquare(playerAttackInfo.attackerID, playerAttackInfo.currentPoints,
+				playerAttackInfo.tileX, playerAttackInfo.tileY)){
+					createShrinkingSquare(playerAttackInfo.attackerID, playerAttackInfo.tileX, playerAttackInfo.tileY);;
+					leaderboard.updateDisplay();
+					updateSquareGridDisplay();
+					createBonusIcons(bonusID, playerAttackInfo);
+				}
 		}
+		
+		private function createBonusIcons(bonusID:int, playerAttackInfo:AttackInfo):void 
+		{
+			if (bonusID == GameSquaresRules.BONUS_NONE) {
+				return;
+			}
+			else if (bonusID == GameSquaresRules.BONUS_2X) {
+				createBonusIcon(BonusIcon.BONUS_2X, playerAttackInfo.tileX, playerAttackInfo.tileY);
+			}
+			else if (bonusID == GameSquaresRules.BONUS_50_ALL) {
+				createBonusIcons50All(playerAttackInfo.attackerID);
+			}
+		}
+		
+		private function createBonusIcon(iconID:int, tileX:int, tileY:int):void 
+		{
+			var xPos:Number = squareGridRect.x + (squareGridDisplay.tileWidth * (tileX)) + 6;
+			var yPos:Number = squareGridRect.y + (squareGridDisplay.tileHeight * (tileY)) + 6;
+			var bonusIcon:BonusIcon = new BonusIcon(xPos, yPos, iconID);
+			this.world.add(bonusIcon);
+		}
+		
+		private function createBonusIcons50All(attackerID:int):void 
+		{
+			var height:int = gameRules.height;
+			var width:int = gameRules.width;
+			for (var j:int = 0; j < height; j++) {
+				for (var i:int = 0; i < width; i++) {
+					var square:SquareInfo = gameRules.getIndex(i, j);
+					var ownerID:int = square.ownerID;
+					if (ownerID == attackerID) {
+						createBonusIcon(BonusIcon.BONUS_50_ALL, i, j);
+					}
+				}
+			}
+		}
+
 		
 		private function createShrinkingSquare(newOwnerID:int, tileX:int, tileY:int):void 
 		{
