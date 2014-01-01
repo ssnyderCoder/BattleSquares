@@ -85,7 +85,7 @@ package puzzle.minigames.squares
 			updateDisplay();
 		}
 		
-		//returns the combined xy index of the tile found at the provided mouse coordinates.
+		//returns the tile found at the provided mouse coordinates.
 		public function getTileAtCoordinates(mouseX:int, mouseY:int):SquareInfo {
 				//get mouse position
 				var tileX:int;
@@ -104,16 +104,6 @@ package puzzle.minigames.squares
 		public function shutdownGame():void {
 			this.world.remove(winnerDisplay);
 			this.active = false;
-		}
-		
-		//returns of the x index of the provided xy tile index
-		public function getTileX(tileIndex:int):int {
-			return tileIndex % gameRules.width;
-		}
-		
-		//returns of the y index of the provided xy tile index
-		public function getTileY(tileIndex:int):int {
-			return tileIndex / gameRules.width;
 		}
 		
 		//updates the appearance of the dynamic displays, like the timer

@@ -15,14 +15,18 @@ package puzzle.minigames.squares.player
 		public static const EASY_DIFFICULTY:Number = 1.5;
 		public static const MEDIUM_DIFFICULTY:Number = 3.0;
 		public static const HARD_DIFFICULTY:Number = 6.0;
-		public static const MAX_MOVES:int = 15;
-		public static const EXTRA_MOVES_RATE:Number = 0.13;
-		private static const POINT_GAINS:Array = new Array(2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 6, 6, 7, 8, 9, 10, 11)
+		private static const POINT_GAINS:Array = new Array( 2, 2, 2, 2, 2, 2, 2, 2, 2,
+															3, 3, 3, 3, 3, 3, 3, 3,
+															4, 4, 4, 4, 4, 4, 4,
+															5, 5, 5, 5, 5, 5,
+															6, 6, 6, 6, 6,
+															7, 8, 9, 10, 11);
+		private static const SPHERES_PER_GAME:int = 64;
 		private var captureChance:Number;
 		private var actionChance:Number; //chance to take action
 		private var difficulty:Number; //affects how quickly decisions are made
 		private var timePassed:Number = 0;
-		private var numMoves:int = 0;
+		private var spheresRemaining:int;
 		public function PlayerAI(playerID:int, capturePerc:Number = 0.9, actionPerc:Number = 0.25, aiDifficulty:Number = EASY_DIFFICULTY) 
 		{
 			super(playerID);
@@ -91,6 +95,7 @@ package puzzle.minigames.squares.player
 					 randomIndex == 3 ? yIndex + 1 :
 					 yIndex;
 			currentAttack =  game.declareAttack(this.playerID, xIndex, yIndex);
+			spheresRemaining = SPHERES_PER_GAME;
 			trace("Player " + this.playerID + " attacked " + xIndex + " " + yIndex);
 		}
 		
@@ -109,34 +114,49 @@ package puzzle.minigames.squares.player
 		private function continueAttack(game:GameSquares):void 
 		{
 			//capture if possible
-			if (currentAttack.currentPoints > currentAttack.capturePoints && Math.random() < captureChance) {
-				trace("player " + this.playerID + " captured a square");
-				game.captureSquare(currentAttack);
-				Assets.SFX_TILE_CAPTURE_AI.play(0.5);
-				currentAttack = null;
-				numMoves = 0;
+			if (currentAttack.currentPoints > currentAttack.capturePoints && 
+				(spheresRemaining <= 0 || Math.random() < captureChance)) {
+				captureSquare(game);
 			}
-			//may fail attack if too many moves done
-			else if (currentAttack.currentPoints <= currentAttack.capturePoints &&
-					 numMoves > MAX_MOVES && Math.random() < EXTRA_MOVES_RATE * difficulty) {
-				trace("player " + this.playerID + " failed his attack");
-				currentAttack.isValid = false;
-				currentAttack = null;
-				numMoves = 0;
+			//fail attack if out of spheres
+			else if (spheresRemaining <= 0) {
+				failAttack();
 			}
 			else { //gain points
-				var difficultyModifier:int = difficulty == EASY_DIFFICULTY   ? -2 :
-											 difficulty == MEDIUM_DIFFICULTY ?  0 :
-											 difficulty == HARD_DIFFICULTY   ?  2 : 0;
-				var pointValue:int = FP.choose(POINT_GAINS) - (currentAttack.defenseValue * 2) + difficultyModifier;
-				pointValue = pointValue < 2 ? 2 : pointValue;
-				currentAttack.currentPoints += pointValue * (pointValue - 1);
-				trace("player " + this.playerID + " gained " + (pointValue * (pointValue - 1)) + " points");
-				numMoves += difficulty == EASY_DIFFICULTY && Math.random() < 0.5 ? 0 :
-							difficulty == HARD_DIFFICULTY && Math.random() < 0.5 ? 2 :
-																				   1;
+				gainPoints();
 			}
 		}
+		
+		private function captureSquare(game:GameSquares):void 
+		{
+			trace("player " + this.playerID + " captured a square");
+			game.captureSquare(currentAttack);
+			Assets.SFX_TILE_CAPTURE_AI.play(0.5);
+			currentAttack = null;
+		}
+		
+		private function failAttack():void 
+		{
+			trace("player " + this.playerID + " failed his attack");
+			currentAttack.isValid = false;
+			currentAttack = null;
+		}
+		
+		private function gainPoints():void 
+		{
+			var difficultyModifier:int = difficulty == EASY_DIFFICULTY   ? -2 :
+										 difficulty == MEDIUM_DIFFICULTY ?  0 :
+										 difficulty == HARD_DIFFICULTY   ?  2 : 0;
+			var spheresCleared:int = FP.choose(POINT_GAINS) - (currentAttack.defenseValue * 5) + difficultyModifier;
+			if (spheresCleared < 2) {
+				trace("player " + this.playerID + " gained 0 points");
+				return;
+			}
+			currentAttack.currentPoints += spheresCleared * (spheresCleared - 1);
+			spheresRemaining -= spheresCleared;
+			trace("player " + this.playerID + " gained " + (spheresCleared * (spheresCleared - 1)) + " points");
+		}
+
 		
 	}
 

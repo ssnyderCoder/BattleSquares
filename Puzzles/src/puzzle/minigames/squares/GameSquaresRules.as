@@ -254,10 +254,10 @@ package puzzle.minigames.squares
 			for (var j:int = 0; j < _height; j++) {
 				for (var i:int = 0; i < _width; i++) {
 					var owner:int = i > 0 && i < width - 1 && j > 0 && j < height - 1 && Math.random() < blockedSquareChance ? 								PLAYER_BLOCKED : PLAYER_NONE;
+					var points:int = owner == PLAYER_BLOCKED ? 0 : STARTING_POINTS;
 					var bonus:int = owner == PLAYER_NONE && Math.random() < bonusSquareChance ? 
-											 (Math.random() < 0.75 ? BONUS_2X : BONUS_50_ALL) :
-											 BONUS_NONE;
-					squares[i + j * _width] = new SquareInfo(i, j, owner, STARTING_POINTS, bonus);
+									(Math.random() < 0.75 ? BONUS_2X : BONUS_50_ALL) : BONUS_NONE;
+					squares[i + j * _width] = new SquareInfo(i, j, owner, points, bonus);
 					ownershipCounts[owner] += 1;
 				}
 			}
