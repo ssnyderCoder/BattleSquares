@@ -21,12 +21,10 @@ package puzzle
 		private var gameSpheres:GameSpheres;
 		private var gameSquares:GameSquares;
 		private var playerHuman:PlayerHuman;
-		private var players:Array;
 		private var gameConfig:GameConfig;
 		public function GameWorld(gameConfig:GameConfig) 
 		{
 			super();
-			
 			this.gameConfig = gameConfig;
 			gameSpheres = new GameSpheres(400, 0);
 			gameSpheres.visible = false;
@@ -50,7 +48,7 @@ package puzzle
 		override public function update():void 
 		{
 			super.update();
-			updatePlayers();
+			updateHumanScore();
 			updateMusic();
 			updateUI();
 		}
@@ -61,11 +59,6 @@ package puzzle
 				Assets.SFX_GAME_MUSIC.stop();
 				Assets.SFX_GAME_MUSIC_SPED_UP.loop(0.35);
 			}
-		}
-		
-		private function updatePlayers():void 
-		{
-			updateHumanScore();
 		}
 		
 		private function updateHumanScore():void 
