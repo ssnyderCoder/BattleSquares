@@ -5,6 +5,9 @@ package puzzle
 	import net.flashpunk.utils.Input;
 	import net.flashpunk.World;
 	import puzzle.minigames.GameConfig;
+	import puzzle.minigames.squares.player.IPlayerFactory;
+	import puzzle.minigames.squares.player.PlayerConstants;
+	import puzzle.minigames.squares.player.PlayerFactory;
 	
 	/**
 	 * ...
@@ -12,11 +15,7 @@ package puzzle
 	 */
 	public class MenuWorld extends World 
 	{
-		public static const DIFFICULTY_NONE:int = 0;
-		public static const DIFFICULTY_EASY:int = 1;
-		public static const DIFFICULTY_MEDIUM:int = 2;
-		public static const DIFFICULTY_HARD:int = 3;
-		private static const DIFFICULTY_TEXTS:Array = new Array("None", "CPU - Easy", "CPU - Medium", "CPU - Hard");
+		private static const PLAYER_TEXTS:Array = new Array("None", "CPU - Easy", "CPU - Medium", "CPU - Hard");
 		
 		private static const MIN_TIME_IN_MINUTES:int = 1;
 		private static const MAX_TIME_IN_MINUTES:int = 5;
@@ -40,13 +39,15 @@ package puzzle
 		private var buttonClicked:Boolean = false;
 		
 		//settings
-		private var player2Difficulty:int;
-		private var player3Difficulty:int;
-		private var player4Difficulty:int;
+		private var player2Setting:int;
+		private var player3Setting:int;
+		private var player4Setting:int;
 		private var gameConfig:GameConfig;
 		private var timeSettingInMinutes:int;
 		private var blockedRarityIndex:int = 1;
 		private var bonusRarityIndex:int = 1;
+		
+		private var playerFactory:IPlayerFactory = new PlayerFactory();
 		
 		public function MenuWorld() 
 		{
@@ -57,9 +58,9 @@ package puzzle
 			var title:Image = new Image(Assets.TITLE);
 			this.addGraphic(title, 0, 200, 50);
 			
-			player2Difficulty = DIFFICULTY_EASY;
-			player3Difficulty = DIFFICULTY_NONE;
-			player4Difficulty = DIFFICULTY_NONE;
+			player2Setting = PlayerConstants.PLAYER_AI_EASY;
+			player3Setting = PlayerConstants.PLAYER_NONE;
+			player4Setting = PlayerConstants.PLAYER_NONE;
 			timeSettingInMinutes = MIN_TIME_IN_MINUTES;
 			gameConfig = new GameConfig();
 			gameConfig.numPlayers = 1;
@@ -74,9 +75,9 @@ package puzzle
 		{
 			newGameButton = new GameButton("new", 300, 125, "New Game");
 			player1Button = new GameButton("p1", 200, 125, "Player 1: Human");
-			player2Button = new GameButton("p2", 200, 200, "Player 2: " + DIFFICULTY_TEXTS[player2Difficulty]);
-			player3Button = new GameButton("p3", 200, 275, "Player 3: " + DIFFICULTY_TEXTS[player3Difficulty]);
-			player4Button = new GameButton("p4", 200, 350, "Player 4: " + DIFFICULTY_TEXTS[player4Difficulty]);
+			player2Button = new GameButton("p2", 200, 200, "Player 2: " + PLAYER_TEXTS[player2Setting]);
+			player3Button = new GameButton("p3", 200, 275, "Player 3: " + PLAYER_TEXTS[player3Setting]);
+			player4Button = new GameButton("p4", 200, 350, "Player 4: " + PLAYER_TEXTS[player4Setting]);
 			beginButton = new GameButton("begin", 200, 425, "Begin");
 			backButton = new GameButton("back", 200, 500, "Back to Main Menu");
 			timeButton = new GameButton("time", 550, 125, "Game Length: " + timeSettingInMinutes + " Minute(s)");
@@ -120,49 +121,25 @@ package puzzle
 		
 		private function handleClickedButtons():void 
 		{
-			 //New Game > disappear and make other buttons appear
 			if (newGameButton.visible && newGameButton.hasBeenClicked) {
+				showNewGameMenu();
 				Assets.SFX_SPHERE_CLEAR.play(0.1);
-				newGameButton.visible = false;
-				player1Button.visible = true;
-				player2Button.visible = true;
-				player3Button.visible = true;
-				player4Button.visible = true;
-				beginButton.visible = true;
-				backButton.visible = true;
-				timeButton.visible = true;
-				blockedRarityButton.visible = true;
-				bonusRarityButton.visible = true;
 			}
-			//Player 2 > Alternates CPU difficulty
 			else if (player2Button.visible && player2Button.hasBeenClicked) {
-				player2Difficulty = setPlayerDifficulty(1, player2Difficulty + 1, player2Button)
+				player2Setting = setPlayerSetting(1, player2Setting + 1, player2Button)
 			}
-			//Player 3 > Alternates CPU difficulty
 			else if (player3Button.visible && player3Button.hasBeenClicked) {
-				player3Difficulty = setPlayerDifficulty(2, player3Difficulty + 1, player3Button)
+				player3Setting = setPlayerSetting(2, player3Setting + 1, player3Button)
 			}
-			//Player 4 > Alternates CPU difficulty
 			else if (player4Button.visible && player4Button.hasBeenClicked) {
-				player4Difficulty = setPlayerDifficulty(3, player4Difficulty + 1, player4Button)
+				player4Setting = setPlayerSetting(3, player4Setting + 1, player4Button)
 			}
-			//Begin > Begins a new game with those difficulty settings
 			else if (beginButton.visible && beginButton.hasBeenClicked) {
 				switchToGameWorld();
 			}
-			//Back > New game button reappears and all other buttons disappear
 			else if (backButton.visible && backButton.hasBeenClicked) {
+				showMainMenu();
 				Assets.SFX_SPHERE_CLEAR.play(0.1);
-				newGameButton.visible = true;
-				player1Button.visible = false;
-				player2Button.visible = false;
-				player3Button.visible = false;
-				player4Button.visible = false;
-				beginButton.visible = false;
-				backButton.visible = false;
-				timeButton.visible = false;
-				blockedRarityButton.visible = false;
-				bonusRarityButton.visible = false;
 			}
 			//Time > Alternates Time Setting
 			else if (timeButton.visible && timeButton.hasBeenClicked) {
@@ -184,24 +161,52 @@ package puzzle
 			}
 		}
 		
-		private function setPlayerDifficulty(playerID:int, playerDifficulty:int, playerButton:GameButton):int 
+		private function setPlayerSetting(playerID:int, playerSetting:int, playerButton:GameButton):int 
 		{
-			var newPlayerDifficulty:int = playerDifficulty > DIFFICULTY_HARD ? DIFFICULTY_NONE : playerDifficulty;
-			var difficultyText:String = DIFFICULTY_TEXTS[newPlayerDifficulty];
-			playerButton.setText("Player " + (playerID + 1) + ": " + difficultyText);
-			return newPlayerDifficulty;
+			var newPlayerSetting:int = playerSetting > PlayerConstants.PLAYER_AI_HARD ? PlayerConstants.PLAYER_NONE : playerSetting;
+			var playerText:String = PLAYER_TEXTS[newPlayerSetting];
+			playerButton.setText("Player " + (playerID + 1) + ": " + playerText);
+			return newPlayerSetting;
 		}
 		
 		private function switchToGameWorld():void 
 		{	
-			gameConfig.numPlayers += player2Difficulty == DIFFICULTY_NONE ? 0 : 1;
-			gameConfig.numPlayers += player3Difficulty == DIFFICULTY_NONE ? 0 : 1;
-			gameConfig.numPlayers += player4Difficulty == DIFFICULTY_NONE ? 0 : 1;
+			gameConfig.numPlayers += player2Setting == PlayerConstants.PLAYER_NONE ? 0 : 1;
+			gameConfig.numPlayers += player3Setting == PlayerConstants.PLAYER_NONE ? 0 : 1;
+			gameConfig.numPlayers += player4Setting == PlayerConstants.PLAYER_NONE ? 0 : 1;
 			var gameWorld:GameWorld = new GameWorld(gameConfig);
-			gameWorld.setPlayerDifficulty(GameWorld.HUMAN_ID + 1, player2Difficulty);
-			gameWorld.setPlayerDifficulty(GameWorld.HUMAN_ID + 2, player3Difficulty);
-			gameWorld.setPlayerDifficulty(GameWorld.HUMAN_ID + 3, player4Difficulty);
+			gameWorld.addPlayer(playerFactory.createPlayer(GameWorld.HUMAN_ID + 1, player2Setting));
+			gameWorld.addPlayer(playerFactory.createPlayer(GameWorld.HUMAN_ID + 2, player3Setting));
+			gameWorld.addPlayer(playerFactory.createPlayer(GameWorld.HUMAN_ID + 3, player4Setting));
 			FP.world = gameWorld;
+		}
+		
+		private function showMainMenu():void 
+		{
+			newGameButton.visible = true;
+			player1Button.visible = false;
+			player2Button.visible = false;
+			player3Button.visible = false;
+			player4Button.visible = false;
+			beginButton.visible = false;
+			backButton.visible = false;
+			timeButton.visible = false;
+			blockedRarityButton.visible = false;
+			bonusRarityButton.visible = false;
+		}
+		
+		private function showNewGameMenu():void 
+		{
+			newGameButton.visible = false;
+			player1Button.visible = true;
+			player2Button.visible = true;
+			player3Button.visible = true;
+			player4Button.visible = true;
+			beginButton.visible = true;
+			backButton.visible = true;
+			timeButton.visible = true;
+			blockedRarityButton.visible = true;
+			bonusRarityButton.visible = true;
 		}
 		
 		

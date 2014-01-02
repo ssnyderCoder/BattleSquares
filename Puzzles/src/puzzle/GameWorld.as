@@ -20,7 +20,7 @@ package puzzle
 		public static const HUMAN_ID:int = 0;
 		private var gameSpheres:GameSpheres;
 		private var gameSquares:GameSquares;
-		private var playerHuman:PlayerHuman;
+		private var playerHuman:PlayerHuman; //SRP violation
 		private var gameConfig:GameConfig;
 		public function GameWorld(gameConfig:GameConfig) 
 		{
@@ -30,8 +30,8 @@ package puzzle
 			gameSpheres.visible = false;
 			gameSpheres.active = false;
 			gameSquares = new GameSquares(20, 0, gameConfig);
-			playerHuman = new PlayerHuman(HUMAN_ID);
-			gameSquares.addPlayer(playerHuman);
+			playerHuman = new PlayerHuman(HUMAN_ID); //SRP violation
+			gameSquares.addPlayer(playerHuman); //SRP violation
 			Assets.SFX_GAME_MUSIC.loop(0.25);
 		}
 		
@@ -48,7 +48,7 @@ package puzzle
 		override public function update():void 
 		{
 			super.update();
-			updateHumanScore();
+			updateHumanScore(); //SRP violation
 			updateMusic();
 			updateUI();
 		}
@@ -61,7 +61,7 @@ package puzzle
 			}
 		}
 		
-		private function updateHumanScore():void 
+		private function updateHumanScore():void //SRP violation
 		{
 			var atkInfo:AttackInfo = playerHuman.currentAttack;
 			if (atkInfo) {
@@ -95,19 +95,8 @@ package puzzle
 			}
 		}
 				
-		public function setPlayerDifficulty(playerID:int, playerDifficulty:int):void {
-			var player:Player = null;
-			if (playerDifficulty == MenuWorld.DIFFICULTY_EASY) {
-				player = new PlayerAI(playerID, 0.7 + (Math.random() * 0.25), 0.30 + (Math.random() * 0.25), PlayerAI.EASY_DIFFICULTY)
-			}
-			else if (playerDifficulty == MenuWorld.DIFFICULTY_MEDIUM) {
-				player = new PlayerAI(playerID, 0.4 + (Math.random() * 0.55), 0.55 + (Math.random() * 0.25), PlayerAI.MEDIUM_DIFFICULTY)
-			}
-			else if (playerDifficulty == MenuWorld.DIFFICULTY_HARD) {
-				player = new PlayerAI(playerID, 0.1 + (Math.random() * 0.85), 0.80 + (Math.random() * 0.15), PlayerAI.HARD_DIFFICULTY)
-			}
-			
-			if (player) {
+		public function addPlayer(player:Player):void { //SRP violation > Perhaps consider making gameSquares a property
+			if(player){
 				gameSquares.addPlayer(player);
 			}
 		}
