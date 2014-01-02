@@ -178,7 +178,7 @@ package puzzle.minigames.squares
 			var bonusID:int = tile.bonusID;
 			if(gameRules.captureSquare(playerAttackInfo.attackerID, playerAttackInfo.currentPoints,
 				playerAttackInfo.tileX, playerAttackInfo.tileY)){
-					createShrinkingSquare(playerAttackInfo.attackerID, playerAttackInfo.tileX, playerAttackInfo.tileY);;
+					createShrinkingSquare(playerAttackInfo.attackerID, playerAttackInfo.tileX, playerAttackInfo.tileY);
 					leaderboard.updateDisplay();
 					updateSquareGridDisplay();
 					createBonusIcons(bonusID, playerAttackInfo);

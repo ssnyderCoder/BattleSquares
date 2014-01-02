@@ -56,6 +56,12 @@ package puzzle.minigames.squares.gui
 			else if (previousPercentage > percent) {
 				reset();
 			}
+			setOverlayArrow(percent)
+			previousPercentage = percent;
+		}
+		
+		private function setOverlayArrow(percent:Number):void 
+		{
 			if (overlayArrow.frame == POINT_RIGHT) {
 				overlayRect.width = percent >= 1.0 ? 16 : (int)(percent * 16);
 				overlayRect.height = 16;
@@ -82,7 +88,6 @@ package puzzle.minigames.squares.gui
 			}
 			overlayDrawMask.fillRect(overlayRect, 0xFFFFFFFF);
 			overlayArrow.drawMask = overlayDrawMask;
-			previousPercentage = percent;
 		}
 		
 		private function reset():void {

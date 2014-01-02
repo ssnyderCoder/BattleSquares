@@ -72,11 +72,9 @@ package puzzle
 		
 		private function updatePlayers():void 
 		{
-			if (gameSquares.gameHasBeenWon()) { return; }
-			
 			for (var i:int = 0; i < players.length; i++){
 				var player:Player = players[i];
-				if (player) {
+				if (player && player.active) {
 					player.update(gameSquares);
 				}
 			}

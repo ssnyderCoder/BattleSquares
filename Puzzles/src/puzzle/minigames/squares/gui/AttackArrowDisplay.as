@@ -65,32 +65,7 @@ package puzzle.minigames.squares.gui
 					var perc:Number = ((Number)(atkInfo.currentPoints)) / ((Number)(gameRules.getIndex(tileX, tileY).points));
 					arrow.visible = true;
 					arrow.setCompletionColor(perc);
-					
-					//make the arrow point to the targeted square from an adjacent square the player already owns
-					if (gameRules.getIndex(tileX - 1, tileY).ownerID == playerID) { //left of targeted square
-						arrow.setDirection(AttackArrow.POINT_RIGHT);
-						arrow.x = this.x + (this.tileWidth * (tileX)) - 8;
-						arrow.y = this.y + (this.tileHeight * (tileY)) + 8;
-					}
-					else if (gameRules.getIndex(tileX + 1, tileY).ownerID == playerID) { //right of targeted square
-						arrow.setDirection(AttackArrow.POINT_LEFT);
-						arrow.x = this.x + (this.tileWidth * (tileX + 1)) - 8;
-						arrow.y = this.y + (this.tileHeight * (tileY)) + 8;
-					}
-					else if (gameRules.getIndex(tileX, tileY - 1).ownerID == playerID) { //above targeted square
-						arrow.setDirection(AttackArrow.POINT_DOWN);
-						arrow.x = this.x + (this.tileWidth * (tileX)) + 8;
-						arrow.y = this.y + (this.tileHeight * (tileY)) - 8;
-					}
-					else if (gameRules.getIndex(tileX, tileY + 1).ownerID == playerID) { //below targeted square
-						arrow.setDirection(AttackArrow.POINT_UP);
-						arrow.x = this.x + (this.tileWidth * (tileX)) + 8;
-						arrow.y = this.y + (this.tileHeight * (tileY + 1)) - 8;
-					}
-					else { //arrow does not appear if no adjacent player squares
-						arrow.visible = false;
-						arrow.setCompletionColor(0);
-					}
+					pointArrowAtAdjacentSquare(arrow, tileX, tileY, playerID);
 				} //if
 				else {
 					arrow.visible = false;
@@ -98,6 +73,34 @@ package puzzle.minigames.squares.gui
 				} //else
 			} //for
 		} //function
+		
+		private function pointArrowAtAdjacentSquare(arrow:AttackArrow, tileX:int, tileY:int, playerID:int):void 
+		{
+			if (gameRules.getIndex(tileX - 1, tileY).ownerID == playerID) { //left of targeted square
+				arrow.setDirection(AttackArrow.POINT_RIGHT);
+				arrow.x = this.x + (this.tileWidth * (tileX)) - 8;
+				arrow.y = this.y + (this.tileHeight * (tileY)) + 8;
+			}
+			else if (gameRules.getIndex(tileX + 1, tileY).ownerID == playerID) { //right of targeted square
+				arrow.setDirection(AttackArrow.POINT_LEFT);
+				arrow.x = this.x + (this.tileWidth * (tileX + 1)) - 8;
+				arrow.y = this.y + (this.tileHeight * (tileY)) + 8;
+			}
+			else if (gameRules.getIndex(tileX, tileY - 1).ownerID == playerID) { //above targeted square
+				arrow.setDirection(AttackArrow.POINT_DOWN);
+				arrow.x = this.x + (this.tileWidth * (tileX)) + 8;
+				arrow.y = this.y + (this.tileHeight * (tileY)) - 8;
+			}
+			else if (gameRules.getIndex(tileX, tileY + 1).ownerID == playerID) { //below targeted square
+				arrow.setDirection(AttackArrow.POINT_UP);
+				arrow.x = this.x + (this.tileWidth * (tileX)) + 8;
+				arrow.y = this.y + (this.tileHeight * (tileY + 1)) - 8;
+			}
+			else { //arrow does not appear if no adjacent player squares
+				arrow.visible = false;
+				arrow.setCompletionColor(0);
+			}
+		}
 	}
 
 }

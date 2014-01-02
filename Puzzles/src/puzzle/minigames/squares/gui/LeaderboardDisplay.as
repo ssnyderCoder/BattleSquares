@@ -123,7 +123,7 @@ package puzzle.minigames.squares.gui
 				if (playerRankings[i] == null) {
 					continue;
 				}
-				var playerData:Object = { count:0, playerID:0 };
+				var playerData:PlayerData = new PlayerData();
 				playerData.count = gameRules.getTerritoryCount(i);
 				playerData.playerID = i;
 				territoryCounts.push(playerData);

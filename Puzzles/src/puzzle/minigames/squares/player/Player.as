@@ -21,6 +21,10 @@ package puzzle.minigames.squares.player
 			if (_currentAttack && !_currentAttack.isValid) {
 				_currentAttack = null;
 			}
+			//become inactive when game has been won
+			if (game.gameHasBeenWon()) {
+				_active = false;
+			}
 		}
 		
 		public function reset():void {

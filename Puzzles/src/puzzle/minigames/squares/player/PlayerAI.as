@@ -15,15 +15,16 @@ package puzzle.minigames.squares.player
 		public static const EASY_DIFFICULTY:Number = 1.5;
 		public static const MEDIUM_DIFFICULTY:Number = 3.0;
 		public static const HARD_DIFFICULTY:Number = 6.0;
-		private static const POINT_GAINS:Array = new Array( 2, 2, 2, 2, 2, 2, 2, 2, 2,
+		private static const NUM_SPHERES_TO_CLEAR:Array = new Array( 2, 2, 2, 2, 2, 2, 2, 2, 2,
 															3, 3, 3, 3, 3, 3, 3, 3,
 															4, 4, 4, 4, 4, 4, 4,
 															5, 5, 5, 5, 5, 5,
 															6, 6, 6, 6, 6,
 															7, 8, 9, 10, 11);
 		private static const SPHERES_PER_GAME:int = 64;
-		private var captureChance:Number;
-		private var actionChance:Number; //chance to take action
+		
+		private var captureChance:Number; 
+		private var actionChance:Number;
 		private var difficulty:Number; //affects how quickly decisions are made
 		private var timePassed:Number = 0;
 		private var spheresRemaining:int;
@@ -41,7 +42,6 @@ package puzzle.minigames.squares.player
 			if (timePassed >= DECISION_TIME / difficulty) {
 				timePassed = 0;
 				if (Math.random() >= actionChance) {
-					trace("player " + this.playerID + " did nothing");
 					return;
 				}
 				
@@ -49,7 +49,6 @@ package puzzle.minigames.squares.player
 					continueAttack(game);
 				}
 				else{
-					trace("player " + this.playerID + " began attacking");
 					beginAttack(game);
 				}
 			}
@@ -69,13 +68,11 @@ package puzzle.minigames.squares.player
 					if (square.ownerID == this.playerID) {
 						if (canCaptureAdjacentSquare(game, i, j)){
 							indexes.push(i + j * width);
-							trace("Square: Player " + square.ownerID + " : " + i + " " + j);
 						}
 					}
 				}
 			}
 			if (indexes.length == 0) {
-				trace("Player " + playerID + " cannot attack");
 				return;
 			}
 			//choose one of these random squares and attack random adjacent square
@@ -96,7 +93,6 @@ package puzzle.minigames.squares.player
 					 yIndex;
 			currentAttack =  game.declareAttack(this.playerID, xIndex, yIndex);
 			spheresRemaining = SPHERES_PER_GAME;
-			trace("Player " + this.playerID + " attacked " + xIndex + " " + yIndex);
 		}
 		
 		private function canCaptureAdjacentSquare(game:GameSquares, i:int, j:int):Boolean 
@@ -129,7 +125,6 @@ package puzzle.minigames.squares.player
 		
 		private function captureSquare(game:GameSquares):void 
 		{
-			trace("player " + this.playerID + " captured a square");
 			game.captureSquare(currentAttack);
 			Assets.SFX_TILE_CAPTURE_AI.play(0.5);
 			currentAttack = null;
@@ -137,7 +132,6 @@ package puzzle.minigames.squares.player
 		
 		private function failAttack():void 
 		{
-			trace("player " + this.playerID + " failed his attack");
 			currentAttack.isValid = false;
 			currentAttack = null;
 		}
@@ -147,14 +141,12 @@ package puzzle.minigames.squares.player
 			var difficultyModifier:int = difficulty == EASY_DIFFICULTY   ? -2 :
 										 difficulty == MEDIUM_DIFFICULTY ?  0 :
 										 difficulty == HARD_DIFFICULTY   ?  2 : 0;
-			var spheresCleared:int = FP.choose(POINT_GAINS) - (currentAttack.defenseValue * 5) + difficultyModifier;
+			var spheresCleared:int = FP.choose(NUM_SPHERES_TO_CLEAR) - (currentAttack.defenseValue * 5) + difficultyModifier;
 			if (spheresCleared < 2) {
-				trace("player " + this.playerID + " gained 0 points");
 				return;
 			}
 			currentAttack.currentPoints += spheresCleared * (spheresCleared - 1);
 			spheresRemaining -= spheresCleared;
-			trace("player " + this.playerID + " gained " + (spheresCleared * (spheresCleared - 1)) + " points");
 		}
 
 		

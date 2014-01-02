@@ -72,22 +72,7 @@ package puzzle.minigames.spheres
 			gameRules = new GameSpheresRules(8, 8, 0);
 			
 			//gui
-			background = new Image(Assets.SPHERE_GAME_BACKGROUND);
-			scoreDisplay = new Text("Score: 0", 100, 550);
-			requiredScoreDisplay = new Text("Required: 0", 74, 565);
-			sphereGridDisplay = new Tilemap(Assets.SPHERES, 512, 512, SPHERE_WIDTH, SPHERE_HEIGHT);
-			sphereGridDisplay.x = 43;
-			sphereGridDisplay.y = 0;
-			sphereGridHighlight = new Tilemap(Assets.HIGHLIGHT, 512, 512, SPHERE_WIDTH, SPHERE_HEIGHT);
-			sphereGridHighlight.x = sphereGridDisplay.x;
-			sphereGridHighlight.y = sphereGridDisplay.y;
-			sphereGridHighlight.alpha = 0.2;
-			captureButton = new Image(Assets.CAPTURE_BUTTON);
-			captureButton.x = 250;
-			captureButton.y = 550;
-			captureButton.visible = false;
-			this.graphic = new Graphiclist( background, sphereGridDisplay, sphereGridHighlight,
-											scoreDisplay, requiredScoreDisplay, captureButton);
+			initGUI();
 			pointBox = new PointsBox(0, 0);
 			pointBox.visible = false;
 			scoreTween = new Tween(0.25, Tween.PERSIST, null, Ease.circOut);
@@ -231,21 +216,9 @@ package puzzle.minigames.spheres
 			else if (!hasCaptured && captureButton.visible && captureRect.contains(Input.mouseX, Input.mouseY)) {
 				beginCapture();
 			}
-			//check if pressed with boundaries of tilemap and accept input if so
+			//check if pressed with boundaries of tilemap and select sphere if so
 			else if (sphereGridRect.contains(Input.mouseX, Input.mouseY)) {
-				var tileX:int = (Input.mouseX - sphereGridRect.x) / sphereGridDisplay.tileWidth;
-				var tileY:int = (Input.mouseY - sphereGridRect.y) / sphereGridDisplay.tileHeight;
-				var result:int = gameRules.selectSphere(tileX, tileY);
-				if (result == GameSpheresRules.SPHERE_SELECTION) {
-					updateDisplay();
-				}
-				else if (result == GameSpheresRules.GRID_CHANGED) {
-					transitionSphereGridDisplay();
-				}
-				else if (result == GameSpheresRules.IS_FINISHED) {
-					newGameOnNextClick = true;
-					transitionSphereGridDisplay();
-				}
+				clickSphere();
 			}
 		}
 		
@@ -360,6 +333,43 @@ package puzzle.minigames.spheres
 		
 		private function hasFadedOut():Boolean {
 			return fadeStatus == FADE_OUT && !fadeTween.active;
+		}
+		
+		private function initGUI():void 
+		{
+			background = new Image(Assets.SPHERE_GAME_BACKGROUND);
+			scoreDisplay = new Text("Score: 0", 100, 550);
+			requiredScoreDisplay = new Text("Required: 0", 74, 565);
+			sphereGridDisplay = new Tilemap(Assets.SPHERES, 512, 512, SPHERE_WIDTH, SPHERE_HEIGHT);
+			sphereGridDisplay.x = 43;
+			sphereGridDisplay.y = 0;
+			sphereGridHighlight = new Tilemap(Assets.HIGHLIGHT, 512, 512, SPHERE_WIDTH, SPHERE_HEIGHT);
+			sphereGridHighlight.x = sphereGridDisplay.x;
+			sphereGridHighlight.y = sphereGridDisplay.y;
+			sphereGridHighlight.alpha = 0.2;
+			captureButton = new Image(Assets.CAPTURE_BUTTON);
+			captureButton.x = 250;
+			captureButton.y = 550;
+			captureButton.visible = false;
+			this.graphic = new Graphiclist( background, sphereGridDisplay, sphereGridHighlight,
+											scoreDisplay, requiredScoreDisplay, captureButton);
+		}
+		
+		private function clickSphere():void 
+		{
+			var tileX:int = (Input.mouseX - sphereGridRect.x) / sphereGridDisplay.tileWidth;
+			var tileY:int = (Input.mouseY - sphereGridRect.y) / sphereGridDisplay.tileHeight;
+			var result:int = gameRules.selectSphere(tileX, tileY);
+			if (result == GameSpheresRules.SPHERE_SELECTION) {
+				updateDisplay();
+			}
+			else if (result == GameSpheresRules.GRID_CHANGED) {
+				transitionSphereGridDisplay();
+			}
+			else if (result == GameSpheresRules.IS_FINISHED) {
+				newGameOnNextClick = true;
+				transitionSphereGridDisplay();
+			}
 		}
 	}
 

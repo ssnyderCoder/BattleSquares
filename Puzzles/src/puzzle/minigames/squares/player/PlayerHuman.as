@@ -23,12 +23,17 @@ package puzzle.minigames.squares.player
 			if (Input.mousePressed) { //declare attack or clear game end screen
 				var tileInfo:SquareInfo = game.getTileAtCoordinates(Input.mouseX, Input.mouseY);
 				if (tileInfo) {
-					var atkInfo:AttackInfo = game.declareAttack(this.playerID, tileInfo.xIndex, tileInfo.yIndex);
-					if (atkInfo) {
-						currentAttack = atkInfo;
-						_hasDeclaredAttack = true;
-					}
+					declareAttack(tileInfo, game);
 				}
+			}
+		}
+		
+		private function declareAttack(tileInfo:SquareInfo, game:GameSquares):void 
+		{
+			var atkInfo:AttackInfo = game.declareAttack(this.playerID, tileInfo.xIndex, tileInfo.yIndex);
+			if (atkInfo) {
+				currentAttack = atkInfo;
+				_hasDeclaredAttack = true;
 			}
 		}
 		
