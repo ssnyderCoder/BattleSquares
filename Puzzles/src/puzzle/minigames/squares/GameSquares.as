@@ -14,6 +14,8 @@ package puzzle.minigames.squares
 	import puzzle.minigames.squares.gui.SingleSquare;
 	import puzzle.minigames.squares.gui.TimeDisplay;
 	import puzzle.minigames.squares.gui.WinnerDisplay;
+	import puzzle.minigames.squares.player.GamePlayers;
+	import puzzle.minigames.squares.player.Player;
 	
 	/**
 	 * ...
@@ -23,6 +25,7 @@ package puzzle.minigames.squares
 	{	
 		
 		private var gameRules:GameSquaresRules;
+		private var gamePlayers:GamePlayers;
 		
 		private var squareGridDisplay:Tilemap;
 		private var squareGridRect:Rectangle;
@@ -45,6 +48,7 @@ package puzzle.minigames.squares
 			this.setHitbox(300, 300);
 			
 			gameRules = new GameSquaresRules(8, 8, gameConfig);
+			gamePlayers = new GamePlayers();
 			var background:Graphic = new Stamp(Assets.SQUARE_GAME_BACKGROUND);
 			squareGridDisplay = new Tilemap(Assets.SQUARES, 256, 256,
 											GameSquaresConstants.SQUARE_WIDTH, GameSquaresConstants.SQUARE_HEIGHT);
@@ -72,6 +76,7 @@ package puzzle.minigames.squares
 		{
 			super.update();
 			gameRules.update();
+			gamePlayers.updatePlayers(this);
 			if (this.gameHadBeenWon && winnerDisplay.windowClicked) {
 				shutdownGame();
 			}
@@ -255,9 +260,10 @@ package puzzle.minigames.squares
 			return gameRules.clockTickingFaster;
 		}
 		
-		public function addPlayer(playerID:int):void {
-			gameRules.addPlayer(playerID);
-			leaderboard.addPlayer(playerID);
+		public function addPlayer(player:Player):void {
+			gameRules.addPlayer(player.playerID);
+			leaderboard.addPlayer(player.playerID);
+			gamePlayers.addPlayer(player);
 		}
 	}
 

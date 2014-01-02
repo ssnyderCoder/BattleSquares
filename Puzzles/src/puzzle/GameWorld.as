@@ -26,31 +26,24 @@ package puzzle
 		public function GameWorld(gameConfig:GameConfig) 
 		{
 			super();
-			var background:Image = new Image(Assets.MAIN_BACKGROUND);
-			background.scale = 5;
-			this.addGraphic(background, DisplayLayers.BACKGROUND_LAYER);
 			
-			playerHuman = new PlayerHuman(HUMAN_ID);
-			players = new Array();
-			players.push(playerHuman);
 			this.gameConfig = gameConfig;
 			gameSpheres = new GameSpheres(400, 0);
 			gameSpheres.visible = false;
 			gameSpheres.active = false;
-			this.add(gameSpheres);
+			gameSquares = new GameSquares(20, 0, gameConfig);
+			playerHuman = new PlayerHuman(HUMAN_ID);
+			gameSquares.addPlayer(playerHuman);
 			Assets.SFX_GAME_MUSIC.loop(0.25);
 		}
 		
 		override public function begin():void 
 		{
 			super.begin();
-			gameSquares = new GameSquares(20, 0, gameConfig);
-			for (var i:int = 0; i < players.length; i++){
-				var player:Player = players[i];
-				if (player) {
-					gameSquares.addPlayer(i);
-				}
-			}
+			var background:Image = new Image(Assets.MAIN_BACKGROUND);
+			background.scale = 5;
+			this.addGraphic(background, DisplayLayers.BACKGROUND_LAYER);
+			this.add(gameSpheres);
 			this.add(gameSquares);
 		}
 		
@@ -72,12 +65,6 @@ package puzzle
 		
 		private function updatePlayers():void 
 		{
-			for (var i:int = 0; i < players.length; i++){
-				var player:Player = players[i];
-				if (player && player.active) {
-					player.update(gameSquares);
-				}
-			}
 			updateHumanScore();
 		}
 		
@@ -116,19 +103,19 @@ package puzzle
 		}
 				
 		public function setPlayerDifficulty(playerID:int, playerDifficulty:int):void {
-			var ai:PlayerAI = null;
+			var player:Player = null;
 			if (playerDifficulty == MenuWorld.DIFFICULTY_EASY) {
-				ai = new PlayerAI(playerID, 0.7 + (Math.random() * 0.25), 0.30 + (Math.random() * 0.25), PlayerAI.EASY_DIFFICULTY)
+				player = new PlayerAI(playerID, 0.7 + (Math.random() * 0.25), 0.30 + (Math.random() * 0.25), PlayerAI.EASY_DIFFICULTY)
 			}
 			else if (playerDifficulty == MenuWorld.DIFFICULTY_MEDIUM) {
-				ai = new PlayerAI(playerID, 0.4 + (Math.random() * 0.55), 0.55 + (Math.random() * 0.25), PlayerAI.MEDIUM_DIFFICULTY)
+				player = new PlayerAI(playerID, 0.4 + (Math.random() * 0.55), 0.55 + (Math.random() * 0.25), PlayerAI.MEDIUM_DIFFICULTY)
 			}
 			else if (playerDifficulty == MenuWorld.DIFFICULTY_HARD) {
-				ai = new PlayerAI(playerID, 0.1 + (Math.random() * 0.85), 0.80 + (Math.random() * 0.15), PlayerAI.HARD_DIFFICULTY)
+				player = new PlayerAI(playerID, 0.1 + (Math.random() * 0.85), 0.80 + (Math.random() * 0.15), PlayerAI.HARD_DIFFICULTY)
 			}
 			
-			if (ai) {
-				players[playerID] = ai;
+			if (player) {
+				gameSquares.addPlayer(player);
 			}
 		}
 	}
