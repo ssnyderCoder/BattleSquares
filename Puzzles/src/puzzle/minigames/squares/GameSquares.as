@@ -8,6 +8,7 @@ package puzzle.minigames.squares
 	import puzzle.GameConfig;
 	import puzzle.minigames.squares.gui.*;
 	import puzzle.minigames.squares.player.GamePlayers;
+	import puzzle.minigames.squares.player.IPlayerFactory;
 	import puzzle.minigames.squares.player.Player;
 	
 	/**
@@ -34,7 +35,7 @@ package puzzle.minigames.squares
 		
 		
 		//constructor
-		public function GameSquares(x:Number, y:Number, gameConfig:GameConfig) 
+		public function GameSquares(x:Number, y:Number, gameConfig:GameConfig, playerFactory:IPlayerFactory) 
 		{
 			this.x = x;
 			this.y = y;
@@ -51,8 +52,9 @@ package puzzle.minigames.squares
 											squareGridDisplay.width, squareGridDisplay.height);
 			this.graphic = new Graphiclist(background, squareGridDisplay);
 			initHelperEntities();
+			initPlayers(gameConfig, playerFactory); //must be called after helper entities set up
 		}
-		
+					
 		private function initHelperEntities():void 
 		{	
 			
@@ -64,6 +66,20 @@ package puzzle.minigames.squares
 			timeDisplay = new TimeDisplay(this.x + this.width / 2, this.y + this.height + 20);
 			leaderboard = new LeaderboardDisplay(this.x + 302, this.y + 30, gameRules);
 		}
+		
+		private function initPlayers(gameConfig:GameConfig, playerFactory:IPlayerFactory):void 
+		{
+			for (var i:int = 0; i < GameConfig.MAX_PLAYERS; i++) 
+			{
+				var player:Player = playerFactory.createPlayer(i, gameConfig.getPlayerSetting(i));
+				if (player) {
+					gamePlayers.addPlayer(player);
+					gameRules.addPlayer(player.playerID);
+					leaderboard.addPlayer(player.playerID);
+				}
+			}
+		}
+
 		
 		override public function update():void 
 		{
@@ -251,12 +267,6 @@ package puzzle.minigames.squares
 		
 		public function isClockTickingFaster():Boolean {
 			return gameRules.clockTickingFaster;
-		}
-		
-		public function addPlayer(player:Player):void {
-			gameRules.addPlayer(player.playerID);
-			leaderboard.addPlayer(player.playerID);
-			gamePlayers.addPlayer(player);
 		}
 	}
 

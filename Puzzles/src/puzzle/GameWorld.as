@@ -16,35 +16,25 @@ package puzzle
 	 */
 	public class GameWorld extends World 
 	{
-		public static const HUMAN_ID:int = 0;
-		private var minigame:Minigame;
 		private var gameSquares:GameSquares;
-		private var playerHuman:PlayerHuman;
-		private var gameConfig:GameConfig;
+		private var gameFactory:GameFactory = new GameFactory();
+		
 		public function GameWorld(gameConfig:GameConfig) 
 		{
 			super();
-			this.gameConfig = gameConfig;
 			
-			minigame = new GameSpheres(400, 0);
-			
-			gameSquares = new GameSquares(20, 0, gameConfig);
-			
-			playerHuman = new PlayerHuman(HUMAN_ID);
-			playerHuman.setMinigame(minigame);
-			gameSquares.addPlayer(playerHuman);
-			
-			Assets.SFX_GAME_MUSIC.loop(0.25);
-		}
-		
-		override public function begin():void 
-		{
-			super.begin();
 			var background:Image = new Image(Assets.MAIN_BACKGROUND);
 			background.scale = 5;
 			this.addGraphic(background, DisplayLayers.BACKGROUND_LAYER);
+			
+			var minigame:Minigame = gameFactory.getMinigameInstance();
+			minigame.setGamePosition(400, 0);
 			this.add(minigame);
+			
+			gameSquares = new GameSquares(20, 0, gameConfig, gameFactory);
 			this.add(gameSquares);
+			
+			Assets.SFX_GAME_MUSIC.loop(0.25);
 		}
 		
 		override public function update():void 
@@ -70,11 +60,6 @@ package puzzle
 				Assets.SFX_GAME_MUSIC_SPED_UP.stop();
 			}
 		}
-				
-		public function addPlayer(player:Player):void {
-			if(player){
-				gameSquares.addPlayer(player);
-			}
-		}
+
 	}
 }

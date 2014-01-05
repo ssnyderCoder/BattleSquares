@@ -68,8 +68,6 @@ package puzzle.minigames.spheres
 	
 		public function GameSpheres(x:Number=0, y:Number=0) 
 		{
-			this.x = x;
-			this.y = y;
 			this.setHitbox(600, 600);
 			gameRules = new GameSpheresRules(8, 8, 0);
 			
@@ -80,10 +78,7 @@ package puzzle.minigames.spheres
 			scoreTween = new Tween(0.25, Tween.PERSIST, null, Ease.circOut);
 			fadeTween = new Tween(0.25, Tween.PERSIST, null, Ease.circOut);
 			
-			//user input related
-			sphereGridRect = new Rectangle(sphereGridDisplay.x + x, sphereGridDisplay.y + y,
-											sphereGridDisplay.width, sphereGridDisplay.height);
-			captureRect = new Rectangle(captureButton.x + x, captureButton.y + y, captureButton.width, captureButton.height);
+			setGamePosition(x, y);
 		}
 		
 		override public function added():void 
@@ -94,6 +89,15 @@ package puzzle.minigames.spheres
 			this.addTween(fadeTween);
 			
 			updateDisplay();
+		}
+		
+		override public function setGamePosition(x:Number = 0, y:Number = 0):void 
+		{
+			super.setGamePosition(x, y);
+			//user input related
+			sphereGridRect = new Rectangle(sphereGridDisplay.x + x, sphereGridDisplay.y + y,
+											sphereGridDisplay.width, sphereGridDisplay.height);
+			captureRect = new Rectangle(captureButton.x + x, captureButton.y + y, captureButton.width, captureButton.height);
 		}
 		
 		private function updateDisplay():void 

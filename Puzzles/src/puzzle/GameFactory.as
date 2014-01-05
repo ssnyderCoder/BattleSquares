@@ -1,5 +1,7 @@
 package puzzle 
 {
+	import puzzle.minigames.minigame.Minigame;
+	import puzzle.minigames.spheres.GameSpheres;
 	import puzzle.minigames.squares.player.IPlayerFactory;
 	import puzzle.minigames.squares.player.Player;
 	import puzzle.minigames.squares.player.PlayerAI;
@@ -10,8 +12,9 @@ package puzzle
 	 * ...
 	 * @author Sean Snyder
 	 */
-	public class GameFactory implements IPlayerFactory 
+	public class GameFactory implements IPlayerFactory
 	{
+		private var minigame:Minigame = new GameSpheres();
 		
 		/* INTERFACE puzzle.minigames.squares.player.IPlayerFactory */	
 		public function createPlayer(playerID:int, playerType:int):Player 
@@ -27,9 +30,15 @@ package puzzle
 				player = new PlayerAI(playerID, 0.3 + (Math.random() * 0.65), 0.80 + (Math.random() * 0.15), PlayerAI.HARD_DIFFICULTY)
 			}
 			else if (playerType == PlayerConstants.PLAYER_HUMAN) {
-				player = new PlayerHuman(playerID);
+				var playerHuman:PlayerHuman = new PlayerHuman(playerID);
+				playerHuman.setMinigame(minigame);
+				player = playerHuman
 			}
 			return player;
+		}
+		
+		public function getMinigameInstance():Minigame {
+			return minigame;
 		}
 		
 	}

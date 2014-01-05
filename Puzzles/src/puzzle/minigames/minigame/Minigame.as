@@ -18,6 +18,11 @@ package puzzle.minigames.minigame
 			this.active = false;
 		}
 		
+		public function setGamePosition(x:Number = 0, y:Number = 0):void {
+			this.x = x;
+			this.y = y;
+		}
+		
 		public function beginGame(requiredScore:int, difficulty:int):void 
 		{
 			throw new Error("beginGame method must be overriden in derived class");
