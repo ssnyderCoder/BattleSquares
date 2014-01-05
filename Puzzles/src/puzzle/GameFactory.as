@@ -1,12 +1,12 @@
 package puzzle 
 {
-	import puzzle.minigames.minigame.Minigame;
-	import puzzle.minigames.spheres.GameSpheres;
-	import puzzle.minigames.squares.player.IPlayerFactory;
-	import puzzle.minigames.squares.player.Player;
-	import puzzle.minigames.squares.player.PlayerAI;
-	import puzzle.minigames.squares.player.PlayerConstants;
-	import puzzle.minigames.squares.player.PlayerHuman;
+	import puzzle.minigame.Minigame;
+	import puzzle.bubblebreaker.BubbleBreaker;
+	import puzzle.battlesquares.player.IPlayerFactory;
+	import puzzle.battlesquares.player.Player;
+	import puzzle.battlesquares.player.PlayerAI;
+	import puzzle.battlesquares.player.PlayerConstants;
+	import puzzle.battlesquares.player.PlayerHuman;
 	
 	/**
 	 * ...
@@ -14,9 +14,9 @@ package puzzle
 	 */
 	public class GameFactory implements IPlayerFactory
 	{
-		private var minigame:Minigame = new GameSpheres();
+		private var minigame:Minigame = new BubbleBreaker();
 		
-		/* INTERFACE puzzle.minigames.squares.player.IPlayerFactory */	
+		/* INTERFACE puzzle.battlesquares.player.IPlayerFactory */	
 		public function createPlayer(playerID:int, playerType:int):Player 
 		{
 			var player:Player = null;

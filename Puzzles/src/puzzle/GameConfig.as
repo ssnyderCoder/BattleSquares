@@ -1,6 +1,6 @@
 package puzzle 
 {
-	import puzzle.minigames.squares.player.PlayerConstants;
+	import puzzle.battlesquares.player.PlayerConstants;
 	/**
 	 * ...
 	 * @author Sean Snyder

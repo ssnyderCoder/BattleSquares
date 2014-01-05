@@ -3,12 +3,8 @@ package puzzle
 	import net.flashpunk.FP;
 	import net.flashpunk.graphics.Image;
 	import net.flashpunk.World;
-	import puzzle.minigames.minigame.Minigame;
-	import puzzle.minigames.spheres.GameSpheres;
-	import puzzle.minigames.squares.AttackInfo;
-	import puzzle.minigames.squares.GameSquares;
-	import puzzle.minigames.squares.player.Player;
-	import puzzle.minigames.squares.player.PlayerHuman;
+	import puzzle.battlesquares.BattleSquares;
+	import puzzle.minigame.Minigame;
 	
 	/**
 	 * ...
@@ -16,7 +12,7 @@ package puzzle
 	 */
 	public class GameWorld extends World 
 	{
-		private var gameSquares:GameSquares;
+		private var battleSquares:BattleSquares;
 		private var gameFactory:GameFactory = new GameFactory();
 		
 		public function GameWorld(gameConfig:GameConfig) 
@@ -31,8 +27,8 @@ package puzzle
 			minigame.setGamePosition(400, 0);
 			this.add(minigame);
 			
-			gameSquares = new GameSquares(20, 0, gameConfig, gameFactory);
-			this.add(gameSquares);
+			battleSquares = new BattleSquares(20, 0, gameConfig, gameFactory);
+			this.add(battleSquares);
 			
 			Assets.SFX_GAME_MUSIC.loop(0.25);
 		}
@@ -46,7 +42,7 @@ package puzzle
 		
 		private function updateMusic():void 
 		{
-			if (gameSquares.isClockTickingFaster() && Assets.SFX_GAME_MUSIC.playing) {
+			if (battleSquares.isClockTickingFaster() && Assets.SFX_GAME_MUSIC.playing) {
 				Assets.SFX_GAME_MUSIC.stop();
 				Assets.SFX_GAME_MUSIC_SPED_UP.loop(0.35);
 			}
@@ -54,7 +50,7 @@ package puzzle
 		
 		private function updateUI():void 
 		{
-			if (!gameSquares.active) {
+			if (!battleSquares.active) {
 				FP.world = new MenuWorld();
 				Assets.SFX_GAME_MUSIC.stop();
 				Assets.SFX_GAME_MUSIC_SPED_UP.stop();
