@@ -40,6 +40,8 @@ package puzzle
 		
 		private var buttonClicked:Boolean = false;
 		
+		private var alreadyAHumanPlayer:Boolean = true;
+		
 		//settings
 		private var gameConfig:GameConfig;
 		private var timeSettingInMinutes:int;
@@ -122,6 +124,9 @@ package puzzle
 				showNewGameMenu();
 				Assets.SFX_SPHERE_CLEAR.play(0.1);
 			}
+			else if (player1Button.visible && player1Button.hasBeenClicked) {
+				setPlayerSetting(PLAYER_1_ID, gameConfig.getPlayerSetting(PLAYER_1_ID) + 1, player1Button)
+			}
 			else if (player2Button.visible && player2Button.hasBeenClicked) {
 				setPlayerSetting(PLAYER_2_ID, gameConfig.getPlayerSetting(PLAYER_2_ID) + 1, player2Button)
 			}
@@ -160,7 +165,19 @@ package puzzle
 		
 		private function setPlayerSetting(playerID:int, playerSetting:int, playerButton:GameButton):void 
 		{
-			var newPlayerSetting:int = playerSetting > PlayerConstants.PLAYER_AI_HARD ? PlayerConstants.PLAYER_NONE : playerSetting;
+			if (playerSetting == PlayerConstants.PLAYER_HUMAN + 1) {
+				alreadyAHumanPlayer = false;
+			}
+			var newPlayerSetting:int = playerSetting > PlayerConstants.PLAYER_HUMAN ? PlayerConstants.PLAYER_NONE : playerSetting;
+			if (newPlayerSetting == PlayerConstants.PLAYER_HUMAN) {
+				if(alreadyAHumanPlayer){
+					newPlayerSetting = PlayerConstants.PLAYER_NONE;
+				}
+				else {
+					alreadyAHumanPlayer = true;
+				}
+			}
+			
 			var playerText:String = PLAYER_TEXTS[newPlayerSetting];
 			playerButton.setText("Player " + (playerID + 1) + ": " + playerText);
 			gameConfig.setPlayerSetting(playerID, newPlayerSetting);
