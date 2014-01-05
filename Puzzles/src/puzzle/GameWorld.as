@@ -3,6 +3,7 @@ package puzzle
 	import net.flashpunk.FP;
 	import net.flashpunk.graphics.Image;
 	import net.flashpunk.World;
+	import puzzle.minigames.minigame.Minigame;
 	import puzzle.minigames.spheres.GameSpheres;
 	import puzzle.minigames.squares.AttackInfo;
 	import puzzle.minigames.squares.GameSquares;
@@ -16,7 +17,7 @@ package puzzle
 	public class GameWorld extends World 
 	{
 		public static const HUMAN_ID:int = 0;
-		private var gameSpheres:GameSpheres;
+		private var minigame:Minigame;
 		private var gameSquares:GameSquares;
 		private var playerHuman:PlayerHuman;
 		private var gameConfig:GameConfig;
@@ -24,13 +25,15 @@ package puzzle
 		{
 			super();
 			this.gameConfig = gameConfig;
-			gameSpheres = new GameSpheres(400, 0);
-			gameSpheres.visible = false;
-			gameSpheres.active = false;
+			
+			minigame = new GameSpheres(400, 0);
+			
 			gameSquares = new GameSquares(20, 0, gameConfig);
+			
 			playerHuman = new PlayerHuman(HUMAN_ID);
-			playerHuman.setMinigame(gameSpheres);
+			playerHuman.setMinigame(minigame);
 			gameSquares.addPlayer(playerHuman);
+			
 			Assets.SFX_GAME_MUSIC.loop(0.25);
 		}
 		
@@ -40,7 +43,7 @@ package puzzle
 			var background:Image = new Image(Assets.MAIN_BACKGROUND);
 			background.scale = 5;
 			this.addGraphic(background, DisplayLayers.BACKGROUND_LAYER);
-			this.add(gameSpheres);
+			this.add(minigame);
 			this.add(gameSquares);
 		}
 		

@@ -14,7 +14,7 @@ package puzzle.minigames.spheres
 	import net.flashpunk.utils.Ease;
 	import net.flashpunk.utils.Input;
 	import puzzle.Assets;
-	import puzzle.minigames.minigame.IMinigame;
+	import puzzle.minigames.minigame.Minigame;
 	import puzzle.minigames.minigame.MinigameConstants;
 	import puzzle.minigames.spheres.gui.PointsBox;
 	import puzzle.minigames.spheres.gui.SingleSphere;
@@ -23,7 +23,7 @@ package puzzle.minigames.spheres
 	 * ...
 	 * @author Sean Snyder
 	 */
-	public class GameSpheres extends Entity implements IMinigame
+	public class GameSpheres extends Minigame
 	{
 		public static const SPHERE_WIDTH:int = 64;
 		public static const SPHERE_HEIGHT:int = 64;
@@ -304,7 +304,7 @@ package puzzle.minigames.spheres
 			updateDisplay();
 		}
 
-		public function beginGame(requiredScore:int, difficulty:int):void 
+		override public function beginGame(requiredScore:int, difficulty:int):void 
 		{
 			resetGame(requiredScore, difficulty);
 			this.visible = true;
@@ -314,24 +314,24 @@ package puzzle.minigames.spheres
 			setUIAlpha(0);
 		}
 		
-		public function endGame():void 
+		override public function endGame():void 
 		{
 			this.visible = false;
 			this.active = false;
 			this.pointBox.visible = false;
 		}
 		
-		public function isActive():Boolean 
+		override public function isActive():Boolean 
 		{
 			return this.active;
 		}
 		
-		public function getScore():int 
+		override public function getScore():int 
 		{
 			return this.active ? gameRules.score : 0;
 		}
 		
-		public function hasBeenWon():Boolean 
+		override public function hasBeenWon():Boolean 
 		{
 			return hasCaptured && hasFadedOut();
 		}

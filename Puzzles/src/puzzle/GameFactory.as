@@ -1,12 +1,19 @@
-package puzzle.minigames.squares.player 
+package puzzle 
 {
+	import puzzle.minigames.squares.player.IPlayerFactory;
+	import puzzle.minigames.squares.player.Player;
+	import puzzle.minigames.squares.player.PlayerAI;
+	import puzzle.minigames.squares.player.PlayerConstants;
+	import puzzle.minigames.squares.player.PlayerHuman;
+	
 	/**
 	 * ...
 	 * @author Sean Snyder
 	 */
-	public class PlayerFactory implements IPlayerFactory 
+	public class GameFactory implements IPlayerFactory 
 	{
 		
+		/* INTERFACE puzzle.minigames.squares.player.IPlayerFactory */	
 		public function createPlayer(playerID:int, playerType:int):Player 
 		{
 			var player:Player = null;

@@ -6,7 +6,6 @@ package puzzle
 	import net.flashpunk.World;
 	import puzzle.minigames.squares.player.IPlayerFactory;
 	import puzzle.minigames.squares.player.PlayerConstants;
-	import puzzle.minigames.squares.player.PlayerFactory;
 	
 	/**
 	 * ...
@@ -46,7 +45,7 @@ package puzzle
 		private var blockedRarityIndex:int = 1;
 		private var bonusRarityIndex:int = 1;
 		
-		private var playerFactory:IPlayerFactory = new PlayerFactory();
+		private var playerFactory:IPlayerFactory = new GameFactory();
 		
 		public function MenuWorld() 
 		{
