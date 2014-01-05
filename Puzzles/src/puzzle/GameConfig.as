@@ -1,4 +1,4 @@
-package puzzle.minigames 
+package puzzle 
 {
 	/**
 	 * ...

@@ -12,7 +12,6 @@ package puzzle.minigames.spheres
 	public class GameSpheresRules 
 	{
 		public static const EMPTY_ID:int = 0;
-		public static const DEFAULT_NUM_COLORS:int = 4;
 		
 		private static const MAX_COLORS:int = 6;
 		
@@ -34,19 +33,19 @@ package puzzle.minigames.spheres
 		private var numSelectedSpheres:int = 0;
 		private var _numColors:int;
 		
-		public function GameSpheresRules(width:int, height:int, numColorsBonus:int)
+		public function GameSpheresRules(width:int, height:int, numColors:int)
 		{
 			this._width = width;
 			this._height = height;
 			this._score = 0;
 			this.spheres = new Array();
 			this.selectedSpheres = new Array();
-			this._numColors = DEFAULT_NUM_COLORS + numColorsBonus;
+			this._numColors = numColors;
 			generateSphereGrid(_numColors);
 		}
 		
-		public function resetBonus(numColorsBonus:int):void {
-			this._numColors = DEFAULT_NUM_COLORS + numColorsBonus;
+		public function resetNumColors(numColors:int):void {
+			this._numColors = numColors;
 			generateSphereGrid(_numColors);
 			_score = 0;
 		}

@@ -3,7 +3,6 @@ package puzzle
 	import net.flashpunk.FP;
 	import net.flashpunk.graphics.Image;
 	import net.flashpunk.World;
-	import puzzle.minigames.GameConfig;
 	import puzzle.minigames.spheres.GameSpheres;
 	import puzzle.minigames.squares.AttackInfo;
 	import puzzle.minigames.squares.GameSquares;
@@ -30,6 +29,7 @@ package puzzle
 			gameSpheres.active = false;
 			gameSquares = new GameSquares(20, 0, gameConfig);
 			playerHuman = new PlayerHuman(HUMAN_ID);
+			playerHuman.setMinigame(gameSpheres);
 			gameSquares.addPlayer(playerHuman);
 			Assets.SFX_GAME_MUSIC.loop(0.25);
 		}
@@ -47,7 +47,6 @@ package puzzle
 		override public function update():void 
 		{
 			super.update();
-			updateHumanScore(); //SRP violation
 			updateMusic();
 			updateUI();
 		}
@@ -60,33 +59,8 @@ package puzzle
 			}
 		}
 		
-		private function updateHumanScore():void
-		{
-			var atkInfo:AttackInfo = playerHuman.currentAttack;
-			if (atkInfo) {
-				atkInfo.currentPoints = gameSpheres.getPlayerScore();
-			}
-		}
-		
 		private function updateUI():void 
 		{
-			//if player has declared new attack, setup new spheres game with point requirement of the square
-			if (playerHuman.hasDeclaredAttack) {
-				var playerAtk:AttackInfo = playerHuman.currentAttack;
-				gameSpheres.resetGame(playerAtk.capturePoints, playerAtk.defenseValue);
-				gameSpheres.activate();
-			}
-			//if player has clicked the capture button in spheres game, end it and tell squares game of capturing total
-			if (gameSpheres.visible && gameSpheres.playerHasCaptured()) {
-				gameSpheres.deactivate();
-				gameSquares.captureSquare(playerHuman.currentAttack);
-				Assets.SFX_TILE_CAPTURE_PLAYER.play();
-			}
-			//if player's attack is no longer on the squares attack list or valid, end spheres game
-			if (gameSpheres.visible && (gameSquares.gameHasBeenWon() || !playerHuman.currentAttack || !playerHuman.currentAttack.isValid)) {
-				gameSpheres.deactivate();
-			}
-			//if the squares game is done, return to menu
 			if (!gameSquares.active) {
 				FP.world = new MenuWorld();
 				Assets.SFX_GAME_MUSIC.stop();

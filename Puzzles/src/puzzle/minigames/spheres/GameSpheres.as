@@ -14,6 +14,8 @@ package puzzle.minigames.spheres
 	import net.flashpunk.utils.Ease;
 	import net.flashpunk.utils.Input;
 	import puzzle.Assets;
+	import puzzle.minigames.minigame.IMinigame;
+	import puzzle.minigames.minigame.MinigameConstants;
 	import puzzle.minigames.spheres.gui.PointsBox;
 	import puzzle.minigames.spheres.gui.SingleSphere;
 	
@@ -21,7 +23,7 @@ package puzzle.minigames.spheres
 	 * ...
 	 * @author Sean Snyder
 	 */
-	public class GameSpheres extends Entity 
+	public class GameSpheres extends Entity implements IMinigame
 	{
 		public static const SPHERE_WIDTH:int = 64;
 		public static const SPHERE_HEIGHT:int = 64;
@@ -293,24 +295,18 @@ package puzzle.minigames.spheres
 			}
 		}
 		
-		public function getPlayerScore():int {
-			return this.active ? gameRules.score : 0;
-		}
-		
-		public function resetGame(pointsRequired:int, numColorsBonus:int = 0):void {
+		public function resetGame(pointsRequired:int, numColors:int = MinigameConstants.DIFFICULTY_MEDIUM):void {
 			this.pointsRequiredToCapture = pointsRequired;
-			gameRules.resetBonus(numColorsBonus);
+			gameRules.resetNumColors(numColors);
 			hasCaptured = false;
 			newGameOnNextClick = false;
 			captureButton.visible = false;
 			updateDisplay();
 		}
-		
-		public function playerHasCaptured():Boolean {
-			return hasCaptured && hasFadedOut();
-		}
-		
-		public function activate():void {
+
+		public function beginGame(requiredScore:int, difficulty:int):void 
+		{
+			resetGame(requiredScore, difficulty);
 			this.visible = true;
 			this.active = true;
 			this.fadeStatus = FADE_IN;
@@ -318,10 +314,26 @@ package puzzle.minigames.spheres
 			setUIAlpha(0);
 		}
 		
-		public function deactivate():void {
+		public function endGame():void 
+		{
 			this.visible = false;
 			this.active = false;
 			this.pointBox.visible = false;
+		}
+		
+		public function isActive():Boolean 
+		{
+			return this.active;
+		}
+		
+		public function getScore():int 
+		{
+			return this.active ? gameRules.score : 0;
+		}
+		
+		public function hasBeenWon():Boolean 
+		{
+			return hasCaptured && hasFadedOut();
 		}
 		
 		private function setUIAlpha(alpha:Number):void {

@@ -4,7 +4,6 @@ package puzzle
 	import net.flashpunk.graphics.Image;
 	import net.flashpunk.utils.Input;
 	import net.flashpunk.World;
-	import puzzle.minigames.GameConfig;
 	import puzzle.minigames.squares.player.IPlayerFactory;
 	import puzzle.minigames.squares.player.PlayerConstants;
 	import puzzle.minigames.squares.player.PlayerFactory;

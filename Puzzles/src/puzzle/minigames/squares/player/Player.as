@@ -17,13 +17,11 @@ package puzzle.minigames.squares.player
 		}
 		
 		public function update(game:GameSquares):void {
-			//remove invalid attacks
 			if (_currentAttack && !_currentAttack.isValid) {
 				_currentAttack = null;
 			}
-			//become inactive when game has been won
 			if (game.gameHasBeenWon()) {
-				_active = false;
+				disable();
 			}
 		}
 		
@@ -31,14 +29,17 @@ package puzzle.minigames.squares.player
 			_currentAttack = null;
 		}
 		
+		public function disable():void {
+			_active = false;
+		}
+		
+		public function enable():void {
+			_active = true;
+		}
+		
 		public function get active():Boolean 
 		{
 			return _active;
-		}
-		
-		public function set active(value:Boolean):void 
-		{
-			_active = value;
 		}
 		
 		public function get playerID():int 

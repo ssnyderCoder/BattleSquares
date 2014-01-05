@@ -1,7 +1,8 @@
 package puzzle.minigames.squares 
 {
 	import net.flashpunk.FP;
-	import puzzle.minigames.GameConfig;
+	import puzzle.GameConfig;
+	import puzzle.minigames.minigame.MinigameConstants;
 	/**
 	 * A custom size grid with a custom number of square colors.
 	 * 
@@ -114,7 +115,8 @@ package puzzle.minigames.squares
 			var squareOwner:int = getIndex(x, y).ownerID;
 			var bonusType:int = getIndex(x, y).bonusID;
 			var captureRequirement:int = getIndex(x, y).points;
-			var defenseValue:int = squareOwner == PLAYER_NONE && bonusType == BONUS_NONE ? 0 : 1;
+			var defenseValue:int = squareOwner == PLAYER_NONE && bonusType == BONUS_NONE ?  MinigameConstants.DIFFICULTY_MEDIUM :
+																							MinigameConstants.DIFFICULTY_HARD;
 			var attack:AttackInfo = new AttackInfo(playerID, x, y, captureRequirement, defenseValue);
 			attackedSquares.push(attack);
 			return attack;

@@ -2,6 +2,7 @@ package puzzle.minigames.squares.player
 {
 	import net.flashpunk.FP;
 	import puzzle.Assets;
+	import puzzle.minigames.minigame.MinigameConstants;
 	import puzzle.minigames.squares.GameSquares;
 	import puzzle.minigames.squares.GameSquaresRules;
 	import puzzle.minigames.squares.SquareInfo;
@@ -141,7 +142,8 @@ package puzzle.minigames.squares.player
 			var difficultyModifier:int = difficulty == EASY_DIFFICULTY   ? -2 :
 										 difficulty == MEDIUM_DIFFICULTY ?  0 :
 										 difficulty == HARD_DIFFICULTY   ?  2 : 0;
-			var spheresCleared:int = FP.choose(NUM_SPHERES_TO_CLEAR) - (currentAttack.defenseValue * 5) + difficultyModifier;
+			var defenceModifier:int = currentAttack.defenseValue - MinigameConstants.DIFFICULTY_MEDIUM; //should be 0 or 1(Hard)
+			var spheresCleared:int = FP.choose(NUM_SPHERES_TO_CLEAR) - (defenceModifier * 5) + difficultyModifier;
 			if (spheresCleared < 2) {
 				return;
 			}

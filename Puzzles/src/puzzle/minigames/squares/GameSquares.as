@@ -5,15 +5,8 @@ package puzzle.minigames.squares
 	import net.flashpunk.graphics.*;
 	import net.flashpunk.utils.*;
 	import puzzle.Assets;
-	import puzzle.minigames.GameConfig;
-	import puzzle.minigames.squares.gui.AttackArrow;
-	import puzzle.minigames.squares.gui.AttackArrowDisplay;
-	import puzzle.minigames.squares.gui.BonusIcon;
-	import puzzle.minigames.squares.gui.InfoDisplay;
-	import puzzle.minigames.squares.gui.LeaderboardDisplay;
-	import puzzle.minigames.squares.gui.SingleSquare;
-	import puzzle.minigames.squares.gui.TimeDisplay;
-	import puzzle.minigames.squares.gui.WinnerDisplay;
+	import puzzle.GameConfig;
+	import puzzle.minigames.squares.gui.*;
 	import puzzle.minigames.squares.player.GamePlayers;
 	import puzzle.minigames.squares.player.Player;
 	
