@@ -1,12 +1,11 @@
 package puzzle.bubblebreaker.gui 
 {
 	import net.flashpunk.Entity;
-	import net.flashpunk.FP;
 	import net.flashpunk.graphics.Spritemap;
 	import net.flashpunk.Tween;
 	import net.flashpunk.utils.Ease;
 	import puzzle.Assets;
-	import puzzle.bubblebreaker.BubbleBreaker;
+	import puzzle.bubblebreaker.BubbleBreakerConstants;
 	/**
 	 * ...
 	 * @author Sean Snyder
@@ -20,10 +19,10 @@ package puzzle.bubblebreaker.gui
 			this.x = x;
 			this.y = y;
 			
-			sprite = new Spritemap(Assets.SPHERES, BubbleBreaker.SPHERE_WIDTH, BubbleBreaker.SPHERE_HEIGHT);
+			sprite = new Spritemap(Assets.SPHERES, BubbleBreakerConstants.SPHERE_WIDTH, BubbleBreakerConstants.SPHERE_HEIGHT);
 			sprite.frame = sphereID;
-			sprite.originX = BubbleBreaker.SPHERE_WIDTH / 2;
-			sprite.originY = BubbleBreaker.SPHERE_HEIGHT / 2;
+			sprite.originX = BubbleBreakerConstants.SPHERE_WIDTH / 2;
+			sprite.originY = BubbleBreakerConstants.SPHERE_HEIGHT / 2;
 			this.graphic = sprite;
 			
 			scaleTween = new Tween(0.3, Tween.ONESHOT, complete, Ease.backIn);

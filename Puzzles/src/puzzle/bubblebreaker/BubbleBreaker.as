@@ -1,60 +1,54 @@
 package puzzle.bubblebreaker 
 {
 	import flash.geom.Rectangle;
-	import net.flashpunk.Entity;
 	import net.flashpunk.FP;
-	import net.flashpunk.Graphic;
 	import net.flashpunk.graphics.Graphiclist;
 	import net.flashpunk.graphics.Image;
-	import net.flashpunk.graphics.Stamp;
-	import net.flashpunk.graphics.Text;
 	import net.flashpunk.graphics.Tilemap;
-	import net.flashpunk.Mask;
 	import net.flashpunk.Tween;
 	import net.flashpunk.utils.Ease;
 	import net.flashpunk.utils.Input;
 	import puzzle.Assets;
+	import puzzle.bubblebreaker.gui.CaptureButton;
+	import puzzle.bubblebreaker.gui.PointsBox;
 	import puzzle.bubblebreaker.gui.ScoreDisplay;
+	import puzzle.bubblebreaker.gui.SingleBubble;
 	import puzzle.minigame.Minigame;
 	import puzzle.minigame.MinigameConstants;
-	import puzzle.bubblebreaker.gui.PointsBox;
-	import puzzle.bubblebreaker.gui.SingleBubble;
 	
 	/**
 	 * ...
 	 * @author Sean Snyder
 	 */
 	public class BubbleBreaker extends Minigame
-	{
-		public static const SPHERE_WIDTH:int = 64;
-		public static const SPHERE_HEIGHT:int = 64;
+	{	
+		//gui
+		private var scoreDisplay:ScoreDisplay;
 		
+		private var background:Image; //remove and simply adjust alpha of all graphics in graphic list?
+		
+		//refactor into own class together?
+		private var sphereGridDisplay:Tilemap;
+		private var sphereGridHighlight:Tilemap;
+		private var sphereGridRect:Rectangle;
 		private static const HIGHLIGHT_OFF:int = 0;
 		private static const HIGHLIGHT_ON:int = 1;
 		private static const HIGHLIGHT_ROUND_OVER:int = 2;
 		
+		private var captureButton:CaptureButton;
+		
+		private var pointBox:PointsBox;
+		
+		private var transitionSphereCount:int = 0; //refactor into higher level class?
+		
+		//refactor into supplementary class? (Fader(Entity) perhaps)
 		private static const FADE_NONE:int = 0;
 		private static const FADE_IN:int = 1;
 		private static const FADE_OUT:int = 2;
-		private static const FADE_IN_CAPTURE_BUTTON:int = 3;
-		
-		private static const COLOR_GREEN:uint = 0x11cc11;
-		private static const COLOR_RED:uint = 0xcc1111;
-		
-		//gui
-		private var scoreDisplay:ScoreDisplay;
-		private var background:Image;
-		private var sphereGridDisplay:Tilemap;
-		private var sphereGridHighlight:Tilemap;
-		private var captureButton:Image;
-		private var pointBox:PointsBox;
-		private var transitionSphereCount:int = 0;
-		private var fadeTween:Tween;
+		private var fadeTween:Tween = new Tween(0.25, Tween.PERSIST, null, Ease.circOut);
 		private var fadeStatus:int = FADE_NONE;
 
 		//user input related
-		private var sphereGridRect:Rectangle;
-		private var captureRect:Rectangle;
 		private var newGameOnNextClick:Boolean = false;
 		
 		private var pointsRequiredToCapture:int = 0;
@@ -71,16 +65,18 @@ package puzzle.bubblebreaker
 			//gui
 			initGUI();
 			initHelperEntities(x, y);
-			fadeTween = new Tween(0.25, Tween.PERSIST, null, Ease.circOut);
 			
 			setGamePosition(x, y);
 		}
 		
 		private function initHelperEntities(xPos:Number, yPos:Number):void 
-		{	
-			scoreDisplay = new ScoreDisplay(0, 0);
+		{
 			pointBox = new PointsBox(0, 0);
 			pointBox.visible = false;
+			
+			//these entities are properly positioned by setGamePosition()
+			scoreDisplay = new ScoreDisplay(0, 0);
+			captureButton = new CaptureButton(0, 0);
 		}
 		
 		override public function added():void 
@@ -88,6 +84,7 @@ package puzzle.bubblebreaker
 			super.added();
 			this.world.add(pointBox);
 			this.world.add(scoreDisplay);
+			this.world.add(captureButton);
 			this.addTween(fadeTween);
 			
 			updateDisplay();
@@ -98,10 +95,11 @@ package puzzle.bubblebreaker
 			super.setGamePosition(x, y);
 			scoreDisplay.x = this.x + 74;
 			scoreDisplay.y = this.y + 565;
+			captureButton.x = this.x + 250;
+			captureButton.y = this.y + 550;
 			//user input related
 			sphereGridRect = new Rectangle(sphereGridDisplay.x + x, sphereGridDisplay.y + y,
 											sphereGridDisplay.width, sphereGridDisplay.height);
-			captureRect = new Rectangle(captureButton.x + x, captureButton.y + y, captureButton.width, captureButton.height);
 		}
 		
 		private function updateDisplay():void 
@@ -116,10 +114,7 @@ package puzzle.bubblebreaker
 		{
 			//show capture button if enough points
 			if (!captureButton.visible && gameRules.score > pointsRequiredToCapture) {
-				captureButton.visible = true;
-				captureButton.alpha = 0;
-				fadeStatus = FADE_IN_CAPTURE_BUTTON;
-				fadeTween.start();
+				captureButton.appear();
 			}
 		}
 		
@@ -211,7 +206,7 @@ package puzzle.bubblebreaker
 				}
 			}
 			//capture if button is showing and clicked
-			else if (!hasCaptured && captureButton.visible && captureRect.contains(Input.mouseX, Input.mouseY)) {
+			else if (captureButton.visible && captureButton.hasBeenClicked) {
 				beginCapture();
 			}
 			//check if pressed with boundaries of tilemap and select sphere if so
@@ -233,9 +228,6 @@ package puzzle.bubblebreaker
 			if (fadeStatus == FADE_IN) {
 				fadeIn();
 			}
-			else if (fadeStatus == FADE_IN_CAPTURE_BUTTON) {
-				fadeCaptureButtonIn();
-			}
 			else if (fadeStatus == FADE_OUT) {
 				fadeOut();
 			}
@@ -248,11 +240,6 @@ package puzzle.bubblebreaker
 		private function fadeIn():void {
 			var fadeInPerc:Number = fadeTween.active ? fadeTween.scale : 1.0;
 			setUIAlpha(fadeInPerc);
-		}
-		
-		private function fadeCaptureButtonIn():void {
-			var fadeInPerc:Number = fadeTween.active ? fadeTween.scale : 1.0;
-			captureButton.alpha = fadeInPerc;
 		}
 		
 		private function fadeOut():void 
@@ -296,7 +283,7 @@ package puzzle.bubblebreaker
 			gameRules.resetNumColors(numColors);
 			hasCaptured = false;
 			newGameOnNextClick = false;
-			captureButton.visible = false;
+			captureButton.reset();
 			updateDisplay();
 		}
 
@@ -304,6 +291,7 @@ package puzzle.bubblebreaker
 		{
 			resetGame(requiredScore, difficulty);
 			this.visible = true;
+			scoreDisplay.visible = true;
 			this.active = true;
 			this.fadeStatus = FADE_IN;
 			this.fadeTween.start();
@@ -315,6 +303,7 @@ package puzzle.bubblebreaker
 			this.visible = false;
 			this.active = false;
 			pointBox.visible = false;
+			scoreDisplay.visible = false;
 			setUIAlpha(0);
 		}
 		
@@ -336,6 +325,7 @@ package puzzle.bubblebreaker
 		private function setUIAlpha(alpha:Number):void {
 			background.alpha = alpha;
 			sphereGridDisplay.alpha = alpha;
+			captureButton.setAlpha(alpha);
 			scoreDisplay.setAlpha(alpha);
 		}
 		
@@ -346,19 +336,16 @@ package puzzle.bubblebreaker
 		private function initGUI():void 
 		{
 			background = new Image(Assets.SPHERE_GAME_BACKGROUND);
-			sphereGridDisplay = new Tilemap(Assets.SPHERES, 512, 512, SPHERE_WIDTH, SPHERE_HEIGHT);
+			sphereGridDisplay = new Tilemap(Assets.SPHERES, 512, 512, BubbleBreakerConstants.SPHERE_WIDTH,
+											BubbleBreakerConstants.SPHERE_HEIGHT);
 			sphereGridDisplay.x = 43;
 			sphereGridDisplay.y = 0;
-			sphereGridHighlight = new Tilemap(Assets.HIGHLIGHT, 512, 512, SPHERE_WIDTH, SPHERE_HEIGHT);
+			sphereGridHighlight = new Tilemap(Assets.HIGHLIGHT, 512, 512, BubbleBreakerConstants.SPHERE_WIDTH,
+											  BubbleBreakerConstants.SPHERE_HEIGHT);
 			sphereGridHighlight.x = sphereGridDisplay.x;
 			sphereGridHighlight.y = sphereGridDisplay.y;
 			sphereGridHighlight.alpha = 0.2;
-			captureButton = new Image(Assets.CAPTURE_BUTTON);
-			captureButton.x = 250;
-			captureButton.y = 550;
-			captureButton.visible = false;
-			this.graphic = new Graphiclist( background, sphereGridDisplay, sphereGridHighlight,
-											captureButton);
+			this.graphic = new Graphiclist( background, sphereGridDisplay, sphereGridHighlight);
 		}
 		
 		private function clickSphere():void 

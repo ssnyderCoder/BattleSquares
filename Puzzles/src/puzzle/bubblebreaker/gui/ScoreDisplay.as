@@ -13,7 +13,7 @@ package puzzle.bubblebreaker.gui
 	 * ...
 	 * @author ...
 	 */
-	public class ScoreDisplay extends Entity 
+	public class ScoreDisplay extends BBDisplay 
 	{
 		
 		private static const COLOR_GREEN:uint = 0x11cc11;
@@ -33,9 +33,10 @@ package puzzle.bubblebreaker.gui
 			scoreText.y = -15;
 			this.graphic = new Graphiclist(requiredScoreText, scoreText);
 			this.addTween(scoreTween);
+			this.visible = false;
 		}
 		
-		public function setAlpha(alpha:Number):void {
+		override public function setAlpha(alpha:Number):void {
 			scoreText.alpha = alpha;
 			requiredScoreText.alpha = alpha;
 		}
