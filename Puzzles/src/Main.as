@@ -1,5 +1,6 @@
 package 
 {
+	import asunit.textui.TestRunner;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.ui.Mouse;
@@ -10,6 +11,7 @@ package
 	import puzzle.Assets;
 	import puzzle.GameWorld;
 	import puzzle.MenuWorld;
+	import tests.AllTests
 	
 /**
 	 * ...
@@ -23,7 +25,19 @@ package
 		public function Main():void 
 		{
 			super(SCREEN_WIDTH, SCREEN_HEIGHT, 60, false);
-			FP.world = new MenuWorld();
+			if(TESTS::testing == true){
+				runUnitTests();
+			}
+			else{
+				FP.world = new MenuWorld();
+			}
+		}
+		//goal// create macro for enabling and disabling unit tests
+		private function runUnitTests():void 
+		{
+			var unittests:TestRunner = new TestRunner();
+			stage.addChild(unittests);
+			unittests.start(AllTests, null, TestRunner.SHOW_TRACE);
 		}
 		
 		
