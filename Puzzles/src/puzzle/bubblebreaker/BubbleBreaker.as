@@ -15,6 +15,7 @@ package puzzle.bubblebreaker
 	import puzzle.bubblebreaker.gui.SingleBubble;
 	import puzzle.minigame.Minigame;
 	import puzzle.minigame.MinigameConstants;
+	import puzzle.util.EntityFader;
 	
 	/**
 	 * ...
@@ -25,7 +26,7 @@ package puzzle.bubblebreaker
 		//gui
 		private var scoreDisplay:ScoreDisplay;
 		
-		private var background:Image; //remove and simply adjust alpha of all graphics in graphic list?
+		private var background:Image;
 		
 		//refactor into own class together?
 		private var sphereGridDisplay:Tilemap;
@@ -36,17 +37,10 @@ package puzzle.bubblebreaker
 		private static const HIGHLIGHT_ROUND_OVER:int = 2;
 		
 		private var captureButton:CaptureButton;
-		
+		private var fader:EntityFader;
 		private var pointBox:PointsBox;
 		
 		private var transitionSphereCount:int = 0; //refactor into higher level class?
-		
-		//refactor into supplementary class? (Fader(Entity) perhaps)
-		private static const FADE_NONE:int = 0;
-		private static const FADE_IN:int = 1;
-		private static const FADE_OUT:int = 2;
-		private var fadeTween:Tween = new Tween(0.25, Tween.PERSIST, null, Ease.circOut);
-		private var fadeStatus:int = FADE_NONE;
 
 		//user input related
 		private var newGameOnNextClick:Boolean = false;
@@ -61,7 +55,7 @@ package puzzle.bubblebreaker
 		{
 			this.setHitbox(600, 600);
 			gameRules = new BubbleBreakerRules(8, 8, 0);
-			
+			fader = new EntityFader(this, 0.25, Ease.circOut);
 			//gui
 			initGUI();
 			initHelperEntities(x, y);
@@ -85,7 +79,6 @@ package puzzle.bubblebreaker
 			this.world.add(pointBox);
 			this.world.add(scoreDisplay);
 			this.world.add(captureButton);
-			this.addTween(fadeTween);
 			
 			updateDisplay();
 		}
@@ -218,34 +211,16 @@ package puzzle.bubblebreaker
 		private function beginCapture():void 
 		{
 			hasCaptured = true;
-			fadeTween.start();
-			fadeStatus = FADE_OUT;
+			fader.fadeOut();
 			captureButton.visible = false;
 		}
 		
 		private function handleFading():void 
 		{
-			if (fadeStatus == FADE_IN) {
-				fadeIn();
+			if (fader.isFading()) {
+				setUIAlpha(fader.getCurrentAlpha());
 			}
-			else if (fadeStatus == FADE_OUT) {
-				fadeOut();
-			}
-			//stop fading if done
-			if (fadeStatus != FADE_NONE && fadeStatus != FADE_OUT && !fadeTween.active) {
-				fadeStatus = FADE_NONE;
-			}
-		}
-		
-		private function fadeIn():void {
-			var fadeInPerc:Number = fadeTween.active ? fadeTween.scale : 1.0;
-			setUIAlpha(fadeInPerc);
-		}
-		
-		private function fadeOut():void 
-		{
-			var fadeInPerc:Number = fadeTween.active ? fadeTween.scale : 1.0;
-			setUIAlpha(1.0 - fadeInPerc);
+			fader.update();
 		}
 		
 		//create shrinking spheres
@@ -293,8 +268,7 @@ package puzzle.bubblebreaker
 			this.visible = true;
 			scoreDisplay.visible = true;
 			this.active = true;
-			this.fadeStatus = FADE_IN;
-			this.fadeTween.start();
+			fader.fadeIn();
 			setUIAlpha(0);
 		}
 		
@@ -319,19 +293,14 @@ package puzzle.bubblebreaker
 		
 		override public function hasBeenWon():Boolean 
 		{
-			return hasCaptured && hasFadedOut();
+			return hasCaptured && !fader.isFading();
 		}
 		
 		private function setUIAlpha(alpha:Number):void {
-			background.alpha = alpha;
-			sphereGridDisplay.alpha = alpha;
 			captureButton.setAlpha(alpha);
 			scoreDisplay.setAlpha(alpha);
 		}
 		
-		private function hasFadedOut():Boolean {
-			return fadeStatus == FADE_OUT && !fadeTween.active;
-		}
 		
 		private function initGUI():void 
 		{
@@ -346,6 +315,10 @@ package puzzle.bubblebreaker
 			sphereGridHighlight.y = sphereGridDisplay.y;
 			sphereGridHighlight.alpha = 0.2;
 			this.graphic = new Graphiclist( background, sphereGridDisplay, sphereGridHighlight);
+			
+			fader.addImage(background);
+			fader.addCanvas(sphereGridDisplay);
+			fader.addCanvas(sphereGridHighlight, 0.2);
 		}
 		
 		private function clickSphere():void 

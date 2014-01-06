@@ -9,6 +9,7 @@ package puzzle.bubblebreaker.gui
 	import net.flashpunk.utils.Ease;
 	import net.flashpunk.utils.Input;
 	import puzzle.Assets;
+	import puzzle.util.EntityFader;
 	
 	/**
 	 * ...
@@ -16,39 +17,27 @@ package puzzle.bubblebreaker.gui
 	 */
 	public class CaptureButton extends BBDisplay 
 	{
-		private static const FADE_NONE:int = 0;
-		private static const FADE_IN:int = 1;
-		private var fadeTween:Tween = new Tween(0.25, Tween.PERSIST, null, Ease.circOut);
-		private var fadeStatus:int = FADE_NONE;
-		
 		private var buttonImg:Image;
+		private var fader:EntityFader;
 		private var _hasBeenClicked:Boolean = false;
 		public function CaptureButton(x:Number=0, y:Number=0) 
 		{
 			super(x, y);
 			
 			buttonImg = new Image(Assets.CAPTURE_BUTTON);
+			fader = new EntityFader(this, 0.5, Ease.circOut);
+			fader.addImage(buttonImg);
 			this.visible = false;
 			this.setHitbox(buttonImg.width, buttonImg.height);
 			this.graphic = buttonImg;
-			this.addTween(fadeTween);
 		}
 		
 		override public function update():void 
 		{
 			super.update();
-			
+			fader.update();
 			if (isClickable() && Input.mouseDown && this.collidePoint(this.x, this.y, Input.mouseX, Input.mouseY)) {
 				_hasBeenClicked = true;
-			}
-			
-			if (fadeStatus == FADE_IN) {
-				fadeIn();
-			}
-			
-			//stop fading if done
-			if (fadeStatus != FADE_NONE && !fadeTween.active) {
-				fadeStatus = FADE_NONE;
 			}
 		}
 		
@@ -56,16 +45,9 @@ package puzzle.bubblebreaker.gui
 			return !_hasBeenClicked && this.visible;
 		}
 		
-		private function fadeIn():void {
-			var fadeInPerc:Number = fadeTween.active ? fadeTween.scale : 1.0;
-			buttonImg.alpha = fadeInPerc;
-		}
-		
 		public function appear():void {
 			this.visible = true;
-			buttonImg.alpha = 0;
-			fadeStatus = FADE_IN;
-			fadeTween.start();
+			fader.fadeIn();
 		}
 		
 		public function reset():void 
