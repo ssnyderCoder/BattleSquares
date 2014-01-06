@@ -46,12 +46,12 @@ package puzzle.bubblebreaker
 		
 		public function resetNumColors(numColors:int):void {
 			this._numColors = numColors;
-			generateSphereGrid(_numColors);
-			_score = 0;
+			reset();
 		}
 		
 		public function reset():void {
 			generateSphereGrid(_numColors);
+			currentState = STATE_DOING_NOTHING;
 			_score = 0;
 		}
 		
