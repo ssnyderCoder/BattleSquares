@@ -25,32 +25,32 @@ package puzzle.bubblebreaker
 		private static const STATE_SELECTED:int = 51;
 		
 		private var currentState:int = STATE_DOING_NOTHING;
-		private var _width:int;
-		private var _height:int;
+		private var _numColumns:int;
+		private var _numRows:int;
 		private var spheres:Array; //acts as 2d grid filled with sphere id #s
 		private var selectedSpheres:Array; //acts as 2d grid designating selected spheres
 		private var _score:int;
 		private var numSelectedSpheres:int = 0;
-		private var _numColors:int;
+		private var numColors:int;
 		
 		public function BubbleBreakerRules(width:int, height:int, numColors:int)
 		{
-			this._width = width;
-			this._height = height;
+			this._numColumns = width;
+			this._numRows = height;
 			this._score = 0;
 			this.spheres = new Array();
 			this.selectedSpheres = new Array();
-			this._numColors = numColors;
-			generateSphereGrid(_numColors);
+			this.numColors = numColors;
+			generateSphereGrid(numColors);
 		}
 		
 		public function resetNumColors(numColors:int):void {
-			this._numColors = numColors;
+			this.numColors = numColors;
 			reset();
 		}
 		
 		public function reset():void {
-			generateSphereGrid(_numColors);
+			generateSphereGrid(numColors);
 			currentState = STATE_DOING_NOTHING;
 			_score = 0;
 		}
@@ -59,10 +59,10 @@ package puzzle.bubblebreaker
 		{
 			numColors = numColors > MAX_COLORS ? MAX_COLORS : numColors;
 			//assign random sphere id to every index in the sphere grid
-			for (var j:int = 0; j < _height; j++) {
-				for (var i:int = 0; i < _width; i++) {
-					spheres[i + j * _width] = (int)(Math.floor(Math.random() * numColors)) + 1;
-					selectedSpheres[i + j * _width] = false;
+			for (var j:int = 0; j < _numRows; j++) {
+				for (var i:int = 0; i < _numColumns; i++) {
+					spheres[i + j * _numColumns] = (int)(Math.floor(Math.random() * numColors)) + 1;
+					selectedSpheres[i + j * _numColumns] = false;
 				}
 			}
 			if (isFinished()) {
@@ -75,32 +75,27 @@ package puzzle.bubblebreaker
 			return _score;
 		}
 		
-		public function get width():int 
+		public function get numColumns():int 
 		{
-			return _width;
+			return _numColumns;
 		}
 		
-		public function get height():int 
+		public function get numRows():int 
 		{
-			return _height;
-		}
-		
-		public function get numColors():int 
-		{
-			return _numColors;
+			return _numRows;
 		}
 		
 		public function getIndex(x:int, y:int):int {
-			x = FP.clamp(x, 0, _width - 1);
-			y = FP.clamp(y, 0, _height - 1);
-			return spheres[x + y * _width];
+			x = FP.clamp(x, 0, _numColumns - 1);
+			y = FP.clamp(y, 0, _numRows - 1);
+			return spheres[x + y * _numColumns];
 		}
 		
 		
 		public function isIndexSelected(x:int, y:int):Boolean {
-			x = FP.clamp(x, 0, _width - 1);
-			y = FP.clamp(y, 0, _height - 1);
-			return selectedSpheres[x + y * _width];
+			x = FP.clamp(x, 0, _numColumns - 1);
+			y = FP.clamp(y, 0, _numRows - 1);
+			return selectedSpheres[x + y * _numColumns];
 		}
 		
 		//isFinished() -> checks if any valid moves remain
@@ -109,16 +104,16 @@ package puzzle.bubblebreaker
 		private function isFinished():Boolean {
 			var empty:Boolean = true;
 			//check every sphere for adjacent spheres of same color (only below and right spheres need check)
-			for (var j:int = 0; j < _height; j++) {
-				for (var i:int = 0; i < _width; i++) {
-					var id_center:int = spheres[i + (j * _width)];
+			for (var j:int = 0; j < _numRows; j++) {
+				for (var i:int = 0; i < _numColumns; i++) {
+					var id_center:int = spheres[i + (j * _numColumns)];
 					if (id_center == EMPTY_ID) {
 						continue;
 					}
 					
 					empty = false;
-					var id_below:int = j + 1 == _height ? EMPTY_ID : spheres[i + ((j + 1) * _width)];
-					var id_right:int = i + 1 == _width ? EMPTY_ID : spheres[(i + 1) + (j * _width)];
+					var id_below:int = j + 1 == _numRows ? EMPTY_ID : spheres[i + ((j + 1) * _numColumns)];
+					var id_right:int = i + 1 == _numColumns ? EMPTY_ID : spheres[(i + 1) + (j * _numColumns)];
 					if (id_center == id_right || id_center == id_below) {
 						return false; //if touching another sphere of same color
 					}
@@ -148,11 +143,11 @@ package puzzle.bubblebreaker
 			else if (currentState == STATE_SELECTED) {
 				if (isIndexSelected(x, y)) {
 					//for loop removing all designated spheres and counting total
-					for (var j:int = 0; j < _height; j++) {
-						for (var i:int = 0; i < _width; i++) {
-							if(selectedSpheres[i + j * _width]){
-								spheres[i + j * _width] = EMPTY_ID;
-								selectedSpheres[i + j * _width] = false;
+					for (var j:int = 0; j < _numRows; j++) {
+						for (var i:int = 0; i < _numColumns; i++) {
+							if(selectedSpheres[i + j * _numColumns]){
+								spheres[i + j * _numColumns] = EMPTY_ID;
+								selectedSpheres[i + j * _numColumns] = false;
 							}
 						}
 					}
@@ -189,9 +184,9 @@ package puzzle.bubblebreaker
 			return (numSelectedSpheres) * (numSelectedSpheres - 1);
 		}
 		private function resetSphereSelection():void {
-			for (var j:int = 0; j < _height; j++) {
-				for (var i:int = 0; i < _width; i++) {
-					selectedSpheres[i + j * _width] = false;
+			for (var j:int = 0; j < _numRows; j++) {
+				for (var i:int = 0; i < _numColumns; i++) {
+					selectedSpheres[i + j * _numColumns] = false;
 				}
 			}
 			numSelectedSpheres = 0;
@@ -200,14 +195,14 @@ package puzzle.bubblebreaker
 		private function selectColoredSpheresAt(id:int, x:int, y:int, firstAttempt:Boolean = true ):int
 		{
 			//if sphere out of bounds, not correct color, or invalid, return 0
-			if (x < 0 || x >= _width || y < 0 || y >= _height ||
-				id == EMPTY_ID || spheres[x + y * _width] != id || selectedSpheres[x + y * _width]) {
+			if (x < 0 || x >= _numColumns || y < 0 || y >= _numRows ||
+				id == EMPTY_ID || spheres[x + y * _numColumns] != id || selectedSpheres[x + y * _numColumns]) {
 				return 0;
 			}
 			
 			//remove all adjacent spheres of same color
 			var numSpheresSelected:int = 1;
-			selectedSpheres[x + y * _width] = true;
+			selectedSpheres[x + y * _numColumns] = true;
 			
 			numSpheresSelected += selectColoredSpheresAt(id, x + 1, y, false);
 			numSpheresSelected += selectColoredSpheresAt(id, x - 1, y, false);
@@ -215,7 +210,7 @@ package puzzle.bubblebreaker
 			numSpheresSelected += selectColoredSpheresAt(id, x, y - 1, false);
 			
 			if (firstAttempt && numSpheresSelected == 1) { //if this is only sphere of color, don't remove
-				selectedSpheres[x + y * _width] = false;
+				selectedSpheres[x + y * _numColumns] = false;
 				return 0;
 			}
 			
@@ -226,17 +221,17 @@ package puzzle.bubblebreaker
 		//shifts all columns right into any empty columns
 		private function shiftColumnsRight():void {
 			var emptyColumnCount:int = 0;
-			var columnIndex:int = _width - 1;
+			var columnIndex:int = _numColumns - 1;
 			while (columnIndex >= 0) {
 				//check if column has no spheres
-				if (spheres[columnIndex + (_height - 1) * _width] == EMPTY_ID) {
+				if (spheres[columnIndex + (_numRows - 1) * _numColumns] == EMPTY_ID) {
 					emptyColumnCount++;
 				}
 				else if(emptyColumnCount > 0){ //shift non-empty columns into empty ones
-					for (var row:int = 0; row < _height; row++) {
-						spheres[(columnIndex + emptyColumnCount) + (row * _width)] = 
-							spheres[columnIndex + (row * _width)];
-						spheres[columnIndex + (row * _width)] = EMPTY_ID;
+					for (var row:int = 0; row < _numRows; row++) {
+						spheres[(columnIndex + emptyColumnCount) + (row * _numColumns)] = 
+							spheres[columnIndex + (row * _numColumns)];
+						spheres[columnIndex + (row * _numColumns)] = EMPTY_ID;
 					}
 				}
 				columnIndex--;
@@ -245,16 +240,16 @@ package puzzle.bubblebreaker
 		
 		//shifts every sphere above an empty space down
 		private function shiftSpheresDown():void {
-			for (var i:int = 0; i < _width; i++) {
+			for (var i:int = 0; i < _numColumns; i++) {
 				var emptyRowCount:int = 0;
-				for (var j:int = _height - 1; j >= 0; j--) {
-					var id_center:int = spheres[i + (j * _width)];
+				for (var j:int = _numRows - 1; j >= 0; j--) {
+					var id_center:int = spheres[i + (j * _numColumns)];
 					if (id_center == EMPTY_ID ) {//add to count if empty space
 						emptyRowCount++;
 					}
 					else if(emptyRowCount > 0){ //shift down if not
-						spheres[i + ((j + emptyRowCount) * _width)] = spheres[i + (j * _width)];
-						spheres[i + (j * _width)] = EMPTY_ID;
+						spheres[i + ((j + emptyRowCount) * _numColumns)] = spheres[i + (j * _numColumns)];
+						spheres[i + (j * _numColumns)] = EMPTY_ID;
 					}
 				}
 			}	

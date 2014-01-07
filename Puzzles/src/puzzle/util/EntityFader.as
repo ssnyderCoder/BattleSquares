@@ -16,6 +16,9 @@ package puzzle.util
 		
 		private var fadeStatus:int = FADE_NONE;
 		private var fadeTween:Tween;
+		
+		//probably should not separate images and canvases
+		//maybe can just take in graphics and modify all that have alpha property
 		private var images:Array;
 		private var imageMaxAlphas:Array;
 		private var canvases:Array;

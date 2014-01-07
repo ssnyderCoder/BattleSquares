@@ -32,7 +32,9 @@ package
 				FP.world = new MenuWorld();
 			}
 		}
-		//goal// create macro for enabling and disabling unit tests
+		//Refactoring GOALS:
+		//Refactor BubbleBreaker SphereGrid and PointBox together into an entity
+		//Refactor BattlesquaresRules level generation into an interface
 		private function runUnitTests():void 
 		{
 			var unittests:TestRunner = new TestRunner();

@@ -22,6 +22,7 @@ package puzzle.bubblebreaker.gui
 		private var scoreText:Text;
 		private var requiredScoreText:Text;
 		private var requiredScore:int = 0;
+		private var score:int = 0;
 		private var scoreTween:Tween = new Tween(0.25, Tween.PERSIST, null, Ease.circOut);
 		
 		public function ScoreDisplay(x:Number=0, y:Number=0) 
@@ -47,18 +48,25 @@ package puzzle.bubblebreaker.gui
 			updateScoreTextSize();
 		}
 		
-		public function beginResizing():void {
+		private function beginResizing():void {
 			scoreTween.start();
 		}
 		
 		public function setRequiredScore(required:int):void {
+			if (required == requiredScore) {
+				return;
+			}
 			requiredScore = required;
 			requiredScoreText.text = "Required: " + requiredScore;
 		}
 		
-		public function setScore(score:int):void {
-			scoreText.text = "Score: " + score;
-			scoreText.color = score > requiredScore ? COLOR_GREEN : COLOR_RED;
+		public function setScore(newScore:int):void {
+			if (score == newScore) {
+				return;
+			}
+			scoreText.text = "Score: " + newScore;
+			scoreText.color = newScore > requiredScore ? COLOR_GREEN : COLOR_RED;
+			beginResizing();
 		}
 		
 		private function updateScoreTextSize():void {
