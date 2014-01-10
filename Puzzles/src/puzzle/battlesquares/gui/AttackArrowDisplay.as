@@ -2,6 +2,7 @@ package puzzle.battlesquares.gui
 {
 	import net.flashpunk.Entity;
 	import puzzle.battlesquares.AttackInfo;
+	import puzzle.battlesquares.BattleSquaresConstants;
 	import puzzle.battlesquares.BattleSquaresRules;
 	
 	/**
@@ -17,12 +18,12 @@ package puzzle.battlesquares.gui
 		private var tileHeight:Number;
 		private var gameRules:BattleSquaresRules;
 		
-		public function AttackArrowDisplay(xPos:Number, yPos:Number, tileWidth:Number, tileHeight:Number, gameRules:BattleSquaresRules) 
+		public function AttackArrowDisplay(xPos:Number, yPos:Number, gameRules:BattleSquaresRules) 
 		{
 			this.x = xPos;
 			this.y = yPos;
-			this.tileWidth = tileWidth;
-			this.tileHeight = tileHeight;
+			this.tileWidth = BattleSquaresConstants.SQUARE_WIDTH;
+			this.tileHeight = BattleSquaresConstants.SQUARE_HEIGHT;
 			this.gameRules = gameRules;
 		}
 		

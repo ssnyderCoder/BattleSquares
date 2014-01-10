@@ -32,6 +32,7 @@ package puzzle.bubblebreaker.gui
 		{
 			super(x, y);
 			this.gameRules = gameRules;
+			this.visible = false;
 			var tileWidth:int = BubbleBreakerConstants.SPHERE_WIDTH;
 			var tileHeight:int = BubbleBreakerConstants.SPHERE_HEIGHT;
 			var rows:int = gameRules.numRows;
@@ -40,6 +41,7 @@ package puzzle.bubblebreaker.gui
 			sphereGridHighlight = new Tilemap(Assets.HIGHLIGHT, tileWidth*columns, tileHeight*rows, tileWidth, tileHeight);
 			sphereGridHighlight.alpha = 0.2;
 			this.graphic = new Graphiclist(sphereGrid, sphereGridHighlight);
+			this.setHitbox(sphereGrid.width, sphereGrid.height);
 		}
 		
 		override public function added():void 
@@ -56,7 +58,11 @@ package puzzle.bubblebreaker.gui
 			if (gridClicked()) {
 				clickSphere();
 			}
-			updatePointBoxDisplay(); //MOVE TO SPHERE GRID
+			updatePointBoxDisplay();
+		}
+		
+		public function restart():void {
+			this._readyToRestart = false;
 		}
 		
 		public function updateDisplay():void

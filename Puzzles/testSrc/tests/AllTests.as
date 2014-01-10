@@ -12,7 +12,8 @@ package tests
 		public function AllTests() 
 		{
 			super();
-            addTest(new TestGameConfig("testPlayers"));
+            addTest(new TestGameConfig());
+			addTest(new TestGameButton());
 		}
 		
 	}

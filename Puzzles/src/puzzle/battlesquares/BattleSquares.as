@@ -60,9 +60,7 @@ package puzzle.battlesquares
 			
 			infoBox = new InfoDisplay(this.x + 10, this.y + 380);
 			infoBox.visible = false;
-			atkArrowDisplay = new AttackArrowDisplay(squareGridRect.x, squareGridRect.y,
-													 squareGridDisplay.tileWidth, squareGridDisplay.tileHeight,
-													 gameRules);
+			atkArrowDisplay = new AttackArrowDisplay(squareGridRect.x, squareGridRect.y, gameRules);
 			timeDisplay = new TimeDisplay(this.x + this.width / 2, this.y + this.height + 20);
 			leaderboard = new LeaderboardDisplay(this.x + 302, this.y + 30, gameRules);
 		}

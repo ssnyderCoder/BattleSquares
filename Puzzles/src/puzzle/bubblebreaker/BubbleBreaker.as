@@ -127,6 +127,7 @@ package puzzle.bubblebreaker
 			//either capture or begin new game if player cannot make any more moves
 			if (newGameOnNextClick) {
 				newGameOnNextClick = false;
+				sphereGridDisplay.restart();
 				if (captureButton.visible) {
 					beginCapture();
 				}
@@ -156,7 +157,7 @@ package puzzle.bubblebreaker
 			fader.update();
 		}
 		
-		public function resetGame(pointsRequired:int, numColors:int = MinigameConstants.DIFFICULTY_MEDIUM):void {
+		private function resetGame(pointsRequired:int, numColors:int = MinigameConstants.DIFFICULTY_MEDIUM):void {
 			this.pointsRequiredToCapture = pointsRequired;
 			gameRules.resetNumColors(numColors);
 			hasCaptured = false;
@@ -182,6 +183,7 @@ package puzzle.bubblebreaker
 			this.active = false;
 			scoreDisplay.visible = false;
 			sphereGridDisplay.visible = false;
+			captureButton.visible = false;
 			setUIAlpha(0);
 		}
 		

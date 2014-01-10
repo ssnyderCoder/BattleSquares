@@ -21,8 +21,8 @@ package puzzle.bubblebreaker.gui
 		
 		private var scoreText:Text;
 		private var requiredScoreText:Text;
-		private var requiredScore:int = 0;
-		private var score:int = 0;
+		private var requiredScore:int = -1;
+		private var score:int = -1;
 		private var scoreTween:Tween = new Tween(0.25, Tween.PERSIST, null, Ease.circOut);
 		
 		public function ScoreDisplay(x:Number=0, y:Number=0) 
@@ -64,6 +64,7 @@ package puzzle.bubblebreaker.gui
 			if (score == newScore) {
 				return;
 			}
+			score = newScore;
 			scoreText.text = "Score: " + newScore;
 			scoreText.color = newScore > requiredScore ? COLOR_GREEN : COLOR_RED;
 			beginResizing();

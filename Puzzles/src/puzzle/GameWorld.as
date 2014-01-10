@@ -4,6 +4,7 @@ package puzzle
 	import net.flashpunk.graphics.Image;
 	import net.flashpunk.World;
 	import puzzle.battlesquares.BattleSquares;
+	import puzzle.menu.MenuWorld;
 	import puzzle.minigame.Minigame;
 	
 	/**

@@ -10,7 +10,7 @@ package
 	import net.flashpunk.utils.Key;
 	import puzzle.Assets;
 	import puzzle.GameWorld;
-	import puzzle.MenuWorld;
+	import puzzle.menu.MenuWorld;
 	import tests.AllTests
 	
 /**
@@ -33,7 +33,6 @@ package
 			}
 		}
 		//Refactoring GOALS:
-		//Refactor BubbleBreaker SphereGrid and PointBox together into an entity
 		//Refactor BattlesquaresRules level generation into an interface
 		private function runUnitTests():void 
 		{

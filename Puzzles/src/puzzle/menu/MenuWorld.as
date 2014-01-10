@@ -1,11 +1,15 @@
-package puzzle 
+package puzzle.menu 
 {
 	import net.flashpunk.FP;
 	import net.flashpunk.graphics.Image;
 	import net.flashpunk.utils.Input;
 	import net.flashpunk.World;
+	import puzzle.Assets;
 	import puzzle.battlesquares.player.IPlayerFactory;
 	import puzzle.battlesquares.player.PlayerConstants;
+	import puzzle.DisplayLayers;
+	import puzzle.GameConfig;
+	import puzzle.GameWorld;
 	
 	/**
 	 * ...
@@ -37,8 +41,6 @@ package puzzle
 		private var timeButton:GameButton; // when clicked, it changes the time that the game will last
 		private var blockedRarityButton:GameButton; // when clicked, it changes how common blocked squares are
 		private var bonusRarityButton:GameButton; // when clicked, it changes how common bonus squares are
-		
-		private var buttonClicked:Boolean = false;
 		
 		private var alreadyAHumanPlayer:Boolean = true;
 		
@@ -95,72 +97,39 @@ package puzzle
 			this.add(bonusRarityButton);
 			
 			//initial button settings
-			player1Button.visible = false;
-			player2Button.visible = false;
-			player3Button.visible = false;
-			player4Button.visible = false;
-			beginButton.visible = false;
-			backButton.visible = false;
-			timeButton.visible = false;
-			blockedRarityButton.visible = false;
-			bonusRarityButton.visible = false;
+			player1Button.setActive(false);
+			player2Button.setActive(false);
+			player3Button.setActive(false);
+			player4Button.setActive(false);
+			beginButton.setActive(false);
+			backButton.setActive(false);
+			timeButton.setActive(false);
+			blockedRarityButton.setActive(false);
+			bonusRarityButton.setActive(false);
+			
+			newGameButton.addClickAction(showNewGameMenu);
+			player1Button.addClickAction(function():void {
+				setPlayerSetting(PLAYER_1_ID, gameConfig.getPlayerSetting(PLAYER_1_ID) + 1, player1Button);
+			});
+			player2Button.addClickAction(function():void {
+				setPlayerSetting(PLAYER_2_ID, gameConfig.getPlayerSetting(PLAYER_2_ID) + 1, player2Button);
+			});
+			player3Button.addClickAction(function():void {
+				setPlayerSetting(PLAYER_3_ID, gameConfig.getPlayerSetting(PLAYER_3_ID) + 1, player3Button);
+			});
+			player4Button.addClickAction(function():void {
+				setPlayerSetting(PLAYER_4_ID, gameConfig.getPlayerSetting(PLAYER_4_ID) + 1, player4Button);
+			});
+			beginButton.addClickAction(switchToGameWorld);
+			backButton.addClickAction(showMainMenu);
+			timeButton.addClickAction(alternateTime);
+			blockedRarityButton.addClickAction(alternateBlockedRarity);
+			bonusRarityButton.addClickAction(alternateBonusRarity);
 		}
 		
 		override public function update():void 
 		{
 			super.update();
-			if (Input.mouseDown && !buttonClicked) {
-				buttonClicked = true;
-				handleClickedButtons();
-			}
-			else if (!Input.mouseDown && buttonClicked) {
-				buttonClicked = false;
-			}
-		}
-		
-		private function handleClickedButtons():void 
-		{
-			if (newGameButton.visible && newGameButton.hasBeenClicked) {
-				showNewGameMenu();
-				Assets.SFX_SPHERE_CLEAR.play(0.1);
-			}
-			else if (player1Button.visible && player1Button.hasBeenClicked) {
-				setPlayerSetting(PLAYER_1_ID, gameConfig.getPlayerSetting(PLAYER_1_ID) + 1, player1Button)
-			}
-			else if (player2Button.visible && player2Button.hasBeenClicked) {
-				setPlayerSetting(PLAYER_2_ID, gameConfig.getPlayerSetting(PLAYER_2_ID) + 1, player2Button)
-			}
-			else if (player3Button.visible && player3Button.hasBeenClicked) {
-				setPlayerSetting(PLAYER_3_ID, gameConfig.getPlayerSetting(PLAYER_3_ID) + 1, player3Button)
-			}
-			else if (player4Button.visible && player4Button.hasBeenClicked) {
-				setPlayerSetting(PLAYER_4_ID, gameConfig.getPlayerSetting(PLAYER_4_ID) + 1, player4Button)
-			}
-			else if (beginButton.visible && beginButton.hasBeenClicked) {
-				switchToGameWorld();
-			}
-			else if (backButton.visible && backButton.hasBeenClicked) {
-				showMainMenu();
-				Assets.SFX_SPHERE_CLEAR.play(0.1);
-			}
-			//Time > Alternates Time Setting
-			else if (timeButton.visible && timeButton.hasBeenClicked) {
-				timeSettingInMinutes = timeSettingInMinutes == MAX_TIME_IN_MINUTES ? MIN_TIME_IN_MINUTES : timeSettingInMinutes + 1;
-				timeButton.setText("Game Length: " + timeSettingInMinutes + " Minute(s)")
-				gameConfig.secondsPerRound = timeSettingInMinutes * SECONDS_PER_MINUTE;
-			}
-			//Blocked Rarity > Alternates rarity of blocked squares
-			else if (blockedRarityButton.visible && blockedRarityButton.hasBeenClicked) {
-				blockedRarityIndex = blockedRarityIndex + 1 >= RARITIES.length ? 0 : blockedRarityIndex + 1;
-				blockedRarityButton.setText("Blocked Tiles: " + RARITY_TEXTS[blockedRarityIndex])
-				gameConfig.blockedTileChance = RARITIES[blockedRarityIndex];
-			}
-			//Bonus Rarity > Alternates rarity of bonus squares
-			else if (bonusRarityButton.visible && bonusRarityButton.hasBeenClicked) {
-				bonusRarityIndex = bonusRarityIndex + 1 >= RARITIES.length ? 0 : bonusRarityIndex + 1;
-				bonusRarityButton.setText("Bonus Tiles: " + RARITY_TEXTS[bonusRarityIndex])
-				gameConfig.bonusTileChance = RARITIES[bonusRarityIndex];
-			}
 		}
 		
 		private function setPlayerSetting(playerID:int, playerSetting:int, playerButton:GameButton):void 
@@ -191,30 +160,53 @@ package puzzle
 		
 		private function showMainMenu():void 
 		{
-			newGameButton.visible = true;
-			player1Button.visible = false;
-			player2Button.visible = false;
-			player3Button.visible = false;
-			player4Button.visible = false;
-			beginButton.visible = false;
-			backButton.visible = false;
-			timeButton.visible = false;
-			blockedRarityButton.visible = false;
-			bonusRarityButton.visible = false;
+			Assets.SFX_SPHERE_CLEAR.play(0.1);
+			newGameButton.setActive(true);
+			player1Button.setActive(false);
+			player2Button.setActive(false);
+			player3Button.setActive(false);
+			player4Button.setActive(false);
+			beginButton.setActive(false);
+			backButton.setActive(false);
+			timeButton.setActive(false);
+			blockedRarityButton.setActive(false);
+			bonusRarityButton.setActive(false);
 		}
 		
 		private function showNewGameMenu():void 
 		{
-			newGameButton.visible = false;
-			player1Button.visible = true;
-			player2Button.visible = true;
-			player3Button.visible = true;
-			player4Button.visible = true;
-			beginButton.visible = true;
-			backButton.visible = true;
-			timeButton.visible = true;
-			blockedRarityButton.visible = true;
-			bonusRarityButton.visible = true;
+			Assets.SFX_SPHERE_CLEAR.play(0.1);
+			newGameButton.setActive(false);
+			player1Button.setActive(true);
+			player2Button.setActive(true);
+			player3Button.setActive(true);
+			player4Button.setActive(true);
+			beginButton.setActive(true);
+			backButton.setActive(true);
+			timeButton.setActive(true);
+			blockedRarityButton.setActive(true);
+			bonusRarityButton.setActive(true);
+		}
+		
+		private function alternateTime():void 
+		{
+			timeSettingInMinutes = timeSettingInMinutes == MAX_TIME_IN_MINUTES ? MIN_TIME_IN_MINUTES : timeSettingInMinutes + 1;
+			timeButton.setText("Game Length: " + timeSettingInMinutes + " Minute(s)")
+			gameConfig.secondsPerRound = timeSettingInMinutes * SECONDS_PER_MINUTE;
+		}
+		
+		private function alternateBlockedRarity():void 
+		{
+			blockedRarityIndex = blockedRarityIndex + 1 >= RARITIES.length ? 0 : blockedRarityIndex + 1;
+			blockedRarityButton.setText("Blocked Tiles: " + RARITY_TEXTS[blockedRarityIndex])
+			gameConfig.blockedTileChance = RARITIES[blockedRarityIndex];
+		}
+		
+		private function alternateBonusRarity():void 
+		{
+			bonusRarityIndex = bonusRarityIndex + 1 >= RARITIES.length ? 0 : bonusRarityIndex + 1;
+			bonusRarityButton.setText("Bonus Tiles: " + RARITY_TEXTS[bonusRarityIndex])
+			gameConfig.bonusTileChance = RARITIES[bonusRarityIndex];
 		}
 		
 		
