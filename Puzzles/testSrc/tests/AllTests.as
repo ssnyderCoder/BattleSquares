@@ -14,6 +14,8 @@ package tests
 			super();
             addTest(new TestGameConfig());
 			addTest(new TestGameButton());
+			addTest(new TestLevelProvider());
+			addTest(new TestLevel());
 		}
 		
 	}
