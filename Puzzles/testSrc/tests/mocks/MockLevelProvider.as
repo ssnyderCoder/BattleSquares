@@ -1,4 +1,4 @@
-package tests 
+package tests.mocks 
 {
 	import puzzle.battlesquares.level.ILevelProvider;
 	import puzzle.battlesquares.level.Level;

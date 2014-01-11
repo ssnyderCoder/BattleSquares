@@ -1,6 +1,7 @@
 package tests 
 {
 	import asunit.framework.TestCase;
+	import puzzle.battlesquares.BattleSquaresConstants;
 	import puzzle.battlesquares.level.Level;
 	import puzzle.battlesquares.SquareInfo;
 	
@@ -45,6 +46,23 @@ package tests
 					assertNotNull("Square should not be null", square);
 				}
 			}
+		}
+		
+		public function testOwnershipCounts():void {
+			var level:Level = new Level(10, 10);
+			var numRows:int = level.getNumRows();
+			var numColumns:int = level.getNumColumns();
+			var expectedCount:int = numRows * numColumns;
+			var actualCount:int = level.getOwnershipCount(BattleSquaresConstants.PLAYER_NONE);
+			assertTrue("Total count of unowned squares is wrong", actualCount == expectedCount);
+			
+			level.setSquare(0, 0, new SquareInfo(0, 0, BattleSquaresConstants.PLAYER_1, 0, 0));
+			expectedCount--;
+			actualCount = level.getOwnershipCount(BattleSquaresConstants.PLAYER_NONE);
+			assertTrue("Total count of unowned squares is wrong", actualCount == expectedCount);
+			
+			var player1Count:int = level.getOwnershipCount(BattleSquaresConstants.PLAYER_1);
+			assertTrue("Total count of player 1 squares is wrong", player1Count == 1);
 		}
 		
 	}

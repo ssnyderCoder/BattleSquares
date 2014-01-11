@@ -3,6 +3,7 @@ package tests
 	import asunit.framework.TestCase;
 	import puzzle.battlesquares.level.ILevelProvider;
 	import puzzle.battlesquares.level.Level;
+	import tests.mocks.MockLevelProvider;
 	
 	/**
 	 * ...

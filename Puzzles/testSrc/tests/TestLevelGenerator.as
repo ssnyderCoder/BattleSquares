@@ -1,5 +1,7 @@
 package tests 
 {
+	import puzzle.battlesquares.level.ILevelProvider;
+	import puzzle.battlesquares.level.LevelGenerator;
 	/**
 	 * ...
 	 * @author Sean Snyder
@@ -11,6 +13,11 @@ package tests
 		{
 			super(testMethod);
 			
+		}
+		
+		override public function getLevelProvider():ILevelProvider 
+		{
+			return new LevelGenerator();
 		}
 		
 	}

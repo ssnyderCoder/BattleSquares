@@ -17,7 +17,9 @@ package puzzle.battlesquares
 	 */
 	public class BattleSquares extends Entity 
 	{	
-		
+		private static const BONUS_TEXTS:Array = new Array("None",
+														   "2X: After capturing, points on this square are doubled",
+														   "+50: After capturing, all your squares gain 50 points");
 		private var gameRules:BattleSquaresRules;
 		private var gamePlayers:GamePlayers;
 		
@@ -134,8 +136,12 @@ package puzzle.battlesquares
 			if (squareGridRect.contains(Input.mouseX, Input.mouseY)) {
 					tileX = (Input.mouseX - squareGridRect.x) / squareGridDisplay.tileWidth;
 					tileY = (Input.mouseY - squareGridRect.y) / squareGridDisplay.tileHeight;
+					var square:SquareInfo =  gameRules.getIndex(tileX, tileY);
+					var points:int = square.points;
+					var bonusID:int = square.bonusID;
 					infoBox.visible = true;
-					infoBox.setText("Points: " + gameRules.getIndex(tileX, tileY).points);
+					infoBox.setText("Points: " + points + "\n" +
+									"Bonus: " + BONUS_TEXTS[bonusID]);
 				}
 			else {
 				infoBox.visible = false;
