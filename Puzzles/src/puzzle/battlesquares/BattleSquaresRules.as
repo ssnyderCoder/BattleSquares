@@ -22,17 +22,8 @@ package puzzle.battlesquares
 	{
 		public static const MAX_PLAYERS:int = 4;
 		
-		public static const PLAYER_1:int = 0;
-		public static const PLAYER_2:int = 1;
-		public static const PLAYER_3:int = 2;
-		public static const PLAYER_4:int = 3;
-		public static const PLAYER_NONE:int = 4;
-		public static const PLAYER_BLOCKED:int = 5;
-		private static const BLOCKED_SQUARE:SquareInfo = new SquareInfo(-1, -1, PLAYER_BLOCKED, 0, 0);
+		private static const BLOCKED_SQUARE:SquareInfo = new SquareInfo(-1, -1, BattleSquaresConstants.PLAYER_BLOCKED, 0, 0);
 		
-		public static const STARTING_POINTS:int = 50;
-		
-		public static const BONUS_NONE:int = 0;
 		public static const BONUS_2X:int = 1;
 		public static const BONUS_50_ALL:int = 2;
 		public static const BONUS_ALL_POINTS:int = 50;
@@ -66,7 +57,7 @@ package puzzle.battlesquares
 			this.bonusSquareChance = config.bonusTileChance;
 			this.timePerRound = config.secondsPerRound;
 			this._timeRemaining = timePerRound;
-			this.winnerID = PLAYER_NONE;
+			this.winnerID = BattleSquaresConstants.PLAYER_NONE;
 			generateSquareGrid();
 		}
 		
@@ -74,7 +65,7 @@ package puzzle.battlesquares
 			generateSquareGrid();
 			this._timeRemaining = timePerRound;
 			this._clockTickingFaster = false;
-			this.winnerID = PLAYER_NONE;
+			this.winnerID = BattleSquaresConstants.PLAYER_NONE;
 			while (attackedSquares.length > 0) {
 				var atkInfo:AttackInfo = attackedSquares.pop();
 				atkInfo.isValid = false;
@@ -95,7 +86,7 @@ package puzzle.battlesquares
 		public function attackSquare(playerID:int, x:int, y:int, clearOtherAttacks:Boolean):AttackInfo {
 			//fail if player does not own nearby square or if already owns square
 			if (!doesPlayerOwnNearbySquare(playerID, x, y) || getIndex(x, y).ownerID == playerID
-				|| getIndex(x, y).ownerID == PLAYER_BLOCKED ) {
+				|| getIndex(x, y).ownerID == BattleSquaresConstants.PLAYER_BLOCKED ) {
 				return null;
 			}
 			
@@ -115,8 +106,9 @@ package puzzle.battlesquares
 			var squareOwner:int = getIndex(x, y).ownerID;
 			var bonusType:int = getIndex(x, y).bonusID;
 			var captureRequirement:int = getIndex(x, y).points;
-			var defenseValue:int = squareOwner == PLAYER_NONE && bonusType == BONUS_NONE ?  MinigameConstants.DIFFICULTY_MEDIUM :
-																							MinigameConstants.DIFFICULTY_HARD;
+			var defenseValue:int = squareOwner == BattleSquaresConstants.PLAYER_NONE &&
+												  bonusType == BattleSquaresConstants.BONUS_NONE ?
+												  MinigameConstants.DIFFICULTY_MEDIUM : MinigameConstants.DIFFICULTY_HARD;
 			var attack:AttackInfo = new AttackInfo(playerID, x, y, captureRequirement, defenseValue);
 			attackedSquares.push(attack);
 			return attack;
@@ -125,10 +117,10 @@ package puzzle.battlesquares
 		private function doesPlayerOwnNearbySquare(playerID:int, x:int, y:int):Boolean 
 		{
 			//check surrounding 4 squares
-			var leftSquareOwner:int = x == 0 ? PLAYER_BLOCKED : getIndex(x - 1, y).ownerID;
-			var rightSquareOwner:int = x == _width - 1 ? PLAYER_BLOCKED  : getIndex(x + 1, y).ownerID;
-			var aboveSquareOwner:int = y == 0 ? PLAYER_BLOCKED  : getIndex(x, y - 1).ownerID;
-			var belowSquareOwner:int = y == _height - 1 ? PLAYER_BLOCKED  : getIndex(x, y + 1).ownerID;
+			var leftSquareOwner:int = x == 0 ? BattleSquaresConstants.PLAYER_BLOCKED : getIndex(x - 1, y).ownerID;
+			var rightSquareOwner:int = x == _width - 1 ? BattleSquaresConstants.PLAYER_BLOCKED  : getIndex(x + 1, y).ownerID;
+			var aboveSquareOwner:int = y == 0 ? BattleSquaresConstants.PLAYER_BLOCKED  : getIndex(x, y - 1).ownerID;
+			var belowSquareOwner:int = y == _height - 1 ? BattleSquaresConstants.PLAYER_BLOCKED  : getIndex(x, y + 1).ownerID;
 			return leftSquareOwner == playerID || rightSquareOwner == playerID ||
 					aboveSquareOwner == playerID || belowSquareOwner == playerID;
 		}
@@ -155,7 +147,7 @@ package puzzle.battlesquares
 			if (bonusID == BONUS_50_ALL) {
 				addPointsToAllSquares(playerID, BONUS_ALL_POINTS);
 			}
-			square.bonusID = BONUS_NONE;
+			square.bonusID = BattleSquaresConstants.BONUS_NONE;
 			//cancel all attacks on this square
 			//check any attacks by prevOwner and cancel if captured square was only neabry square
 			//fail if attack already exists
@@ -193,7 +185,7 @@ package puzzle.battlesquares
 		
 		public function update():void {
 			countDownTime();
-			if ((timeIsUp() || onlyOnePlayerLeft()) && this.winnerID == PLAYER_NONE) {
+			if ((timeIsUp() || onlyOnePlayerLeft()) && this.winnerID == BattleSquaresConstants.PLAYER_NONE) {
 				finishGame();
 			}
 		}
@@ -201,7 +193,7 @@ package puzzle.battlesquares
 		private function onlyOnePlayerLeft():Boolean 
 		{
 			var playersLeft:int = 0;
-			for (var n:int = 0; n < PLAYER_NONE; n++) {
+			for (var n:int = 0; n < BattleSquaresConstants.PLAYER_NONE; n++) {
 				var count:int = ownershipCounts[n];
 				if (count > 0) {
 					playersLeft++;
@@ -221,7 +213,7 @@ package puzzle.battlesquares
 			var winningPlayerTotal:int = -1;
 			var winningPlayerScore:int = 0;
 			//winner is one with most tiles owned (and points if tie)
-			for (var i:int = 0; i < PLAYER_NONE; i++) {
+			for (var i:int = 0; i < BattleSquaresConstants.PLAYER_NONE; i++) {
 				if (ownershipCounts[i] > winningPlayerTotal || 
 				   (ownershipCounts[i] == winningPlayerTotal && pointCounts[i] >= winningPlayerScore)) {
 						winningPlayerID = i;
@@ -238,8 +230,8 @@ package puzzle.battlesquares
 		 */
 		private function countDownTime():void 
 		{
-			_timeRemaining -= ownershipCounts[PLAYER_NONE] > 0 ? FP.elapsed : FP.elapsed * 10;
-			_clockTickingFaster = ownershipCounts[PLAYER_NONE] > 0 ? false : true;
+			_timeRemaining -= ownershipCounts[BattleSquaresConstants.PLAYER_NONE] > 0 ? FP.elapsed : FP.elapsed * 10;
+			_clockTickingFaster = ownershipCounts[BattleSquaresConstants.PLAYER_NONE] > 0 ? false : true;
 			if (_timeRemaining < 0) {
 				_timeRemaining = 0;
 			}
@@ -248,17 +240,17 @@ package puzzle.battlesquares
 		private function generateSquareGrid():void 
 		{
 			//reset ownership
-			for (var n:int = 0; n <= PLAYER_BLOCKED; n++) {
+			for (var n:int = 0; n <= BattleSquaresConstants.PLAYER_BLOCKED; n++) {
 				ownershipCounts[n] = 0;
 			}
 			
 			//reset grid
 			for (var j:int = 0; j < _height; j++) {
 				for (var i:int = 0; i < _width; i++) {
-					var owner:int = i > 0 && i < width - 1 && j > 0 && j < height - 1 && Math.random() < blockedSquareChance ? 								PLAYER_BLOCKED : PLAYER_NONE;
-					var points:int = owner == PLAYER_BLOCKED ? 0 : STARTING_POINTS;
-					var bonus:int = owner == PLAYER_NONE && Math.random() < bonusSquareChance ? 
-									(Math.random() < 0.75 ? BONUS_2X : BONUS_50_ALL) : BONUS_NONE;
+					var owner:int = i > 0 && i < width - 1 && j > 0 && j < height - 1 && Math.random() < blockedSquareChance ? 								BattleSquaresConstants.PLAYER_BLOCKED : BattleSquaresConstants.PLAYER_NONE;
+					var points:int = owner == BattleSquaresConstants.PLAYER_BLOCKED ? 0 : BattleSquaresConstants.STARTING_POINTS;
+					var bonus:int = owner == BattleSquaresConstants.PLAYER_NONE && Math.random() < bonusSquareChance ? 
+									(Math.random() < 0.75 ? BONUS_2X : BONUS_50_ALL) : BattleSquaresConstants.BONUS_NONE;
 					squares[i + j * _width] = new SquareInfo(i, j, owner, points, bonus);
 					ownershipCounts[owner] += 1;
 				}
@@ -268,27 +260,27 @@ package puzzle.battlesquares
 		public function addPlayer(playerID:int):void {
 			var square:SquareInfo;
 			//player 1 starting position = top left corner
-			if (playerID == PLAYER_1) {
+			if (playerID == BattleSquaresConstants.PLAYER_1) {
 				square = squares[0 + 0 * _width];
 			}
 			//player 2 starting position = bottom right corner
-			else if (playerID == PLAYER_2) {
+			else if (playerID == BattleSquaresConstants.PLAYER_2) {
 				square = squares[(_width - 1) + (_height - 1) * _width];
 			}
 			//player 3 starting position = bottom left corner
-			else if (playerID == PLAYER_3) {
+			else if (playerID == BattleSquaresConstants.PLAYER_3) {
 				square = squares[(_width - 1) + 0 * _width];
 			}
 			//player 4 starting position = top right corner
-			else if (playerID == PLAYER_4) {
+			else if (playerID == BattleSquaresConstants.PLAYER_4) {
 				square = squares[0 + (_height - 1) * _width];
 			}
 			
 			square.ownerID = playerID;
-			square.points = STARTING_POINTS * 4;
-			square.bonusID = BONUS_NONE;
+			square.points = BattleSquaresConstants.STARTING_POINTS * 4;
+			square.bonusID = BattleSquaresConstants.BONUS_NONE;
 			ownershipCounts[playerID] = 1;
-			ownershipCounts[PLAYER_NONE] -= 1;
+			ownershipCounts[BattleSquaresConstants.PLAYER_NONE] -= 1;
 			pointCounts[playerID] = square.points;
 		}
 		
@@ -313,7 +305,7 @@ package puzzle.battlesquares
 		}
 		
 		public function isGameDone():Boolean {
-			return winnerID != PLAYER_NONE;
+			return winnerID != BattleSquaresConstants.PLAYER_NONE;
 		}
 		
 		public function get clockTickingFaster():Boolean 
@@ -322,7 +314,7 @@ package puzzle.battlesquares
 		}
 		
 		public function getTerritoryCount(playerID:int):int {
-			return playerID < 0 || playerID > PLAYER_BLOCKED ? -1 : ownershipCounts[playerID] 
+			return playerID < 0 || playerID > BattleSquaresConstants.PLAYER_BLOCKED ? -1 : ownershipCounts[playerID] 
 		}
 		
 		/**

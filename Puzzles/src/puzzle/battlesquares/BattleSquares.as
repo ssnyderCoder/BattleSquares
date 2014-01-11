@@ -199,13 +199,13 @@ package puzzle.battlesquares
 		
 		private function createBonusIcons(bonusID:int, playerAttackInfo:AttackInfo):void 
 		{
-			if (bonusID == BattleSquaresRules.BONUS_NONE) {
+			if (bonusID == BattleSquaresConstants.BONUS_NONE) {
 				return;
 			}
-			else if (bonusID == BattleSquaresRules.BONUS_2X) {
+			else if (bonusID == BattleSquaresConstants.BONUS_2X) {
 				createBonusIcon(BonusIcon.BONUS_2X, playerAttackInfo.tileX, playerAttackInfo.tileY);
 			}
-			else if (bonusID == BattleSquaresRules.BONUS_50_ALL) {
+			else if (bonusID == BattleSquaresConstants.BONUS_50_ALL) {
 				createBonusIcons50All(playerAttackInfo.attackerID);
 			}
 		}

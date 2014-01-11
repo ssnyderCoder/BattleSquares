@@ -2,6 +2,7 @@ package puzzle.battlesquares.player
 {
 	import net.flashpunk.FP;
 	import puzzle.Assets;
+	import puzzle.battlesquares.BattleSquaresConstants;
 	import puzzle.minigame.MinigameConstants;
 	import puzzle.battlesquares.BattleSquares;
 	import puzzle.battlesquares.BattleSquaresRules;
@@ -83,7 +84,7 @@ package puzzle.battlesquares.player
 			var ownerIDs:Array = new Array(game.getTileInfo(xIndex - 1, yIndex).ownerID, game.getTileInfo(xIndex + 1, yIndex).ownerID,
 										   game.getTileInfo(xIndex, yIndex - 1).ownerID, game.getTileInfo(xIndex, yIndex + 1).ownerID);
 			var randomIndex:int = (int) (Math.floor(Math.random() * ownerIDs.length));
-			while (ownerIDs[randomIndex] == this.playerID || ownerIDs[randomIndex] == BattleSquaresRules.PLAYER_BLOCKED) {
+			while (ownerIDs[randomIndex] == this.playerID || ownerIDs[randomIndex] == BattleSquaresConstants.PLAYER_BLOCKED) {
 				randomIndex = randomIndex == ownerIDs.length - 1 ? 0 : randomIndex + 1;
 			}
 			xIndex = randomIndex == 0 ? xIndex - 1 :
@@ -102,10 +103,10 @@ package puzzle.battlesquares.player
 			var rightSquareOwner:int = game.getTileInfo(i + 1, j).ownerID;
 			var upperSquareOwner:int = game.getTileInfo(i, j - 1).ownerID;
 			var lowerSquareOwner:int = game.getTileInfo(i, j + 1).ownerID;
-			return (leftSquareOwner != this.playerID && leftSquareOwner != BattleSquaresRules.PLAYER_BLOCKED) ||
-				   (rightSquareOwner != this.playerID && rightSquareOwner != BattleSquaresRules.PLAYER_BLOCKED) ||
-				   (upperSquareOwner != this.playerID && upperSquareOwner != BattleSquaresRules.PLAYER_BLOCKED) ||
-				   (lowerSquareOwner != this.playerID && lowerSquareOwner != BattleSquaresRules.PLAYER_BLOCKED);
+			return (leftSquareOwner != this.playerID && leftSquareOwner != BattleSquaresConstants.PLAYER_BLOCKED) ||
+				   (rightSquareOwner != this.playerID && rightSquareOwner != BattleSquaresConstants.PLAYER_BLOCKED) ||
+				   (upperSquareOwner != this.playerID && upperSquareOwner != BattleSquaresConstants.PLAYER_BLOCKED) ||
+				   (lowerSquareOwner != this.playerID && lowerSquareOwner != BattleSquaresConstants.PLAYER_BLOCKED);
 		}
 		
 		private function continueAttack(game:BattleSquares):void 
