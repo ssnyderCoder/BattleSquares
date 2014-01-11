@@ -11,6 +11,7 @@ package puzzle.battlesquares
 		public static const SQUARE_2X_ID:int = 6;
 		public static const SQUARE_50_ALL_ID:int = 7;
 		
+		public static const MAX_PLAYERS:int = 4;
 		public static const PLAYER_1:int = 0;
 		public static const PLAYER_2:int = 1;
 		public static const PLAYER_3:int = 2;

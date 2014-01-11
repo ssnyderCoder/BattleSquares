@@ -9,14 +9,14 @@ package tests
 	 * ...
 	 * @author ...
 	 */
-	public class TestGameButton extends TestCase 
+	public class TestMenuButton extends TestCase 
 	{
 		private var button:MenuButton;
 		private var functionCalled:Boolean = false;
 		private var mouseY:int;
 		private var mouseX:int;
 		private var isMouseDown:Boolean;
-		public function TestGameButton(testMethod:String=null) 
+		public function TestMenuButton(testMethod:String=null) 
 		{
 			super(testMethod);
 		}

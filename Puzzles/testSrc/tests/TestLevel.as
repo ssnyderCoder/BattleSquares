@@ -31,6 +31,22 @@ package tests
 			});
 		}
 		
+		public function testLevelSquareGrid():void {
+			var level:Level = new Level(10, 10);
+			var numRows:int = level.getNumRows();
+			var numColumns:int = level.getNumColumns();
+			assertTrue("Level should have 10 columns", numColumns == 10);
+			assertTrue("Level should have 10 rows", numRows == 10);
+			
+			var square:SquareInfo;
+			for (var yIndex:int = 0; yIndex < numRows; yIndex++) {
+				for (var xIndex:int = 0; xIndex < numColumns; xIndex++) {
+					square = level.getSquare(xIndex, yIndex);
+					assertNotNull("Square should not be null", square);
+				}
+			}
+		}
+		
 	}
 
 }

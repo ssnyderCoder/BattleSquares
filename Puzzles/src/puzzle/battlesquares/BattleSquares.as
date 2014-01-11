@@ -174,10 +174,10 @@ package puzzle.battlesquares
 				for (var i:int = 0; i < width; i++) {
 					var square:SquareInfo = gameRules.getIndex(i, j);
 					var ownerID:int = square.ownerID;
-					if (square.bonusID == BattleSquaresRules.BONUS_2X) {
+					if (square.bonusID == BattleSquaresConstants.BONUS_2X) {
 						ownerID = BattleSquaresConstants.SQUARE_2X_ID;
 					}
-					else if (square.bonusID == BattleSquaresRules.BONUS_50_ALL) {
+					else if (square.bonusID == BattleSquaresConstants.BONUS_50_ALL) {
 						ownerID = BattleSquaresConstants.SQUARE_50_ALL_ID;
 					}
 					squareGridDisplay.setTile(i, j, ownerID);

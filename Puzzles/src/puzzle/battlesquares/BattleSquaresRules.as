@@ -20,13 +20,7 @@ package puzzle.battlesquares
 	 */
 	public class BattleSquaresRules 
 	{
-		public static const MAX_PLAYERS:int = 4;
-		
 		private static const BLOCKED_SQUARE:SquareInfo = new SquareInfo(-1, -1, BattleSquaresConstants.PLAYER_BLOCKED, 0, 0);
-		
-		public static const BONUS_2X:int = 1;
-		public static const BONUS_50_ALL:int = 2;
-		public static const BONUS_ALL_POINTS:int = 50;
 		
 		private var _width:int;
 		private var _height:int;
@@ -48,7 +42,7 @@ package puzzle.battlesquares
 		{
 			this._width = width;
 			this._height = height;
-			this._numPlayers = config.numPlayers > MAX_PLAYERS ? MAX_PLAYERS : config.numPlayers;
+			this._numPlayers = config.numPlayers > BattleSquaresConstants.MAX_PLAYERS ? BattleSquaresConstants.MAX_PLAYERS : config.numPlayers;
 			this.squares = new Array();
 			this.ownershipCounts = new Array();
 			this.pointCounts = new Array();
@@ -133,7 +127,7 @@ package puzzle.battlesquares
 			}
 			
 			var bonusID:int = square.bonusID;
-			var totalPoints:int = bonusID == BONUS_2X ? points * 2 : points;
+			var totalPoints:int = bonusID == BattleSquaresConstants.BONUS_2X ? points * 2 : points;
 			var prevOwnerID:int = square.ownerID;
 			var prevOwnerCount:int = ownershipCounts[prevOwnerID];
 			var newOwnerCount:int = ownershipCounts[playerID];
@@ -144,8 +138,8 @@ package puzzle.battlesquares
 			
 			square.ownerID = playerID;
 			square.points = totalPoints;
-			if (bonusID == BONUS_50_ALL) {
-				addPointsToAllSquares(playerID, BONUS_ALL_POINTS);
+			if (bonusID == BattleSquaresConstants.BONUS_50_ALL) {
+				addPointsToAllSquares(playerID, BattleSquaresConstants.BONUS_ALL_POINTS);
 			}
 			square.bonusID = BattleSquaresConstants.BONUS_NONE;
 			//cancel all attacks on this square
@@ -250,7 +244,7 @@ package puzzle.battlesquares
 					var owner:int = i > 0 && i < width - 1 && j > 0 && j < height - 1 && Math.random() < blockedSquareChance ? 								BattleSquaresConstants.PLAYER_BLOCKED : BattleSquaresConstants.PLAYER_NONE;
 					var points:int = owner == BattleSquaresConstants.PLAYER_BLOCKED ? 0 : BattleSquaresConstants.STARTING_POINTS;
 					var bonus:int = owner == BattleSquaresConstants.PLAYER_NONE && Math.random() < bonusSquareChance ? 
-									(Math.random() < 0.75 ? BONUS_2X : BONUS_50_ALL) : BattleSquaresConstants.BONUS_NONE;
+									(Math.random() < 0.75 ? BattleSquaresConstants.BONUS_2X : BattleSquaresConstants.BONUS_50_ALL) : BattleSquaresConstants.BONUS_NONE;
 					squares[i + j * _width] = new SquareInfo(i, j, owner, points, bonus);
 					ownershipCounts[owner] += 1;
 				}
