@@ -3,7 +3,7 @@ package tests
 	import asunit.framework.TestCase;
 	import net.flashpunk.FP;
 	import net.flashpunk.utils.Input;
-	import puzzle.menu.GameButton;
+	import puzzle.menu.MenuButton;
 	
 	/**
 	 * ...
@@ -11,7 +11,7 @@ package tests
 	 */
 	public class TestGameButton extends TestCase 
 	{
-		private var button:GameButton;
+		private var button:MenuButton;
 		private var functionCalled:Boolean = false;
 		private var mouseY:int;
 		private var mouseX:int;
@@ -24,7 +24,7 @@ package tests
 		override protected function setUp():void 
 		{
 			super.setUp();
-			button = new GameButton("test", 0, 0, "Blah");
+			button = new MenuButton("test", 0, 0, "Blah");
 			assertFalse("Button clicked without input", button.hasBeenClicked);
 			
 			var f:Function = function():void {

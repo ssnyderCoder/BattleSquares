@@ -30,17 +30,8 @@ package puzzle.menu
 		private static const RARITIES:Array = new Array(0.0, 0.1, 0.4, 0.8)
 		private static const RARITY_TEXTS:Array = new Array("None", "Rare", "Uncommon", "Common")
 		
-		//buttons
-		private var newGameButton:GameButton; //when clicked it disappears and other buttons appear
-		private var player1Button:GameButton; //only for show
-		private var player2Button:GameButton; //when clicked, it changes the difficulty for player 2
-		private var player3Button:GameButton; //when clicked, it changes the difficulty for player 3
-		private var player4Button:GameButton; //when clicked, it changes the difficulty for player 4
-		private var beginButton:GameButton; //when clicked, it begins a new game
-		private var backButton:GameButton; // when clicked, all other buttons disappear and New Game button reappears
-		private var timeButton:GameButton; // when clicked, it changes the time that the game will last
-		private var blockedRarityButton:GameButton; // when clicked, it changes how common blocked squares are
-		private var bonusRarityButton:GameButton; // when clicked, it changes how common bonus squares are
+		private var mainMenu:MenuPage;
+		private var newGameMenu:MenuPage;
 		
 		private var alreadyAHumanPlayer:Boolean = true;
 		
@@ -69,43 +60,25 @@ package puzzle.menu
 			gameConfig.blockedTileChance = RARITIES[blockedRarityIndex];
 			gameConfig.bonusTileChance = RARITIES[bonusRarityIndex];
 			
-			initButtons();
+			initMenuPages();
+			showMainMenu();
 		}
 		
-		private function initButtons():void 
+		private function initMenuPages():void 
 		{
-			newGameButton = new GameButton("new", 300, 125, "New Game");
-			player1Button = new GameButton("p1", 200, 125, "Player 1: " + PLAYER_TEXTS[gameConfig.getPlayerSetting(PLAYER_1_ID)]);
-			player2Button = new GameButton("p2", 200, 200, "Player 2: " + PLAYER_TEXTS[gameConfig.getPlayerSetting(PLAYER_2_ID)]);
-			player3Button = new GameButton("p3", 200, 275, "Player 3: " + PLAYER_TEXTS[gameConfig.getPlayerSetting(PLAYER_3_ID)]);
-			player4Button = new GameButton("p4", 200, 350, "Player 4: " + PLAYER_TEXTS[gameConfig.getPlayerSetting(PLAYER_4_ID)]);
-			beginButton = new GameButton("begin", 200, 425, "Begin");
-			backButton = new GameButton("back", 200, 500, "Back to Main Menu");
-			timeButton = new GameButton("time", 550, 125, "Game Length: " + timeSettingInMinutes + " Minute(s)");
-			blockedRarityButton = new GameButton("blocked", 550, 200, "Blocked Tiles: " + RARITY_TEXTS[blockedRarityIndex]);
-			bonusRarityButton = new GameButton("bonus", 550, 275, "Bonus Tiles: " + RARITY_TEXTS[blockedRarityIndex]);
+			mainMenu = new MenuPage(this);
+			newGameMenu = new MenuPage(this);
 			
-			this.add(newGameButton);
-			this.add(player1Button);
-			this.add(player2Button);
-			this.add(player3Button);
-			this.add(player4Button);
-			this.add(beginButton);
-			this.add(backButton);
-			this.add(timeButton);
-			this.add(blockedRarityButton);
-			this.add(bonusRarityButton);
-			
-			//initial button settings
-			player1Button.setActive(false);
-			player2Button.setActive(false);
-			player3Button.setActive(false);
-			player4Button.setActive(false);
-			beginButton.setActive(false);
-			backButton.setActive(false);
-			timeButton.setActive(false);
-			blockedRarityButton.setActive(false);
-			bonusRarityButton.setActive(false);
+			var newGameButton:MenuButton = new MenuButton("new", 300, 125, "New Game");
+			var player1Button:MenuButton = new MenuButton("p1", 200, 125, "Player 1: " + getPlayerText(PLAYER_1_ID));
+			var player2Button:MenuButton = new MenuButton("p2", 200, 200, "Player 2: " + getPlayerText(PLAYER_2_ID));
+			var player3Button:MenuButton = new MenuButton("p3", 200, 275, "Player 3: " + getPlayerText(PLAYER_3_ID));
+			var player4Button:MenuButton = new MenuButton("p4", 200, 350, "Player 4: " + getPlayerText(PLAYER_4_ID));
+			var beginButton:MenuButton = new MenuButton("begin", 200, 425, "Begin");
+			var backButton:MenuButton = new MenuButton("back", 200, 500, "Back to Main Menu");
+			var timeButton:MenuButton = new MenuButton("time", 550, 125, "Game Length: " + timeSettingInMinutes + " Minute(s)");
+			var blockedButton:MenuButton = new MenuButton("blocked", 550, 200, "Blocked Tiles: " + RARITY_TEXTS[blockedRarityIndex]);
+			var bonusButton:MenuButton = new MenuButton("bonus", 550, 275, "Bonus Tiles: " + RARITY_TEXTS[bonusRarityIndex]);
 			
 			newGameButton.addClickAction(showNewGameMenu);
 			player1Button.addClickAction(function():void {
@@ -122,17 +95,36 @@ package puzzle.menu
 			});
 			beginButton.addClickAction(switchToGameWorld);
 			backButton.addClickAction(showMainMenu);
-			timeButton.addClickAction(alternateTime);
-			blockedRarityButton.addClickAction(alternateBlockedRarity);
-			bonusRarityButton.addClickAction(alternateBonusRarity);
+			timeButton.addClickAction(function():void {
+				timeSettingInMinutes = timeSettingInMinutes == MAX_TIME_IN_MINUTES ? MIN_TIME_IN_MINUTES : timeSettingInMinutes + 1;
+				timeButton.setText("Game Length: " + timeSettingInMinutes + " Minute(s)")
+				gameConfig.secondsPerRound = timeSettingInMinutes * SECONDS_PER_MINUTE;
+			});
+			blockedButton.addClickAction(function():void {
+				blockedRarityIndex = blockedRarityIndex + 1 >= RARITIES.length ? 0 : blockedRarityIndex + 1;
+				blockedButton.setText("Blocked Tiles: " + RARITY_TEXTS[blockedRarityIndex])
+				gameConfig.blockedTileChance = RARITIES[blockedRarityIndex];
+			});
+			bonusButton.addClickAction(function():void {
+				bonusRarityIndex = bonusRarityIndex + 1 >= RARITIES.length ? 0 : bonusRarityIndex + 1;
+				bonusButton.setText("Bonus Tiles: " + RARITY_TEXTS[bonusRarityIndex])
+				gameConfig.bonusTileChance = RARITIES[bonusRarityIndex];
+			});
+			
+			mainMenu.add(newGameButton);
+			newGameMenu.add(player1Button);
+			newGameMenu.add(player2Button);
+			newGameMenu.add(player3Button);
+			newGameMenu.add(player4Button);
+			newGameMenu.add(beginButton);
+			newGameMenu.add(backButton);
+			newGameMenu.add(timeButton);
+			newGameMenu.add(blockedButton);
+			newGameMenu.add(bonusButton);
 		}
+
 		
-		override public function update():void 
-		{
-			super.update();
-		}
-		
-		private function setPlayerSetting(playerID:int, playerSetting:int, playerButton:GameButton):void 
+		private function setPlayerSetting(playerID:int, playerSetting:int, playerButton:MenuButton):void 
 		{
 			if (playerSetting == PlayerConstants.PLAYER_HUMAN + 1) {
 				alreadyAHumanPlayer = false;
@@ -161,52 +153,20 @@ package puzzle.menu
 		private function showMainMenu():void 
 		{
 			Assets.SFX_SPHERE_CLEAR.play(0.1);
-			newGameButton.setActive(true);
-			player1Button.setActive(false);
-			player2Button.setActive(false);
-			player3Button.setActive(false);
-			player4Button.setActive(false);
-			beginButton.setActive(false);
-			backButton.setActive(false);
-			timeButton.setActive(false);
-			blockedRarityButton.setActive(false);
-			bonusRarityButton.setActive(false);
+			mainMenu.setActive(true);
+			newGameMenu.setActive(false);
 		}
 		
 		private function showNewGameMenu():void 
 		{
 			Assets.SFX_SPHERE_CLEAR.play(0.1);
-			newGameButton.setActive(false);
-			player1Button.setActive(true);
-			player2Button.setActive(true);
-			player3Button.setActive(true);
-			player4Button.setActive(true);
-			beginButton.setActive(true);
-			backButton.setActive(true);
-			timeButton.setActive(true);
-			blockedRarityButton.setActive(true);
-			bonusRarityButton.setActive(true);
+			mainMenu.setActive(false);
+			newGameMenu.setActive(true);
 		}
 		
-		private function alternateTime():void 
+		private function getPlayerText(playerID:int):String 
 		{
-			timeSettingInMinutes = timeSettingInMinutes == MAX_TIME_IN_MINUTES ? MIN_TIME_IN_MINUTES : timeSettingInMinutes + 1;
-			timeButton.setText("Game Length: " + timeSettingInMinutes + " Minute(s)")
-			gameConfig.secondsPerRound = timeSettingInMinutes * SECONDS_PER_MINUTE;
-		}
-		
-		private function alternateBlockedRarity():void 
-		{
-			blockedRarityIndex = blockedRarityIndex + 1 >= RARITIES.length ? 0 : blockedRarityIndex + 1;
-			blockedRarityButton.setText("Blocked Tiles: " + RARITY_TEXTS[blockedRarityIndex])
-			gameConfig.blockedTileChance = RARITIES[blockedRarityIndex];
-		}
-		
-		private function alternateBonusRarity():void 
-		{
-			bonusRarityIndex = bonusRarityIndex + 1 >= RARITIES.length ? 0 : bonusRarityIndex + 1;
-			bonusRarityButton.setText("Bonus Tiles: " + RARITY_TEXTS[bonusRarityIndex])
-			gameConfig.bonusTileChance = RARITIES[bonusRarityIndex];
+			return PLAYER_TEXTS[gameConfig.getPlayerSetting(playerID)];
 		}
 		
 		

@@ -11,12 +11,12 @@ package puzzle.menu
 	 * ...
 	 * @author Sean Snyder
 	 */
-	public class GameButton extends Entity
+	public class MenuButton extends Entity
 	{
 		private var _hasBeenClicked:Boolean = false;
 		private var textImg:Text;
 		private var onClick:Function = null;
-		public function GameButton(name:String, xPos:Number, yPos:Number, text:String="") 
+		public function MenuButton(name:String, xPos:Number, yPos:Number, text:String="") 
 		{
 			this.name = name;
 			this.x = xPos;
