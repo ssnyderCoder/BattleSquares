@@ -13,6 +13,7 @@ package puzzle.battlesquares.level
 		private var numRows:int;
 		private var squareGrid:Array;
 		private var ownershipCounts:Array;
+		private var playerPointTotals:Array;
 		
 		public function Level(numColumns:int, numRows:int) 
 		{
@@ -20,15 +21,17 @@ package puzzle.battlesquares.level
 			this.numRows = numRows;
 			squareGrid = new Array();
 			ownershipCounts = new Array();
-			initOwnerCounts();
+			playerPointTotals = new Array();
+			initPlayerStats();
 			initGrid();
 		}
 		
-		private function initOwnerCounts():void 
+		private function initPlayerStats():void 
 		{
 			for (var i:int = 0; i <= BattleSquaresConstants.PLAYER_BLOCKED; i++) 
 			{
 				ownershipCounts[i] = 0;
+				playerPointTotals[i] = 0;
 			}
 		}
 		
@@ -40,6 +43,7 @@ package puzzle.battlesquares.level
 			for (var yIndex:int = 0; yIndex < numRows; yIndex++) {
 				for (var xIndex:int = 0; xIndex < numColumns; xIndex++) {
 					ownershipCounts[playerID] += 1;
+					playerPointTotals[playerID] += points;
 					squareGrid[xIndex + (yIndex * numColumns)] = new SquareInfo(xIndex, yIndex, playerID, points, bonus);
 				}
 			}
@@ -59,6 +63,9 @@ package puzzle.battlesquares.level
 			var newOwnerID:int = squareInfo.ownerID;
 			ownershipCounts[previousOwnerID] -= 1;
 			ownershipCounts[newOwnerID] += 1;
+			playerPointTotals[previousOwnerID] -= previousSquare.points;
+			playerPointTotals[newOwnerID] += squareInfo.points;
+			
 			squareGrid[xIndex + (yIndex * numColumns)] = squareInfo;
 		}
 		
@@ -89,6 +96,14 @@ package puzzle.battlesquares.level
 				throw new Error("Player ID out of range");
 			}
 			return ownershipCounts[playerID];
+		}
+		
+		public function getTotalPoints(playerID:int):int
+		{
+			if (playerID < 0 || playerID >= ownershipCounts.length) {
+				throw new Error("Player ID out of range");
+			}
+			return playerPointTotals[playerID];
 		}
 		
 	}
