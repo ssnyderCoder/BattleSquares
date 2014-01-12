@@ -9,6 +9,7 @@ package
 	import net.flashpunk.utils.Input;
 	import net.flashpunk.utils.Key;
 	import puzzle.Assets;
+	import puzzle.GameFactory;
 	import puzzle.GameWorld;
 	import puzzle.menu.MenuWorld;
 	import tests.AllTests
@@ -29,7 +30,7 @@ package
 				runUnitTests();
 			}
 			else{
-				FP.world = new MenuWorld();
+				FP.world = new MenuWorld(new GameFactory());
 			}
 		}
 		//Refactoring GOALS:

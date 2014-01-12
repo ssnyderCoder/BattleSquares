@@ -1,5 +1,10 @@
 package puzzle 
 {
+	import puzzle.battlesquares.IBattleFactory;
+	import puzzle.battlesquares.level.ILevelProvider;
+	import puzzle.battlesquares.level.ILevelProviderFactory;
+	import puzzle.battlesquares.level.LevelConstants;
+	import puzzle.battlesquares.level.LevelGenerator;
 	import puzzle.minigame.Minigame;
 	import puzzle.bubblebreaker.BubbleBreaker;
 	import puzzle.battlesquares.player.IPlayerFactory;
@@ -12,9 +17,10 @@ package puzzle
 	 * ...
 	 * @author Sean Snyder
 	 */
-	public class GameFactory implements IPlayerFactory
+	public class GameFactory implements IBattleFactory
 	{
 		private var minigame:Minigame = new BubbleBreaker();
+		private var config:GameConfig = new GameConfig();
 		
 		/* INTERFACE puzzle.battlesquares.player.IPlayerFactory */	
 		public function createPlayer(playerID:int, playerType:int):Player 
@@ -39,6 +45,20 @@ package puzzle
 		
 		public function getMinigameInstance():Minigame {
 			return minigame;
+		}
+		
+		public function getGameConfigInstance():GameConfig {
+			return config;
+		}
+		
+		/* INTERFACE puzzle.battlesquares.level.ILevelProviderFactory */
+		
+		public function getLevelProvider(type:int):ILevelProvider 
+		{
+			if (type == LevelConstants.LEVEL_GEN_RANDOM_ID) {
+				return new LevelGenerator(config);
+			}
+			return null;
 		}
 		
 	}

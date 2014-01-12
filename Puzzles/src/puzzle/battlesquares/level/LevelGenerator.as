@@ -2,6 +2,7 @@ package puzzle.battlesquares.level
 {
 	import puzzle.battlesquares.BattleSquaresConstants;
 	import puzzle.battlesquares.SquareInfo;
+	import puzzle.GameConfig;
 	/**
 	 * An ILevelProvider that generates a random level.
 	 * This random level can include blocked squares and bonus squares.
@@ -14,12 +15,12 @@ package puzzle.battlesquares.level
 		private var levelHeight:int;
 		private var blockedSquareChance:Number; //% chance of each non-edge square to be blocked
 		private var bonusSquareChance:Number; //% chance of each square to be a bonus square
-		public function LevelGenerator(levelWidth:int=8, levelHeight:int=8, blockedChance:Number=0.1, bonusChance:Number=0.1) 
+		public function LevelGenerator(config:GameConfig, levelWidth:int=8, levelHeight:int=8) 
 		{
 			this.levelWidth = levelWidth;
 			this.levelHeight = levelHeight;
-			this.blockedSquareChance = blockedChance;
-			this.bonusSquareChance = bonusChance;
+			this.blockedSquareChance = config.blockedTileChance;
+			this.bonusSquareChance = config.bonusTileChance;
 		}
 		
 		public function provideLevel(index:int):Level 

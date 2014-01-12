@@ -9,6 +9,7 @@ package puzzle.menu
 	import puzzle.battlesquares.player.PlayerConstants;
 	import puzzle.DisplayLayers;
 	import puzzle.GameConfig;
+	import puzzle.GameFactory;
 	import puzzle.GameWorld;
 	
 	/**
@@ -36,14 +37,16 @@ package puzzle.menu
 		private var alreadyAHumanPlayer:Boolean = true;
 		
 		//settings
+		private var gameFactory:GameFactory;
 		private var gameConfig:GameConfig;
 		private var timeSettingInMinutes:int;
 		private var blockedRarityIndex:int = 1;
 		private var bonusRarityIndex:int = 1;
 
-		public function MenuWorld() 
+		public function MenuWorld(gameFactory:GameFactory) 
 		{
 			super();
+			this.gameFactory = gameFactory;
 			var background:Image = new Image(Assets.MAIN_BACKGROUND);
 			background.scale = 5;
 			this.addGraphic(background, DisplayLayers.BACKGROUND_LAYER);
@@ -51,7 +54,7 @@ package puzzle.menu
 			this.addGraphic(title, 0, 200, 50);
 			
 			timeSettingInMinutes = MIN_TIME_IN_MINUTES;
-			gameConfig = new GameConfig();
+			gameConfig = gameFactory.getGameConfigInstance();
 			gameConfig.setPlayerSetting(PLAYER_1_ID, PlayerConstants.PLAYER_HUMAN);
 			gameConfig.setPlayerSetting(PLAYER_2_ID, PlayerConstants.PLAYER_AI_EASY);
 			gameConfig.setPlayerSetting(PLAYER_3_ID, PlayerConstants.PLAYER_NONE);
@@ -146,7 +149,7 @@ package puzzle.menu
 		
 		private function switchToGameWorld():void 
 		{	
-			var gameWorld:GameWorld = new GameWorld(gameConfig);
+			var gameWorld:GameWorld = new GameWorld(gameFactory);
 			FP.world = gameWorld;
 		}
 		

@@ -2,6 +2,7 @@ package tests
 {
 	import puzzle.battlesquares.level.ILevelProvider;
 	import puzzle.battlesquares.level.LevelGenerator;
+	import puzzle.GameConfig;
 	/**
 	 * ...
 	 * @author Sean Snyder
@@ -17,7 +18,7 @@ package tests
 		
 		override public function getLevelProvider():ILevelProvider 
 		{
-			return new LevelGenerator();
+			return new LevelGenerator(new GameConfig());
 		}
 		
 	}

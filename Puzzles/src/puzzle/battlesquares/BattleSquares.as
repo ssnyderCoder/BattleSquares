@@ -5,6 +5,7 @@ package puzzle.battlesquares
 	import net.flashpunk.graphics.*;
 	import net.flashpunk.utils.*;
 	import puzzle.Assets;
+	import puzzle.battlesquares.level.LevelConstants;
 	import puzzle.GameConfig;
 	import puzzle.battlesquares.gui.*;
 	import puzzle.battlesquares.player.GamePlayers;
@@ -37,13 +38,13 @@ package puzzle.battlesquares
 		
 		
 		//constructor
-		public function BattleSquares(x:Number, y:Number, gameConfig:GameConfig, playerFactory:IPlayerFactory) 
+		public function BattleSquares(x:Number, y:Number, gameConfig:GameConfig, battleFactory:IBattleFactory) 
 		{
 			this.x = x;
 			this.y = y;
 			this.setHitbox(300, 300);
 			
-			gameRules = new BattleSquaresRules(8, 8, gameConfig);
+			gameRules = new BattleSquaresRules(battleFactory.getLevelProvider(LevelConstants.LEVEL_GEN_RANDOM_ID), gameConfig);
 			gamePlayers = new GamePlayers();
 			var background:Graphic = new Stamp(Assets.SQUARE_GAME_BACKGROUND);
 			squareGridDisplay = new Tilemap(Assets.SQUARES, 256, 256,
@@ -54,7 +55,7 @@ package puzzle.battlesquares
 											squareGridDisplay.width, squareGridDisplay.height);
 			this.graphic = new Graphiclist(background, squareGridDisplay);
 			initHelperEntities();
-			initPlayers(gameConfig, playerFactory); //must be called after helper entities set up
+			initPlayers(gameConfig, battleFactory); 
 		}
 					
 		private function initHelperEntities():void 

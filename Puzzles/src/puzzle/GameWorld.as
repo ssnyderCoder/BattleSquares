@@ -14,12 +14,12 @@ package puzzle
 	public class GameWorld extends World 
 	{
 		private var battleSquares:BattleSquares;
-		private var gameFactory:GameFactory = new GameFactory();
+		private var gameFactory:GameFactory;
 		
-		public function GameWorld(gameConfig:GameConfig) 
+		public function GameWorld(gameFactory:GameFactory) 
 		{
 			super();
-			
+			this.gameFactory = gameFactory;
 			var background:Image = new Image(Assets.MAIN_BACKGROUND);
 			background.scale = 5;
 			this.addGraphic(background, DisplayLayers.BACKGROUND_LAYER);
@@ -28,6 +28,7 @@ package puzzle
 			minigame.setGamePosition(400, 0);
 			this.add(minigame);
 			
+			var gameConfig:GameConfig = gameFactory.getGameConfigInstance();
 			battleSquares = new BattleSquares(20, 0, gameConfig, gameFactory);
 			this.add(battleSquares);
 			
@@ -52,7 +53,7 @@ package puzzle
 		private function updateUI():void 
 		{
 			if (!battleSquares.active) {
-				FP.world = new MenuWorld();
+				FP.world = new MenuWorld(gameFactory);
 				Assets.SFX_GAME_MUSIC.stop();
 				Assets.SFX_GAME_MUSIC_SPED_UP.stop();
 			}

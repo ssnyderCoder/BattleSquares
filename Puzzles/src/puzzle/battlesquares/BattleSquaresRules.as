@@ -1,6 +1,7 @@
 package puzzle.battlesquares 
 {
 	import net.flashpunk.FP;
+	import puzzle.battlesquares.level.ILevelProvider;
 	import puzzle.battlesquares.level.Level;
 	import puzzle.battlesquares.level.LevelGenerator;
 	import puzzle.GameConfig;
@@ -32,24 +33,23 @@ package puzzle.battlesquares
 		private var winnerID:int;
 		
 		private var attackedSquares:Array; //contains information on each attack being done
-		private var levelGen:LevelGenerator;
+		private var levelProvider:ILevelProvider;
 		private var currentLevel:Level;
 		
-		public function BattleSquaresRules(width:int, height:int, config:GameConfig) 
+		public function BattleSquaresRules(levelProvider:ILevelProvider, config:GameConfig) 
 		{
-			levelGen = new LevelGenerator(width, height, config.blockedTileChance, config.bonusTileChance);
-			currentLevel = new Level(width, height);
+			this.levelProvider = levelProvider;
+			currentLevel = levelProvider.provideLevel(0);
 			this._numPlayers = config.numPlayers > BattleSquaresConstants.MAX_PLAYERS ?
 												   BattleSquaresConstants.MAX_PLAYERS : config.numPlayers;
 			this.attackedSquares = new Array();
 			this.timePerRound = config.secondsPerRound;
 			this._timeRemaining = timePerRound;
 			this.winnerID = BattleSquaresConstants.PLAYER_NONE;
-			generateLevel();
 		}
 		
 		public function resetGame():void {
-			generateLevel();
+			currentLevel = levelProvider.provideLevel(0);
 			this._timeRemaining = timePerRound;
 			this._clockTickingFaster = false;
 			this.winnerID = BattleSquaresConstants.PLAYER_NONE;
@@ -218,11 +218,6 @@ package puzzle.battlesquares
 			if (_timeRemaining < 0) {
 				_timeRemaining = 0;
 			}
-		}
-		
-		private function generateLevel():void 
-		{
-			currentLevel = levelGen.provideLevel(0);
 		}
 		
 		public function addPlayer(playerID:int):void {
