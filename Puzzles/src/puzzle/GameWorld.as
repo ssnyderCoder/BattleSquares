@@ -42,6 +42,12 @@ package puzzle
 			updateUI();
 		}
 		
+		override public function end():void 
+		{
+			super.end();
+			this.removeAll();
+		}
+		
 		private function updateMusic():void 
 		{
 			if (battleSquares.isClockTickingFaster() && Assets.SFX_GAME_MUSIC.playing) {

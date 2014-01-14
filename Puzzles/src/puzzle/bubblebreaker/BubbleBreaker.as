@@ -175,6 +175,7 @@ package puzzle.bubblebreaker
 			this.active = true;
 			fader.fadeIn();
 			setUIAlpha(0);
+			trace("Game Begun: " + FP.elapsed);
 		}
 		
 		override public function endGame():void 
@@ -185,6 +186,7 @@ package puzzle.bubblebreaker
 			sphereGridDisplay.visible = false;
 			captureButton.visible = false;
 			setUIAlpha(0);
+			trace("Game End: " + FP.elapsed);
 		}
 		
 		override public function isActive():Boolean 
