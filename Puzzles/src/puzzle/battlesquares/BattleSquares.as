@@ -5,6 +5,7 @@ package puzzle.battlesquares
 	import net.flashpunk.graphics.*;
 	import net.flashpunk.utils.*;
 	import puzzle.Assets;
+	import puzzle.battlesquares.level.ILevelProvider;
 	import puzzle.battlesquares.level.LevelConstants;
 	import puzzle.GameConfig;
 	import puzzle.battlesquares.gui.*;
@@ -44,7 +45,8 @@ package puzzle.battlesquares
 			this.y = y;
 			this.setHitbox(300, 300);
 			
-			gameRules = new BattleSquaresRules(battleFactory.getLevelProvider(LevelConstants.LEVEL_GEN_RANDOM_ID), gameConfig);
+			var levelProvider:ILevelProvider = battleFactory.getLevelProvider(LevelConstants.LEVEL_GEN_RANDOM_ID);
+			gameRules = new BattleSquaresRules(levelProvider, gameConfig.secondsPerRound);
 			gamePlayers = new GamePlayers();
 			var background:Graphic = new Stamp(Assets.SQUARE_GAME_BACKGROUND);
 			squareGridDisplay = new Tilemap(Assets.SQUARES, 256, 256,
@@ -75,7 +77,6 @@ package puzzle.battlesquares
 				var player:Player = playerFactory.createPlayer(i, gameConfig.getPlayerSetting(i));
 				if (player) {
 					gamePlayers.addPlayer(player);
-					gameRules.addPlayer(player.playerID);
 					leaderboard.addPlayer(player.playerID);
 				}
 			}

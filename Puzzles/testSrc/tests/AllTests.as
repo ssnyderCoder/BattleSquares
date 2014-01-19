@@ -17,6 +17,7 @@ package tests
 			addTest(new TestLevelProvider());
 			addTest(new TestLevelGenerator());
 			addTest(new TestLevel());
+			addTest(new TestBonus());
 		}
 		
 	}

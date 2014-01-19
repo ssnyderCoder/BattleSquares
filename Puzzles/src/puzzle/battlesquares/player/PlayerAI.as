@@ -3,7 +3,7 @@ package puzzle.battlesquares.player
 	import net.flashpunk.FP;
 	import puzzle.Assets;
 	import puzzle.battlesquares.BattleSquaresConstants;
-	import puzzle.minigame.MinigameConstants;
+	import puzzle.battlesquares.minigame.MinigameConstants;
 	import puzzle.battlesquares.BattleSquares;
 	import puzzle.battlesquares.BattleSquaresRules;
 	import puzzle.battlesquares.SquareInfo;

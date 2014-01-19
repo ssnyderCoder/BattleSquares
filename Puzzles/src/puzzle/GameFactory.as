@@ -5,7 +5,7 @@ package puzzle
 	import puzzle.battlesquares.level.ILevelProviderFactory;
 	import puzzle.battlesquares.level.LevelConstants;
 	import puzzle.battlesquares.level.LevelGenerator;
-	import puzzle.minigame.Minigame;
+	import puzzle.battlesquares.minigame.Minigame;
 	import puzzle.bubblebreaker.BubbleBreaker;
 	import puzzle.battlesquares.player.IPlayerFactory;
 	import puzzle.battlesquares.player.Player;

@@ -2,8 +2,8 @@ package puzzle.battlesquares.player
 {
 	import net.flashpunk.utils.Input;
 	import puzzle.Assets;
-	import puzzle.minigame.IMinigame;
-	import puzzle.minigame.IMinigamePlayer;
+	import puzzle.battlesquares.minigame.IMinigame;
+	import puzzle.battlesquares.minigame.IMinigamePlayer;
 	import puzzle.battlesquares.AttackInfo;
 	import puzzle.battlesquares.BattleSquares;
 	import puzzle.battlesquares.SquareInfo;
@@ -56,7 +56,7 @@ package puzzle.battlesquares.player
 			}
 		}
 		
-		/* INTERFACE puzzle.minigame.IMinigamePlayer */		
+		/* INTERFACE puzzle.battlesquares.minigame.IMinigamePlayer */		
 		public function setMinigame(minigame:IMinigame):void 
 		{
 			this.minigame = minigame;

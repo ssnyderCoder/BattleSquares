@@ -1,4 +1,4 @@
-package puzzle.minigame 
+package puzzle.battlesquares.minigame 
 {
 	/**
 	 * ...

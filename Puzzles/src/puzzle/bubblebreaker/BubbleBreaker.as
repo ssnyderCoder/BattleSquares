@@ -13,8 +13,8 @@ package puzzle.bubblebreaker
 	import puzzle.bubblebreaker.gui.ScoreDisplay;
 	import puzzle.bubblebreaker.gui.SingleBubble;
 	import puzzle.bubblebreaker.gui.SphereGridDisplay;
-	import puzzle.minigame.Minigame;
-	import puzzle.minigame.MinigameConstants;
+	import puzzle.battlesquares.minigame.Minigame;
+	import puzzle.battlesquares.minigame.MinigameConstants;
 	import puzzle.util.EntityFader;
 	
 	/**

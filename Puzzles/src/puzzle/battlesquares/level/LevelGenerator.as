@@ -1,6 +1,7 @@
 package puzzle.battlesquares.level 
 {
 	import puzzle.battlesquares.BattleSquaresConstants;
+	import puzzle.battlesquares.player.PlayerConstants;
 	import puzzle.battlesquares.SquareInfo;
 	import puzzle.GameConfig;
 	/**
@@ -15,22 +16,68 @@ package puzzle.battlesquares.level
 		private var levelHeight:int;
 		private var blockedSquareChance:Number; //% chance of each non-edge square to be blocked
 		private var bonusSquareChance:Number; //% chance of each square to be a bonus square
+		private var randomLevel:Level;
 		public function LevelGenerator(config:GameConfig, levelWidth:int=8, levelHeight:int=8) 
 		{
 			this.levelWidth = levelWidth;
 			this.levelHeight = levelHeight;
 			this.blockedSquareChance = config.blockedTileChance;
 			this.bonusSquareChance = config.bonusTileChance;
+			this.randomLevel = generateRandomLevel();
+			initPlayers(config);
+		}
+		
+		private function initPlayers(config:GameConfig):void 
+		{
+			for (var playerID:int = 0; playerID < BattleSquaresConstants.MAX_PLAYERS; playerID++) 
+			{
+				var playerSetting:int = config.getPlayerSetting(playerID);
+				if (playerSetting != PlayerConstants.PLAYER_NONE) {
+					addPlayer(playerID);
+				}
+			}
 		}
 		
 		public function provideLevel(index:int):Level 
 		{
-			return generateRandomLevel();
+			return randomLevel;
 		}
 		
 		public function getTotalLevels():int 
 		{
 			return 1;
+		}
+		
+		private function addPlayer(playerID:int):void {
+			var xIndex:int=1;
+			var yIndex:int=1;
+			//player 1 starting position = top left corner
+			if (playerID == BattleSquaresConstants.PLAYER_1) {
+				xIndex = 0;
+				yIndex = 0;
+			}
+			//player 2 starting position = bottom right corner
+			else if (playerID == BattleSquaresConstants.PLAYER_2) {
+				xIndex = levelWidth - 1;
+				yIndex = levelHeight - 1;
+			}
+			//player 3 starting position = bottom left corner
+			else if (playerID == BattleSquaresConstants.PLAYER_3) {
+				xIndex = 0;
+				yIndex = levelHeight - 1;
+			}
+			//player 4 starting position = top right corner
+			else if (playerID == BattleSquaresConstants.PLAYER_4) {
+				xIndex = levelWidth - 1;
+				yIndex = 0;
+			}
+			else {
+				return;
+			}
+			
+			var points:int = BattleSquaresConstants.STARTING_POINTS * 4;
+			var bonusID:int = BattleSquaresConstants.BONUS_NONE;
+			randomLevel.setSquare(xIndex, yIndex, new SquareInfo(xIndex, yIndex, playerID, points, bonusID));
 		}
 		
 		private function generateRandomLevel():Level

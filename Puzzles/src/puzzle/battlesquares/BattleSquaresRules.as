@@ -5,7 +5,7 @@ package puzzle.battlesquares
 	import puzzle.battlesquares.level.Level;
 	import puzzle.battlesquares.level.LevelGenerator;
 	import puzzle.GameConfig;
-	import puzzle.minigame.MinigameConstants;
+	import puzzle.battlesquares.minigame.MinigameConstants;
 	/**
 	 * A custom size grid with a custom number of square colors.
 	 * 
@@ -25,7 +25,6 @@ package puzzle.battlesquares
 	{
 		private static const BLOCKED_SQUARE:SquareInfo = new SquareInfo(-1, -1, BattleSquaresConstants.PLAYER_BLOCKED, 0, 0);
 		
-		private var _numPlayers:int;
 		private var _timeRemaining:Number; //seconds
 		private var _clockTickingFaster:Boolean = false;
 		
@@ -36,14 +35,12 @@ package puzzle.battlesquares
 		private var levelProvider:ILevelProvider;
 		private var currentLevel:Level;
 		
-		public function BattleSquaresRules(levelProvider:ILevelProvider, config:GameConfig) 
+		public function BattleSquaresRules(levelProvider:ILevelProvider, secondsPerRound:int) 
 		{
 			this.levelProvider = levelProvider;
-			currentLevel = levelProvider.provideLevel(0);
-			this._numPlayers = config.numPlayers > BattleSquaresConstants.MAX_PLAYERS ?
-												   BattleSquaresConstants.MAX_PLAYERS : config.numPlayers;
+			currentLevel = levelProvider.provideLevel(0)
 			this.attackedSquares = new Array();
-			this.timePerRound = config.secondsPerRound;
+			this.timePerRound = secondsPerRound;
 			this._timeRemaining = timePerRound;
 			this.winnerID = BattleSquaresConstants.PLAYER_NONE;
 		}
@@ -220,35 +217,6 @@ package puzzle.battlesquares
 			}
 		}
 		
-		public function addPlayer(playerID:int):void {
-			var xIndex:int=1;
-			var yIndex:int=1;
-			//player 1 starting position = top left corner
-			if (playerID == BattleSquaresConstants.PLAYER_1) {
-				xIndex = 0;
-				yIndex = 0;
-			}
-			//player 2 starting position = bottom right corner
-			else if (playerID == BattleSquaresConstants.PLAYER_2) {
-				xIndex = width - 1;
-				yIndex = height - 1;
-			}
-			//player 3 starting position = bottom left corner
-			else if (playerID == BattleSquaresConstants.PLAYER_3) {
-				xIndex = 0;
-				yIndex = height - 1;
-			}
-			//player 4 starting position = top right corner
-			else if (playerID == BattleSquaresConstants.PLAYER_4) {
-				xIndex = width - 1;
-				yIndex = 0;
-			}
-			
-			var points:int = BattleSquaresConstants.STARTING_POINTS * 4;
-			var bonusID:int = BattleSquaresConstants.BONUS_NONE;
-			currentLevel.setSquare(xIndex, yIndex, new SquareInfo(xIndex, yIndex, playerID, points, bonusID));
-		}
-		
 		public function get width():int 
 		{
 			return currentLevel.getNumColumns();
@@ -257,11 +225,6 @@ package puzzle.battlesquares
 		public function get height():int 
 		{
 			return currentLevel.getNumRows();
-		}
-		
-		public function get numPlayers():int 
-		{
-			return _numPlayers;
 		}
 		
 		public function get timeRemaining():int 
