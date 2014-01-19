@@ -1,4 +1,4 @@
-package tests 
+package tests.mocks 
 {
 	import puzzle.battlesquares.SquareInfo;
 	import puzzle.battlesquares.BattleSquaresRules;

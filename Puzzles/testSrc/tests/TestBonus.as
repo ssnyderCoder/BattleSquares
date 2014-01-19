@@ -7,6 +7,7 @@ package tests
 	import puzzle.battlesquares.level.ILevelProvider;
 	import puzzle.battlesquares.SquareInfo;
 	import puzzle.GameConfig;
+	import tests.mocks.DummyBonus;
 	import tests.mocks.MockLevelProvider;
 	
 	/**
@@ -21,7 +22,7 @@ package tests
 			super(testMethod);
 		}
 		
-		public function testCreateBonus():void {
+		public function testBonusCreation():void {
 			var bonus:Bonus = getBonus(0);
 			assertTrue("BonusID should be zero", bonus.getID() == 0);
 		}

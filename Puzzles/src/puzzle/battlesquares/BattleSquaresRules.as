@@ -187,21 +187,7 @@ package puzzle.battlesquares
 		
 		private function finishGame():void 
 		{
-			var winningPlayerID:int;
-			var winningPlayerTotal:int = -1;
-			var winningPlayerScore:int = 0;
-			//winner is one with most tiles owned (and points if tie)
-			for (var i:int = 0; i < BattleSquaresConstants.PLAYER_NONE; i++) {
-				var ownerCount:int = currentLevel.getOwnershipCount(i);
-				var totalPoints:int = currentLevel.getTotalPoints(i);
-				if (ownerCount > winningPlayerTotal || 
-				   (ownerCount == winningPlayerTotal && totalPoints >= winningPlayerScore)) {
-						winningPlayerID = i;
-						winningPlayerTotal = ownerCount;
-						winningPlayerScore = totalPoints;
-				}
-			}
-			this.winnerID = winningPlayerID;
+			this.winnerID = determineWinner();
 		}
 		
 		/**
@@ -265,6 +251,25 @@ package puzzle.battlesquares
 				validAttacks.push(atkInfo);
 			}
 			attackedSquares = validAttacks;
+		}
+		
+		private function determineWinner():int 
+		{
+			var winningPlayerID:int;
+			var winningPlayerTotal:int = -1;
+			var winningPlayerScore:int = 0;
+			//winner is one with most tiles owned (and points if tie)
+			for (var i:int = 0; i < BattleSquaresConstants.PLAYER_NONE; i++) {
+				var ownerCount:int = currentLevel.getOwnershipCount(i);
+				var totalPoints:int = currentLevel.getTotalPoints(i);
+				if (ownerCount > winningPlayerTotal || 
+				   (ownerCount == winningPlayerTotal && totalPoints >= winningPlayerScore)) {
+						winningPlayerID = i;
+						winningPlayerTotal = ownerCount;
+						winningPlayerScore = totalPoints;
+				}
+			}
+			return winningPlayerID;
 		}
 
 	}
