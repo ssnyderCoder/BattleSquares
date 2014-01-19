@@ -50,12 +50,12 @@ package puzzle.bubblebreaker
 			fader = new EntityFader(this, 0.25, Ease.circOut);
 			//gui
 			initGUI();
-			initHelperEntities(x, y);
+			initHelperEntities();
 			
 			setGamePosition(x, y);
 		}
 		
-		private function initHelperEntities(xPos:Number, yPos:Number):void 
+		private function initHelperEntities():void 
 		{	
 			//these entities are properly positioned by setGamePosition()
 			scoreDisplay = new ScoreDisplay(0, 0);

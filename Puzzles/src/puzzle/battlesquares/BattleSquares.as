@@ -25,7 +25,7 @@ package puzzle.battlesquares
 		private var gameRules:BattleSquaresRules;
 		private var gamePlayers:GamePlayers;
 		
-		private var squareGridDisplay:Tilemap;
+		private var squareGridDisp:Tilemap;
 		private var squareGridRect:Rectangle;
 		
 		//supplementary displayed entities
@@ -49,13 +49,13 @@ package puzzle.battlesquares
 			gameRules = new BattleSquaresRules(levelProvider, gameConfig.secondsPerRound);
 			gamePlayers = new GamePlayers();
 			var background:Graphic = new Stamp(Assets.SQUARE_GAME_BACKGROUND);
-			squareGridDisplay = new Tilemap(Assets.SQUARES, 256, 256,
+			squareGridDisp = new Tilemap(Assets.SQUARES, 256, 256,
 											BattleSquaresConstants.SQUARE_WIDTH, BattleSquaresConstants.SQUARE_HEIGHT);
-			squareGridDisplay.x = 21;
-			squareGridDisplay.y = 21;
-			squareGridRect = new Rectangle(squareGridDisplay.x + x, squareGridDisplay.y + y,
-											squareGridDisplay.width, squareGridDisplay.height);
-			this.graphic = new Graphiclist(background, squareGridDisplay);
+			squareGridDisp.x = 21;
+			squareGridDisp.y = 21;
+			squareGridRect = new Rectangle(squareGridDisp.x + x, squareGridDisp.y + y,
+											squareGridDisp.width, squareGridDisp.height);
+			this.graphic = new Graphiclist(background, squareGridDisp);
 			initHelperEntities();
 			initPlayers(gameConfig, battleFactory); 
 		}
@@ -72,7 +72,7 @@ package puzzle.battlesquares
 		
 		private function initPlayers(gameConfig:GameConfig, playerFactory:IPlayerFactory):void 
 		{
-			for (var i:int = 0; i < GameConfig.MAX_PLAYERS; i++) 
+			for (var i:int = 0; i < BattleSquaresConstants.MAX_PLAYERS; i++) 
 			{
 				var player:Player = playerFactory.createPlayer(i, gameConfig.getPlayerSetting(i));
 				if (player) {
@@ -106,8 +106,8 @@ package puzzle.battlesquares
 				var tileX:int;
 				var tileY:int;
 				if (squareGridRect.contains(mouseX, mouseY)) {
-					tileX = (mouseX - squareGridRect.x) / squareGridDisplay.tileWidth;
-					tileY = (mouseY - squareGridRect.y) / squareGridDisplay.tileHeight;
+					tileX = (mouseX - squareGridRect.x) / squareGridDisp.tileWidth;
+					tileY = (mouseY - squareGridRect.y) / squareGridDisp.tileHeight;
 					return getTileInfo(tileX, tileY);
 				}
 				else {
@@ -135,8 +135,8 @@ package puzzle.battlesquares
 			var tileX:int = -1;
 			var tileY:int = -1;
 			if (squareGridRect.contains(Input.mouseX, Input.mouseY)) {
-					tileX = (Input.mouseX - squareGridRect.x) / squareGridDisplay.tileWidth;
-					tileY = (Input.mouseY - squareGridRect.y) / squareGridDisplay.tileHeight;
+					tileX = (Input.mouseX - squareGridRect.x) / squareGridDisp.tileWidth;
+					tileY = (Input.mouseY - squareGridRect.y) / squareGridDisp.tileHeight;
 					var square:SquareInfo =  gameRules.getIndex(tileX, tileY);
 					var points:int = square.points;
 					var bonusID:int = square.bonusID;
@@ -187,7 +187,7 @@ package puzzle.battlesquares
 					else if (square.bonusID == BattleSquaresConstants.BONUS_50_ALL) {
 						ownerID = BattleSquaresConstants.SQUARE_50_ALL_ID;
 					}
-					squareGridDisplay.setTile(i, j, ownerID);
+					squareGridDisp.setTile(i, j, ownerID);
 				}
 			}
 		}
@@ -219,8 +219,8 @@ package puzzle.battlesquares
 		
 		private function createBonusIcon(iconID:int, tileX:int, tileY:int):void 
 		{
-			var xPos:Number = squareGridRect.x + (squareGridDisplay.tileWidth * (tileX)) + 6;
-			var yPos:Number = squareGridRect.y + (squareGridDisplay.tileHeight * (tileY)) + 6;
+			var xPos:Number = squareGridRect.x + (squareGridDisp.tileWidth * (tileX)) + 6;
+			var yPos:Number = squareGridRect.y + (squareGridDisp.tileHeight * (tileY)) + 6;
 			var bonusIcon:BonusIcon = new BonusIcon(xPos, yPos, iconID);
 			this.world.add(bonusIcon);
 		}
@@ -243,9 +243,9 @@ package puzzle.battlesquares
 		
 		private function createShrinkingSquare(newOwnerID:int, tileX:int, tileY:int):void 
 		{
-			var prevOwnerID:int = squareGridDisplay.getTile(tileX, tileY);
-			var xPos:Number = squareGridRect.x + (squareGridDisplay.tileWidth * (tileX + 0.5));
-			var yPos:Number = squareGridRect.y + (squareGridDisplay.tileHeight * (tileY + 0.5));
+			var prevOwnerID:int = squareGridDisp.getTile(tileX, tileY);
+			var xPos:Number = squareGridRect.x + (squareGridDisp.tileWidth * (tileX + 0.5));
+			var yPos:Number = squareGridRect.y + (squareGridDisp.tileHeight * (tileY + 0.5));
 			var square:SingleSquare = new SingleSquare(xPos, yPos, prevOwnerID, newOwnerID);
 			this.world.add(square);
 		}

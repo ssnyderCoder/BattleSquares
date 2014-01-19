@@ -23,15 +23,10 @@ package
 	{
 		public static const SCREEN_WIDTH:int = 1000;
 		public static const SCREEN_HEIGHT:int = 640;
-		public function Main():void 
+		public function Main() 
 		{
 			super(SCREEN_WIDTH, SCREEN_HEIGHT, 60, false);
-			if(TESTS::testing == true){
-				runUnitTests();
-			}
-			else{
-				FP.world = new MenuWorld(new GameFactory());
-			}
+			initGame();
 		}
 		//Refactoring GOALS:
 		//Refactor BattlesquaresRules level generation into an interface
@@ -40,6 +35,16 @@ package
 			var unittests:TestRunner = new TestRunner();
 			stage.addChild(unittests);
 			unittests.start(AllTests, null, TestRunner.SHOW_TRACE);
+		}
+		
+		private function initGame():void 
+		{
+			if(TESTS::testing == true){
+				runUnitTests();
+			}
+			else{
+				FP.world = new MenuWorld(new GameFactory());
+			}
 		}
 		
 		
