@@ -103,7 +103,6 @@ package puzzle.battlesquares
 		
 		//returns the tile found at the provided mouse coordinates.
 		public function getTileAtCoordinates(mouseX:int, mouseY:int):SquareInfo {
-				//get mouse position
 				var tileX:int;
 				var tileY:int;
 				if (squareGridRect.contains(mouseX, mouseY)) {

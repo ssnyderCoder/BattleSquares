@@ -171,7 +171,7 @@ package puzzle.bubblebreaker
 			resetGame(requiredScore, difficulty);
 			this.visible = true;
 			scoreDisplay.visible = true;
-			sphereGridDisplay.visible = true;
+			sphereGridDisplay.enable();
 			this.active = true;
 			fader.fadeIn();
 			setUIAlpha(0);
@@ -183,7 +183,7 @@ package puzzle.bubblebreaker
 			this.visible = false;
 			this.active = false;
 			scoreDisplay.visible = false;
-			sphereGridDisplay.visible = false;
+			sphereGridDisplay.disable();
 			captureButton.visible = false;
 			setUIAlpha(0);
 			trace("Game End: " + FP.elapsed);

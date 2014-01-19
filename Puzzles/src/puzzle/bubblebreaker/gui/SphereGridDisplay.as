@@ -98,6 +98,20 @@ package puzzle.bubblebreaker.gui
 			return _readyToRestart;
 		}
 		
+		public function enable():void {
+			this.active = true;
+			this.visible = true;
+			this.pointBox.active = true;
+			this.pointBox.visible = true;
+		}
+		
+		public function disable():void {
+			this.active = false;
+			this.visible = false;
+			this.pointBox.active = false;
+			this.pointBox.visible = false;
+		}
+		
 		private function updatePointBoxDisplay():void
 		{
 			//setup points box if any spheres selected
