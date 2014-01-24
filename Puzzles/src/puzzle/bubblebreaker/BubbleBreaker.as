@@ -1,4 +1,4 @@
-package puzzle.bubblebreaker 
+package puzzle.bubblebreaker
 {
 	import flash.geom.Rectangle;
 	import net.flashpunk.FP;
@@ -22,7 +22,7 @@ package puzzle.bubblebreaker
 	 * @author Sean Snyder
 	 */
 	public class BubbleBreaker extends Minigame
-	{	
+	{
 		private static const NUM_ROWS:int = 8;
 		private static const NUM_COLUMNS:int = 8;
 		//gui
@@ -34,7 +34,7 @@ package puzzle.bubblebreaker
 		
 		private var captureButton:CaptureButton;
 		private var fader:EntityFader;
-
+		
 		//user input related
 		private var newGameOnNextClick:Boolean = false;
 		private var pointsRequiredToCapture:int = 0;
@@ -42,37 +42,33 @@ package puzzle.bubblebreaker
 		
 		private var gameRules:BubbleBreakerRules;
 		
-	
-		public function BubbleBreaker(x:Number=0, y:Number=0) 
+		public function BubbleBreaker(x:Number = 0, y:Number = 0)
 		{
 			this.setHitbox(600, 600);
 			gameRules = new BubbleBreakerRules(NUM_ROWS, NUM_COLUMNS, 0);
 			fader = new EntityFader(this, 0.25, Ease.circOut);
 			//gui
 			initGUI();
-			initHelperEntities();
 			
 			setGamePosition(x, y);
 		}
 		
-		private function initHelperEntities():void 
-		{	
-			//these entities are properly positioned by setGamePosition()
+		private function initHelperEntities():void
+		{
 			scoreDisplay = new ScoreDisplay(0, 0);
 			captureButton = new CaptureButton(0, 0);
 			sphereGridDisplay = new SphereGridDisplay(gameRules, 0, 0);
 		}
 		
-		private function initGUI():void 
+		private function initGUI():void
 		{
 			background = new Image(Assets.SPHERE_GAME_BACKGROUND);
-			
-			this.graphic = new Graphiclist( background);
-			
+			this.graphic = background;
 			fader.addImage(background);
+			initHelperEntities();
 		}
 		
-		override public function added():void 
+		override public function added():void
 		{
 			super.added();
 			this.world.add(scoreDisplay);
@@ -82,7 +78,7 @@ package puzzle.bubblebreaker
 			sphereGridDisplay.updateDisplay();
 		}
 		
-		override public function setGamePosition(x:Number = 0, y:Number = 0):void 
+		override public function setGamePosition(x:Number = 0, y:Number = 0):void
 		{
 			super.setGamePosition(x, y);
 			scoreDisplay.x = this.x + 74;
@@ -93,71 +89,77 @@ package puzzle.bubblebreaker
 			sphereGridDisplay.y = this.y;
 		}
 		
-		private function updateCaptureButtonDisplay():void 
+		private function updateCaptureButtonDisplay():void
 		{
 			//show capture button if enough points
-			if (!captureButton.visible && gameRules.score > pointsRequiredToCapture) {
+			if (!captureButton.visible && gameRules.score > pointsRequiredToCapture)
+			{
 				captureButton.appear();
 			}
 		}
 		
-		
-		private function updateScoreDisplay():void 
+		private function updateScoreDisplay():void
 		{
 			scoreDisplay.setRequiredScore(pointsRequiredToCapture + 1);
 			scoreDisplay.setScore(gameRules.score);
 		}
 		
-		override public function update():void 
+		override public function update():void
 		{
 			super.update();
 			handleFading();
-			if (Input.mousePressed) {
+			if (Input.mousePressed)
+			{
 				handleMouseInput();
 			}
-			if (sphereGridDisplay.readyToRestart) {
+			if (sphereGridDisplay.readyToRestart)
+			{
 				newGameOnNextClick = true;
 			}
 			updateScoreDisplay();
 			updateCaptureButtonDisplay();
 		}
 		
-		private function handleMouseInput():void 
+		private function handleMouseInput():void
 		{
-			//either capture or begin new game if player cannot make any more moves
-			if (newGameOnNextClick) {
+			if (newGameOnNextClick)
+			{
 				newGameOnNextClick = false;
 				sphereGridDisplay.restart();
-				if (captureButton.visible) {
+				if (captureButton.visible)
+				{
 					beginCapture();
 				}
-				else{
+				else
+				{
 					gameRules.reset();
 					sphereGridDisplay.updateDisplay();
 				}
 			}
-			//capture if button is showing and clicked
-			else if (captureButton.visible && captureButton.hasBeenClicked) {
+			else if (captureButton.visible && captureButton.hasBeenClicked)
+			{
 				beginCapture();
 			}
 		}
 		
-		private function beginCapture():void 
+		private function beginCapture():void
 		{
 			hasCaptured = true;
 			fader.fadeOut();
 			captureButton.visible = false;
 		}
 		
-		private function handleFading():void 
+		private function handleFading():void
 		{
-			if (fader.isFading()) {
+			if (fader.isFading())
+			{
 				setUIAlpha(fader.getCurrentAlpha());
 			}
 			fader.update();
 		}
 		
-		private function resetGame(pointsRequired:int, numColors:int = MinigameConstants.DIFFICULTY_MEDIUM):void {
+		private function resetGame(pointsRequired:int, numColors:int = MinigameConstants.DIFFICULTY_MEDIUM):void
+		{
 			this.pointsRequiredToCapture = pointsRequired;
 			gameRules.resetNumColors(numColors);
 			hasCaptured = false;
@@ -165,8 +167,8 @@ package puzzle.bubblebreaker
 			captureButton.reset();
 			sphereGridDisplay.updateDisplay();
 		}
-
-		override public function beginGame(requiredScore:int, difficulty:int):void 
+		
+		override public function beginGame(requiredScore:int, difficulty:int):void
 		{
 			resetGame(requiredScore, difficulty);
 			this.visible = true;
@@ -175,10 +177,9 @@ package puzzle.bubblebreaker
 			this.active = true;
 			fader.fadeIn();
 			setUIAlpha(0);
-			trace("Game Begun: " + FP.elapsed);
 		}
 		
-		override public function endGame():void 
+		override public function endGame():void
 		{
 			this.visible = false;
 			this.active = false;
@@ -186,25 +187,25 @@ package puzzle.bubblebreaker
 			sphereGridDisplay.disable();
 			captureButton.visible = false;
 			setUIAlpha(0);
-			trace("Game End: " + FP.elapsed);
 		}
 		
-		override public function isActive():Boolean 
+		override public function isActive():Boolean
 		{
 			return this.active;
 		}
 		
-		override public function getScore():int 
+		override public function getScore():int
 		{
 			return this.active ? gameRules.score : 0;
 		}
 		
-		override public function hasBeenWon():Boolean 
+		override public function hasBeenWon():Boolean
 		{
 			return hasCaptured && !fader.isFading();
 		}
 		
-		private function setUIAlpha(alpha:Number):void {
+		private function setUIAlpha(alpha:Number):void
+		{
 			captureButton.setAlpha(alpha);
 			scoreDisplay.setAlpha(alpha);
 			sphereGridDisplay.setAlpha(alpha);

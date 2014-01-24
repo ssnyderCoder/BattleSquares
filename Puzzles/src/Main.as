@@ -28,14 +28,6 @@ package
 			super(SCREEN_WIDTH, SCREEN_HEIGHT, 60, false);
 			initGame();
 		}
-		//Refactoring GOALS:
-		//Refactor BattlesquaresRules level generation into an interface
-		private function runUnitTests():void 
-		{
-			var unittests:TestRunner = new TestRunner();
-			stage.addChild(unittests);
-			unittests.start(AllTests, null, TestRunner.SHOW_TRACE);
-		}
 		
 		private function initGame():void 
 		{
@@ -47,7 +39,12 @@ package
 			}
 		}
 		
-		
+		private function runUnitTests():void 
+		{
+			var unittests:TestRunner = new TestRunner();
+			stage.addChild(unittests);
+			unittests.start(AllTests, null, TestRunner.SHOW_TRACE);
+		}
 	}
 	
 }
