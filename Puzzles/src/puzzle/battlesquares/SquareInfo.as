@@ -10,6 +10,8 @@ package puzzle.battlesquares
 		public static const CHANGED_OWNER_ID:int = 0;
 		public static const CHANGED_POINTS:int = 1;
 		
+		private static const INVALID_OWNER_ID:int = -1;
+		
 		private var _ownerID:int;
 		private var _points:int;
 		private var _bonusID:int;
@@ -20,7 +22,7 @@ package puzzle.battlesquares
 		public function SquareInfo(xIndex:int, yIndex:int, onModified:Function=null) {
 			this._xIndex = xIndex;
 			this._yIndex = yIndex;
-			this._ownerID = -1;
+			this._ownerID = INVALID_OWNER_ID;
 			this._points = 0;
 			this._bonusID = 0;
 			setModificationCallback(onModified);
@@ -55,7 +57,7 @@ package puzzle.battlesquares
 		{
 			var prevValue:int = _ownerID;
 			_ownerID = value;
-			if(prevValue != -1){
+			if(prevValue != INVALID_OWNER_ID){
 				callModificationFunction(prevValue, CHANGED_OWNER_ID);
 			}
 		}
