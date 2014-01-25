@@ -17,24 +17,24 @@ package puzzle.battlesquares
 		private var _yIndex:int;
 		private var onModified:Function = null;
 		
-		//reduce to just indexes and onModified
-		public function SquareInfo(xIndex:int, yIndex:int, ownerID:int, points:int, bonusID:int) {
+		public function SquareInfo(xIndex:int, yIndex:int, onModified:Function=null) {
 			this._xIndex = xIndex;
 			this._yIndex = yIndex;
-			this._ownerID = ownerID;
-			this._points = points;
-			this._bonusID = bonusID;
+			this._ownerID = -1;
+			this._points = 0;
+			this._bonusID = 0;
+			setModificationCallback(onModified);
 		}
 		
-		public function setValues(ownerID:int, points:int, bonusID:int):void {
+		public function setValues(ownerID:int, points:int, bonusID:int):SquareInfo {
 			this.ownerID = ownerID;
 			this.points = points;
 			this.bonusID = bonusID;
+			return this;
 		}
 		
 		//NOTE TO SELF:  This would not have been possible if I had been using public variables.  Thanks properties!
-		//Make private
-		public function setModificationCallback(onModified:Function):void {
+		private function setModificationCallback(onModified:Function):void {
 			
 			this.onModified = onModified;
 		}
@@ -55,7 +55,9 @@ package puzzle.battlesquares
 		{
 			var prevValue:int = _ownerID;
 			_ownerID = value;
-			callModificationFunction(prevValue, CHANGED_OWNER_ID);
+			if(prevValue != -1){
+				callModificationFunction(prevValue, CHANGED_OWNER_ID);
+			}
 		}
 		
 		public function get points():int 

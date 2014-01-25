@@ -59,7 +59,7 @@ package tests
 		
 		public function getSquareInfo(bonusID:int):SquareInfo 
 		{
-			return new SquareInfo(0, 0, 0, 50, bonusID);
+			return new SquareInfo(0, 0).setValues(0, 50, bonusID);
 		}
 		
 		/*

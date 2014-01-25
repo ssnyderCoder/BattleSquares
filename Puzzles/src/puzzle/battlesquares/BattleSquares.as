@@ -26,6 +26,7 @@ package puzzle.battlesquares
 		private var gamePlayers:GamePlayers;
 		
 		private var squareGridDisp:Tilemap;
+		private var bonusGridDisp:Tilemap;
 		private var squareGridRect:Rectangle;
 		
 		//supplementary displayed entities
@@ -48,14 +49,19 @@ package puzzle.battlesquares
 			var levelProvider:ILevelProvider = battleFactory.getLevelProvider(LevelConstants.LEVEL_GEN_RANDOM_ID);
 			gameRules = new BattleSquaresRules(levelProvider, gameConfig.secondsPerRound);
 			gamePlayers = new GamePlayers();
+			
 			var background:Graphic = new Stamp(Assets.SQUARE_GAME_BACKGROUND);
 			squareGridDisp = new Tilemap(Assets.SQUARES, 256, 256,
 											BattleSquaresConstants.SQUARE_WIDTH, BattleSquaresConstants.SQUARE_HEIGHT);
 			squareGridDisp.x = 21;
 			squareGridDisp.y = 21;
+			bonusGridDisp = new Tilemap(Assets.SQUARE_BONUSES, 256, 256,
+											BattleSquaresConstants.SQUARE_WIDTH, BattleSquaresConstants.SQUARE_HEIGHT);
+			bonusGridDisp.x = 21;
+			bonusGridDisp.y = 21;
 			squareGridRect = new Rectangle(squareGridDisp.x + x, squareGridDisp.y + y,
 											squareGridDisp.width, squareGridDisp.height);
-			this.graphic = new Graphiclist(background, squareGridDisp);
+			this.graphic = new Graphiclist(background, squareGridDisp, bonusGridDisp);
 			initHelperEntities();
 			initPlayers(gameConfig, battleFactory); 
 		}
@@ -180,14 +186,8 @@ package puzzle.battlesquares
 			for (var j:int = 0; j < height; j++) {
 				for (var i:int = 0; i < width; i++) {
 					var square:SquareInfo = gameRules.getIndex(i, j);
-					var ownerID:int = square.ownerID;
-					if (square.bonusID == BattleSquaresConstants.BONUS_2X) {
-						ownerID = BattleSquaresConstants.SQUARE_2X_ID;
-					}
-					else if (square.bonusID == BattleSquaresConstants.BONUS_50_ALL) {
-						ownerID = BattleSquaresConstants.SQUARE_50_ALL_ID;
-					}
-					squareGridDisp.setTile(i, j, ownerID);
+					squareGridDisp.setTile(i, j, square.ownerID);
+					bonusGridDisp.setTile(i, j, square.bonusID);
 				}
 			}
 		}

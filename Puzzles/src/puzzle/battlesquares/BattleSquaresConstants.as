@@ -22,8 +22,9 @@ package puzzle.battlesquares
 		public static const STARTING_POINTS:int = 50;
 		
 		public static const BONUS_NONE:int = 0;
-		public static const BONUS_2X:int = 1;
-		public static const BONUS_50_ALL:int = 2;
+		public static const BONUS_50_ALL:int = 1;
+		public static const BONUS_2X:int = 2;
+		
 		public static const BONUS_ALL_POINTS:int = 50;
 		
 	}

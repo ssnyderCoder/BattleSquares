@@ -45,8 +45,8 @@ package puzzle.battlesquares.level
 				for (var xIndex:int = 0; xIndex < numColumns; xIndex++) {
 					ownershipCounts[playerID] += 1;
 					playerPointTotals[playerID] += points;
-					var squareInfo:SquareInfo = new SquareInfo(xIndex, yIndex, playerID, points, bonus);
-					squareInfo.setModificationCallback(squareHasChanged);
+					var squareInfo:SquareInfo = new SquareInfo(xIndex, yIndex, squareHasChanged);
+					squareInfo.setValues(playerID, points, bonus);
 					squareGrid[xIndex + (yIndex * numColumns)] = squareInfo;
 				}
 			}

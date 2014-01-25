@@ -23,7 +23,7 @@ package puzzle.battlesquares
 	 */
 	public class BattleSquaresRules 
 	{
-		private static const BLOCKED_SQUARE:SquareInfo = new SquareInfo(-1, -1, BattleSquaresConstants.PLAYER_BLOCKED, 0, 0);
+		private static const BLOCKED_SQUARE:SquareInfo = new SquareInfo(-1, -1).setValues(BattleSquaresConstants.PLAYER_BLOCKED, 0, 0);
 		
 		private var _timeRemaining:Number; //seconds
 		private var _clockTickingFaster:Boolean = false;
@@ -125,7 +125,14 @@ package puzzle.battlesquares
 		
 		private function applyBonus(square:SquareInfo):void 
 		{
-			
+			if (square.bonusID == BattleSquaresConstants.BONUS_2X) {
+				square.points *= 2;
+				square.bonusID = BattleSquaresConstants.BONUS_NONE;
+			}
+			else if (square.bonusID == BattleSquaresConstants.BONUS_50_ALL) {
+				addPointsToAllSquares(square.ownerID, BattleSquaresConstants.BONUS_ALL_POINTS);
+				square.bonusID = BattleSquaresConstants.BONUS_NONE;
+			}
 		}
 		
 		private function cancelAttacks(prevOwnerID:int, xIndex:int, yIndex:int):void 
@@ -149,6 +156,7 @@ package puzzle.battlesquares
 			attackedSquares = validAttacks;
 		}
 		
+		//requires level only
 		private function addPointsToAllSquares(playerID:int, points:int):void 
 		{
 			for (var j:int = 0; j < height; j++) {
