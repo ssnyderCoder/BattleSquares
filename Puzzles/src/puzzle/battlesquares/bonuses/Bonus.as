@@ -1,5 +1,6 @@
 package puzzle.battlesquares.bonuses 
 {
+	import puzzle.battlesquares.AttackInfo;
 	import puzzle.battlesquares.SquareInfo;
 	import puzzle.battlesquares.BattleSquaresRules;
 	/**
@@ -17,6 +18,10 @@ package puzzle.battlesquares.bonuses
 		public function getID():int
 		{
 			return id;
+		}
+		
+		public function applyCaptureEffect(squareDisplay:ISquareDisplay, attackInfo:AttackInfo):void {
+			throw new TypeError("CaptureEffect must be implemented in derived class");
 		}
 		
 		public function applyCaptureBonus(gameRules:BattleSquaresRules, squareInfo:SquareInfo):void 

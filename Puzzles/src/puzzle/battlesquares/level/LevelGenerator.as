@@ -1,6 +1,7 @@
 package puzzle.battlesquares.level 
 {
 	import puzzle.battlesquares.BattleSquaresConstants;
+	import puzzle.battlesquares.bonuses.BonusConstants;
 	import puzzle.battlesquares.player.PlayerConstants;
 	import puzzle.battlesquares.SquareInfo;
 	import puzzle.GameConfig;
@@ -90,7 +91,7 @@ package puzzle.battlesquares.level
 									BattleSquaresConstants.PLAYER_BLOCKED : BattleSquaresConstants.PLAYER_NONE;
 					var points:int = owner == BattleSquaresConstants.PLAYER_BLOCKED ? 0 : BattleSquaresConstants.STARTING_POINTS;
 					var bonus:int = owner == BattleSquaresConstants.PLAYER_NONE && Math.random() < bonusSquareChance ? 
-											 (Math.random() < BONUS_2X_CHANCE ? BattleSquaresConstants.BONUS_2X :
+											 (Math.random() < BONUS_2X_CHANCE ? BonusConstants.MULTIPLIER.getID() :
 											 BattleSquaresConstants.BONUS_50_ALL) : BattleSquaresConstants.BONUS_NONE;
 					var square:SquareInfo = level.getSquare(i, j);
 					square.setValues(owner, points, bonus);

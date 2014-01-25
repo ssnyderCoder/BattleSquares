@@ -5,6 +5,8 @@ package puzzle.battlesquares
 	import net.flashpunk.graphics.*;
 	import net.flashpunk.utils.*;
 	import puzzle.Assets;
+	import puzzle.battlesquares.bonuses.BonusConstants;
+	import puzzle.battlesquares.bonuses.ISquareDisplay;
 	import puzzle.battlesquares.level.ILevelProvider;
 	import puzzle.battlesquares.level.LevelConstants;
 	import puzzle.GameConfig;
@@ -17,7 +19,7 @@ package puzzle.battlesquares
 	 * ...
 	 * @author Sean Snyder
 	 */
-	public class BattleSquares extends Entity 
+	public class BattleSquares extends Entity implements ISquareDisplay
 	{	
 		private static const BONUS_TEXTS:Array = new Array("None",
 														   "2X: After capturing, points on this square are doubled",
@@ -114,7 +116,7 @@ package puzzle.battlesquares
 				if (squareGridRect.contains(mouseX, mouseY)) {
 					tileX = (mouseX - squareGridRect.x) / squareGridDisp.tileWidth;
 					tileY = (mouseY - squareGridRect.y) / squareGridDisp.tileHeight;
-					return getTileInfo(tileX, tileY);
+					return getSquare(tileX, tileY);
 				}
 				else {
 					return null;
@@ -209,8 +211,8 @@ package puzzle.battlesquares
 			if (bonusID == BattleSquaresConstants.BONUS_NONE) {
 				return;
 			}
-			else if (bonusID == BattleSquaresConstants.BONUS_2X) {
-				createBonusIcon(BonusIcon.BONUS_2X, playerAttackInfo.tileX, playerAttackInfo.tileY);
+			else if (bonusID == BonusConstants.MULTIPLIER.getID()) {
+				BonusConstants.MULTIPLIER.applyCaptureEffect(this, playerAttackInfo);
 			}
 			else if (bonusID == BattleSquaresConstants.BONUS_50_ALL) {
 				createBonusIcons50All(playerAttackInfo.attackerID);
@@ -258,12 +260,22 @@ package puzzle.battlesquares
 			return gameRules.attackSquare(playerID, tileX, tileY, true);
 		}
 		
-		public function getTileInfo(x:int, y:int):SquareInfo {
+		public function getSquare(x:int, y:int):SquareInfo {
 			return gameRules.getIndex(x, y);
+		}
+		
+		public function getSquareRect(x:int, y:int):Rectangle {
+			var xPos:Number = squareGridRect.x + (squareGridDisp.tileWidth * x);
+			var yPos:Number = squareGridRect.y + (squareGridDisp.tileHeight * y);
+			return new Rectangle(xPos, yPos, squareGridDisp.tileWidth, squareGridDisp.tileHeight);
 		}
 		
 		public function getNumberOfRows():int {
 			return gameRules.height;
+		}
+		
+		public function getWorld():World {
+			return this.world;
 		}
 		
 		public function getNumberOfColumns():int {

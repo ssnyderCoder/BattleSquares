@@ -3,6 +3,7 @@ package tests
 	import puzzle.battlesquares.BattleSquaresConstants;
 	import puzzle.battlesquares.BattleSquaresRules;
 	import puzzle.battlesquares.bonuses.Bonus;
+	import puzzle.battlesquares.bonuses.BonusConstants;
 	import puzzle.battlesquares.bonuses.BonusMultipler;
 	import puzzle.battlesquares.SquareInfo;
 	/**
@@ -19,7 +20,7 @@ package tests
 		
 		public function testMultiplierCaptureBonus():void 
 		{
-			var bonus:Bonus = getBonus(BattleSquaresConstants.BONUS_2X);
+			var bonus:Bonus = getBonus(BonusConstants.MULTIPLIER.getID());
 			var gameRules:BattleSquaresRules = getGameRules();
 			var squareInfo:SquareInfo = getSquareInfo(bonus.getID());
 			var expectedPoints:int = squareInfo.points * MULTIPLIER;

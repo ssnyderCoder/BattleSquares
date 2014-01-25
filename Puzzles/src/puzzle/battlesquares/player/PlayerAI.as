@@ -66,7 +66,7 @@ package puzzle.battlesquares.player
 			const height:int = game.getNumberOfRows();
 			for (i = 0; i < width; i++) {
 				for (j = 0; j < height; j++) {
-					var square:SquareInfo = game.getTileInfo(i, j);
+					var square:SquareInfo = game.getSquare(i, j);
 					if (square.ownerID == this.playerID) {
 						if (canCaptureAdjacentSquare(game, i, j)){
 							indexes.push(i + j * width);
@@ -81,8 +81,8 @@ package puzzle.battlesquares.player
 			var chosenIndex:int = FP.choose(indexes);
 			var xIndex:int = chosenIndex % width;
 			var yIndex:int = chosenIndex / width;
-			var ownerIDs:Array = new Array(game.getTileInfo(xIndex - 1, yIndex).ownerID, game.getTileInfo(xIndex + 1, yIndex).ownerID,
-										   game.getTileInfo(xIndex, yIndex - 1).ownerID, game.getTileInfo(xIndex, yIndex + 1).ownerID);
+			var ownerIDs:Array = new Array(game.getSquare(xIndex - 1, yIndex).ownerID, game.getSquare(xIndex + 1, yIndex).ownerID,
+										   game.getSquare(xIndex, yIndex - 1).ownerID, game.getSquare(xIndex, yIndex + 1).ownerID);
 			var randomIndex:int = (int) (Math.floor(Math.random() * ownerIDs.length));
 			while (ownerIDs[randomIndex] == this.playerID || ownerIDs[randomIndex] == BattleSquaresConstants.PLAYER_BLOCKED) {
 				randomIndex = randomIndex == ownerIDs.length - 1 ? 0 : randomIndex + 1;
@@ -99,10 +99,10 @@ package puzzle.battlesquares.player
 		
 		private function canCaptureAdjacentSquare(game:BattleSquares, i:int, j:int):Boolean 
 		{
-			var leftSquareOwner:int = game.getTileInfo(i - 1, j).ownerID;
-			var rightSquareOwner:int = game.getTileInfo(i + 1, j).ownerID;
-			var upperSquareOwner:int = game.getTileInfo(i, j - 1).ownerID;
-			var lowerSquareOwner:int = game.getTileInfo(i, j + 1).ownerID;
+			var leftSquareOwner:int = game.getSquare(i - 1, j).ownerID;
+			var rightSquareOwner:int = game.getSquare(i + 1, j).ownerID;
+			var upperSquareOwner:int = game.getSquare(i, j - 1).ownerID;
+			var lowerSquareOwner:int = game.getSquare(i, j + 1).ownerID;
 			return (leftSquareOwner != this.playerID && leftSquareOwner != BattleSquaresConstants.PLAYER_BLOCKED) ||
 				   (rightSquareOwner != this.playerID && rightSquareOwner != BattleSquaresConstants.PLAYER_BLOCKED) ||
 				   (upperSquareOwner != this.playerID && upperSquareOwner != BattleSquaresConstants.PLAYER_BLOCKED) ||

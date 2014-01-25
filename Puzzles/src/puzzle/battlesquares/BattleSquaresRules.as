@@ -1,6 +1,7 @@
 package puzzle.battlesquares 
 {
 	import net.flashpunk.FP;
+	import puzzle.battlesquares.bonuses.BonusConstants;
 	import puzzle.battlesquares.level.ILevelProvider;
 	import puzzle.battlesquares.level.Level;
 	import puzzle.battlesquares.level.LevelGenerator;
@@ -125,7 +126,7 @@ package puzzle.battlesquares
 		
 		private function applyBonus(square:SquareInfo):void 
 		{
-			if (square.bonusID == BattleSquaresConstants.BONUS_2X) {
+			if (square.bonusID == BonusConstants.MULTIPLIER.getID()) {
 				square.points *= 2;
 				square.bonusID = BattleSquaresConstants.BONUS_NONE;
 			}
