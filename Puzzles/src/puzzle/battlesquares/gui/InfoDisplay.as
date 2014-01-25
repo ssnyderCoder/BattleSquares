@@ -18,16 +18,19 @@ package puzzle.battlesquares.gui
 		{
 			this.x = x;
 			this.y = y;
+			
 			var background:Image = new Image(Assets.SPHERE_GAME_BACKGROUND);
 			background.color = 0x999922;
 			background.scaleY = 0.15;
 			background.scaleX = 0.4;
+			
 			textDisplay = new Text("TEST", 20, 5);
 			textDisplay.size = 14;
-			textDisplay.resizable = true;
+			textDisplay.resizable = false;
 			textDisplay.width = background.scaledWidth - 30;
 			textDisplay.height = background.scaledHeight - 10;
 			textDisplay.wordWrap = true;
+			
 			this.graphic = new Graphiclist(background, textDisplay);
 		}
 		
