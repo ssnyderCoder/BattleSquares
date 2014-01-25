@@ -25,9 +25,6 @@ package tests
 			var square:SquareInfo = level.getSquare(0, 0);
 			assertNotNull("Square should not be null", square);
 			assertThrows(Error, function():void {
-				level.setSquare(3, 2, null);
-			});
-			assertThrows(Error, function():void {
 				square = level.getSquare(-3, -2);
 			});
 		}
@@ -55,8 +52,8 @@ package tests
 			var expectedCount:int = numRows * numColumns;
 			var actualCount:int = level.getOwnershipCount(BattleSquaresConstants.PLAYER_NONE);
 			assertTrue("Total count of unowned squares is wrong", actualCount == expectedCount);
-			
-			level.setSquare(0, 0, new SquareInfo(0, 0, BattleSquaresConstants.PLAYER_1, 0, 0));
+			var square:SquareInfo = level.getSquare(0, 0);
+			square.ownerID = BattleSquaresConstants.PLAYER_1;
 			expectedCount--;
 			actualCount = level.getOwnershipCount(BattleSquaresConstants.PLAYER_NONE);
 			assertTrue("Total count of unowned squares is wrong", actualCount == expectedCount);
@@ -65,6 +62,7 @@ package tests
 			assertTrue("Total count of player 1 squares is wrong", player1Count == 1);
 		}
 		
+		//test point counts
 	}
 
 }

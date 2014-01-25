@@ -1,5 +1,6 @@
 package puzzle.battlesquares.level 
 {
+	import flash.utils.Dictionary;
 	import net.flashpunk.FP;
 	import puzzle.battlesquares.BattleSquaresConstants;
 	import puzzle.battlesquares.SquareInfo;
@@ -44,29 +45,36 @@ package puzzle.battlesquares.level
 				for (var xIndex:int = 0; xIndex < numColumns; xIndex++) {
 					ownershipCounts[playerID] += 1;
 					playerPointTotals[playerID] += points;
-					squareGrid[xIndex + (yIndex * numColumns)] = new SquareInfo(xIndex, yIndex, playerID, points, bonus);
+					var squareInfo:SquareInfo = new SquareInfo(xIndex, yIndex, playerID, points, bonus);
+					squareInfo.setModificationCallback(squareHasChanged);
+					squareGrid[xIndex + (yIndex * numColumns)] = squareInfo;
 				}
 			}
 		}
 		
-		public function setSquare(xIndex:int, yIndex:int, squareInfo:SquareInfo):void 
-		{
-			if (xIndex < 0 || xIndex >= numColumns) {
-				throw new Error("xIndex is out of bounds");
-			}
-			if (yIndex < 0 || yIndex >= numRows) {
-				throw new Error("yIndex is out of bounds");
-			}
+		private function squareHasChanged(square:SquareInfo, prevValue:int, changedID:int):void {
+			var changeFunctions:Dictionary = new Dictionary();
+			changeFunctions[SquareInfo.CHANGED_OWNER_ID] = updateOwnership;
+			changeFunctions[SquareInfo.CHANGED_POINTS] = updatePointTotals;
 			
-			var previousSquare:SquareInfo = squareGrid[xIndex + (yIndex * numColumns)];
-			var previousOwnerID:int = previousSquare.ownerID;
-			var newOwnerID:int = squareInfo.ownerID;
-			ownershipCounts[previousOwnerID] -= 1;
+			var changeFunction:Function = changeFunctions[changedID];
+			if (changeFunction != null) {
+				changeFunction(square, prevValue);
+			}
+		}
+		
+		private function updateOwnership(square:SquareInfo, prevOwnerID:int):void {
+			var newOwnerID:int = square.ownerID;
+			ownershipCounts[prevOwnerID] -= 1;
 			ownershipCounts[newOwnerID] += 1;
-			playerPointTotals[previousOwnerID] -= previousSquare.points;
-			playerPointTotals[newOwnerID] += squareInfo.points;
-			
-			squareGrid[xIndex + (yIndex * numColumns)] = squareInfo;
+			playerPointTotals[prevOwnerID] -= square.points;
+			playerPointTotals[newOwnerID] += square.points;
+		}
+		
+		private function updatePointTotals(square:SquareInfo, prevPoints:int):void {
+			var newPoints:int = square.points;
+			var difference:int = newPoints - prevPoints;
+			playerPointTotals[square.ownerID] += difference;
 		}
 		
 		public function getNumColumns():int 

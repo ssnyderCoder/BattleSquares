@@ -115,17 +115,17 @@ package puzzle.battlesquares
 				return false;
 			}
 			
-			var bonusID:int = square.bonusID;
-			var totalPoints:int = bonusID == BattleSquaresConstants.BONUS_2X ? points * 2 : points;
 			var prevOwnerID:int = square.ownerID;
-			
-			currentLevel.setSquare(x, y, new SquareInfo(x, y, playerID, totalPoints, BattleSquaresConstants.BONUS_NONE));
-			if (bonusID == BattleSquaresConstants.BONUS_50_ALL) {
-				addPointsToAllSquares(playerID, BattleSquaresConstants.BONUS_ALL_POINTS);
-			}
+			square.setValues(playerID, points, square.bonusID);
+			applyBonus(square);
 			
 			cancelAttacks(prevOwnerID, x, y);
 			return true;
+		}
+		
+		private function applyBonus(square:SquareInfo):void 
+		{
+			
 		}
 		
 		private function cancelAttacks(prevOwnerID:int, xIndex:int, yIndex:int):void 

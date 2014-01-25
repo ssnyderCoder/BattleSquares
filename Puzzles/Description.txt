@@ -16,6 +16,8 @@ v 0.4 Plan - Tutorial & Level update
 ---------------------Lessson: Player learns how to disrupt enemy attacks
 
 -Add Campaign Levels
+-Add more Bonuses
+-Add High Score List (Use Data class to save that info)
 -Add some sort of theme to the game
 
 

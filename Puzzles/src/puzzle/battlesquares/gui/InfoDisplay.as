@@ -24,7 +24,7 @@ package puzzle.battlesquares.gui
 			background.scaleX = 0.4;
 			textDisplay = new Text("TEST", 20, 5);
 			textDisplay.size = 14;
-			textDisplay.resizable = false;
+			textDisplay.resizable = true;
 			textDisplay.width = background.scaledWidth - 30;
 			textDisplay.height = background.scaledHeight - 10;
 			textDisplay.wordWrap = true;
