@@ -17,7 +17,7 @@ package tests.mocks
 		
 		public function provideLevel(index:int):Level 
 		{
-			return new Level(0, 0);
+			return new Level(5, 5);
 		}
 		
 		public function getTotalLevels():int 

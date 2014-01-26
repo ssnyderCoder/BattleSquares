@@ -22,7 +22,8 @@ package tests
 		{
 			var bonus:Bonus = getBonus(BonusConstants.MULTIPLIER.getID());
 			var gameRules:BattleSquaresRules = getGameRules();
-			var squareInfo:SquareInfo = getSquareInfo(bonus.getID());
+			var squareInfo:SquareInfo = gameRules.getIndex(0, 0);
+			squareInfo.bonusID = bonus.getID();
 			var expectedPoints:int = squareInfo.points * MULTIPLIER;
 			
 			bonus.applyCaptureBonus(gameRules, squareInfo);

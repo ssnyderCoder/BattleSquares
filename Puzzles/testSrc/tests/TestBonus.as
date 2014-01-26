@@ -29,7 +29,8 @@ package tests
 		public function testCaptureBonus():void {
 			var bonus:Bonus = getBonus(0);
 			var gameRules:BattleSquaresRules = getGameRules();
-			var squareInfo:SquareInfo = getSquareInfo(bonus.getID());
+			var squareInfo:SquareInfo = gameRules.getIndex(0, 0);
+			squareInfo.bonusID = bonus.getID();
 			
 			bonus.applyCaptureBonus(gameRules, squareInfo);
 		}
@@ -37,7 +38,8 @@ package tests
 		public function testContinousBonus():void {
 			var bonus:Bonus = getBonus(0);
 			var gameRules:BattleSquaresRules = getGameRules();
-			var squareInfo:SquareInfo = getSquareInfo(bonus.getID());
+			var squareInfo:SquareInfo = gameRules.getIndex(0, 0);
+			squareInfo.bonusID = bonus.getID();
 			var secondsPassed:Number = 0;
 			
 			secondsPassed += 1.0;
@@ -55,11 +57,6 @@ package tests
 		public function getGameRules():BattleSquaresRules {
 			var levelProvider:ILevelProvider = new MockLevelProvider();
 			return new BattleSquaresRules(levelProvider, 50);
-		}
-		
-		public function getSquareInfo(bonusID:int):SquareInfo 
-		{
-			return new SquareInfo(0, 0).setValues(0, 50, bonusID);
 		}
 		
 		/*
