@@ -5,6 +5,7 @@ package puzzle.battlesquares
 	import net.flashpunk.graphics.*;
 	import net.flashpunk.utils.*;
 	import puzzle.Assets;
+	import puzzle.battlesquares.bonuses.Bonus;
 	import puzzle.battlesquares.bonuses.BonusConstants;
 	import puzzle.battlesquares.bonuses.ISquareDisplay;
 	import puzzle.battlesquares.level.ILevelProvider;
@@ -202,46 +203,15 @@ package puzzle.battlesquares
 					createShrinkingSquare(playerAttackInfo.attackerID, playerAttackInfo.tileX, playerAttackInfo.tileY);
 					leaderboard.updateDisplay();
 					updateSquareGridDisplay();
-					createBonusIcons(bonusID, playerAttackInfo);
+					applyBonusCaptureEffect(bonusID, playerAttackInfo);
 				}
 		}
 		
-		private function createBonusIcons(bonusID:int, playerAttackInfo:AttackInfo):void 
+		private function applyBonusCaptureEffect(bonusID:int, playerAttackInfo:AttackInfo):void 
 		{
-			if (bonusID == BattleSquaresConstants.BONUS_NONE) {
-				return;
-			}
-			else if (bonusID == BonusConstants.MULTIPLIER.getID()) {
-				BonusConstants.MULTIPLIER.applyCaptureEffect(this, playerAttackInfo);
-			}
-			else if (bonusID == BattleSquaresConstants.BONUS_50_ALL) {
-				createBonusIcons50All(playerAttackInfo.attackerID);
-			}
+			var bonus:Bonus = BonusConstants.getBonus(bonusID);
+			bonus.applyCaptureEffect(this, playerAttackInfo);
 		}
-		
-		private function createBonusIcon(iconID:int, tileX:int, tileY:int):void 
-		{
-			var xPos:Number = squareGridRect.x + (squareGridDisp.tileWidth * (tileX)) + 6;
-			var yPos:Number = squareGridRect.y + (squareGridDisp.tileHeight * (tileY)) + 6;
-			var bonusIcon:BonusIcon = new BonusIcon(xPos, yPos, iconID);
-			this.world.add(bonusIcon);
-		}
-		
-		private function createBonusIcons50All(attackerID:int):void 
-		{
-			var height:int = gameRules.height;
-			var width:int = gameRules.width;
-			for (var j:int = 0; j < height; j++) {
-				for (var i:int = 0; i < width; i++) {
-					var square:SquareInfo = gameRules.getIndex(i, j);
-					var ownerID:int = square.ownerID;
-					if (ownerID == attackerID) {
-						createBonusIcon(BonusIcon.BONUS_50_ALL, i, j);
-					}
-				}
-			}
-		}
-
 		
 		private function createShrinkingSquare(newOwnerID:int, tileX:int, tileY:int):void 
 		{

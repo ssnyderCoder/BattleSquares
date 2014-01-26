@@ -3,6 +3,7 @@ package puzzle.battlesquares.level
 	import flash.utils.Dictionary;
 	import net.flashpunk.FP;
 	import puzzle.battlesquares.BattleSquaresConstants;
+	import puzzle.battlesquares.bonuses.BonusConstants;
 	import puzzle.battlesquares.SquareInfo;
 	/**
 	 * ...
@@ -40,7 +41,7 @@ package puzzle.battlesquares.level
 		{
 			var playerID:int = BattleSquaresConstants.PLAYER_NONE;
 			var points:int = BattleSquaresConstants.STARTING_POINTS;
-			var bonus:int = BattleSquaresConstants.BONUS_NONE;
+			var bonus:int = BonusConstants.NONE.getID();
 			for (var yIndex:int = 0; yIndex < numRows; yIndex++) {
 				for (var xIndex:int = 0; xIndex < numColumns; xIndex++) {
 					ownershipCounts[playerID] += 1;

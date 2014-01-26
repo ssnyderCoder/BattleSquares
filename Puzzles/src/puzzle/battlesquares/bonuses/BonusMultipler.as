@@ -31,7 +31,7 @@ package puzzle.battlesquares.bonuses
 		override public function applyCaptureBonus(gameRules:BattleSquaresRules, squareInfo:SquareInfo):void 
 		{
 			squareInfo.points *= multiplier;
-			squareInfo.bonusID = BattleSquaresConstants.BONUS_NONE;
+			squareInfo.bonusID = BonusConstants.NONE.getID();
 		}
 		
 		override public function applyContinousBonus(gameRules:BattleSquaresRules, squareInfo:SquareInfo):void 

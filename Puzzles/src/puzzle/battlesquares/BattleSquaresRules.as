@@ -1,6 +1,7 @@
 package puzzle.battlesquares 
 {
 	import net.flashpunk.FP;
+	import puzzle.battlesquares.bonuses.Bonus;
 	import puzzle.battlesquares.bonuses.BonusConstants;
 	import puzzle.battlesquares.level.ILevelProvider;
 	import puzzle.battlesquares.level.Level;
@@ -91,7 +92,7 @@ package puzzle.battlesquares
 			var bonusType:int = getIndex(x, y).bonusID;
 			var captureRequirement:int = getIndex(x, y).points;
 			var defenseValue:int = squareOwner == BattleSquaresConstants.PLAYER_NONE &&
-												  bonusType == BattleSquaresConstants.BONUS_NONE ?
+												  bonusType == BonusConstants.NONE.getID() ?
 												  MinigameConstants.DIFFICULTY_MEDIUM : MinigameConstants.DIFFICULTY_HARD;
 			var attack:AttackInfo = new AttackInfo(playerID, x, y, captureRequirement, defenseValue);
 			attackedSquares.push(attack);
@@ -118,22 +119,16 @@ package puzzle.battlesquares
 			
 			var prevOwnerID:int = square.ownerID;
 			square.setValues(playerID, points, square.bonusID);
-			applyBonus(square);
+			applyCaptureBonus(square);
 			
 			cancelAttacks(prevOwnerID, x, y);
 			return true;
 		}
 		
-		private function applyBonus(square:SquareInfo):void 
+		private function applyCaptureBonus(square:SquareInfo):void 
 		{
-			if (square.bonusID == BonusConstants.MULTIPLIER.getID()) {
-				square.points *= 2;
-				square.bonusID = BattleSquaresConstants.BONUS_NONE;
-			}
-			else if (square.bonusID == BattleSquaresConstants.BONUS_50_ALL) {
-				addPointsToAllSquares(square.ownerID, BattleSquaresConstants.BONUS_ALL_POINTS);
-				square.bonusID = BattleSquaresConstants.BONUS_NONE;
-			}
+			var bonus:Bonus = BonusConstants.getBonus(square.bonusID);
+			bonus.applyCaptureBonus(this, square);
 		}
 		
 		private function cancelAttacks(prevOwnerID:int, xIndex:int, yIndex:int):void 
@@ -155,19 +150,6 @@ package puzzle.battlesquares
 				validAttacks.push(atkInfo);
 			}
 			attackedSquares = validAttacks;
-		}
-		
-		//requires level only
-		private function addPointsToAllSquares(playerID:int, points:int):void 
-		{
-			for (var j:int = 0; j < height; j++) {
-				for (var i:int = 0; i < width; i++) {
-					var square:SquareInfo = currentLevel.getSquare(i, j);
-					if (square.ownerID == playerID) {
-						square.points += points;
-					}
-				}
-			}
 		}
 		
 		public function update():void {

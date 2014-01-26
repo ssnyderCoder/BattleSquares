@@ -77,7 +77,7 @@ package puzzle.battlesquares.level
 			}
 			
 			var points:int = BattleSquaresConstants.STARTING_POINTS * 4;
-			var bonusID:int = BattleSquaresConstants.BONUS_NONE;
+			var bonusID:int = BonusConstants.NONE.getID();
 			var square:SquareInfo = randomLevel.getSquare(xIndex, yIndex);
 			square.setValues(playerID, points, bonusID);
 		}
@@ -92,7 +92,7 @@ package puzzle.battlesquares.level
 					var points:int = owner == BattleSquaresConstants.PLAYER_BLOCKED ? 0 : BattleSquaresConstants.STARTING_POINTS;
 					var bonus:int = owner == BattleSquaresConstants.PLAYER_NONE && Math.random() < bonusSquareChance ? 
 											 (Math.random() < BONUS_2X_CHANCE ? BonusConstants.MULTIPLIER.getID() :
-											 BattleSquaresConstants.BONUS_50_ALL) : BattleSquaresConstants.BONUS_NONE;
+											 BonusConstants.ADDER_ALL.getID()) : BonusConstants.NONE.getID();
 					var square:SquareInfo = level.getSquare(i, j);
 					square.setValues(owner, points, bonus);
 				}

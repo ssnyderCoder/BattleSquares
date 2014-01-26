@@ -28,7 +28,7 @@ package tests
 			bonus.applyCaptureBonus(gameRules, squareInfo);
 			
 			assertTrue("The square's points should be doubled", squareInfo.points == expectedPoints);
-			assertTrue("The square should no longer have a bonus", squareInfo.bonusID == BattleSquaresConstants.BONUS_NONE);
+			assertTrue("The square should no longer have a bonus", squareInfo.bonusID == BonusConstants.NONE.getID());
 			
 		}
 		
