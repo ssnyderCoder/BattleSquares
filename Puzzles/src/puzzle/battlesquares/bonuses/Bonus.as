@@ -34,7 +34,9 @@ package puzzle.battlesquares.bonuses
 			throw new TypeError("ContinousBonus must be implemented in derived class");
 		}
 		
-		
+		public function getDescription():String {
+			throw new TypeError("Description must be implemented in derived class");
+		}
 		
 	}
 

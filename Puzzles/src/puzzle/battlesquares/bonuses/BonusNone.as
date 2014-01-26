@@ -30,6 +30,11 @@ package puzzle.battlesquares.bonuses
 			//NO EFFECT
 		}
 		
+		override public function getDescription():String 
+		{
+			return "NONE";
+		}
+		
 	}
 
 }

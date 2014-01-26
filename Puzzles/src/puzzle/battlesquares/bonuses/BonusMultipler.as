@@ -43,6 +43,11 @@ package puzzle.battlesquares.bonuses
 		{
 			return _multiplier;
 		}
+		
+		override public function getDescription():String 
+		{
+			return "2X: After capturing, points on this square are doubled";
+		}
 	}
 
 }

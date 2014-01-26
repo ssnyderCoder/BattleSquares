@@ -8,16 +8,16 @@ package puzzle.battlesquares.bonuses
 	import puzzle.battlesquares.gui.BonusIcon;
 	import puzzle.battlesquares.SquareInfo;
 	/**
-	 * ...
+	 * NOTE: Should make this and BonusAdderAll descend from same BonusAll class
 	 * @author Sean Snyder
 	 */
-	public class BonusAdderAll extends Bonus 
+	public class BonusSubtractAll extends Bonus 
 	{
-		private var addAmount:int;
-		public function BonusAdderAll(id:int, addAmount:int=50) 
+		private var subtractAmount:int;
+		public function BonusSubtractAll(id:int, subtractAmount:int=25) 
 		{
 			super(id);
-			this.addAmount = addAmount;
+			this.subtractAmount = subtractAmount;
 		}
 		
 		override public function applyCaptureEffect(squareDisplay:ISquareDisplay, attackInfo:AttackInfo):void 
@@ -28,7 +28,7 @@ package puzzle.battlesquares.bonuses
 				for (var i:int = 0; i < width; i++) {
 					var square:SquareInfo = squareDisplay.getSquare(i, j);
 					var ownerID:int = square.ownerID;
-					if (ownerID == attackInfo.attackerID) {
+					if (ownerID != attackInfo.attackerID && ownerID < BattleSquaresConstants.PLAYER_NONE) {
 						createBonusIcon(squareDisplay, i, j);
 					}
 				}
@@ -51,8 +51,9 @@ package puzzle.battlesquares.bonuses
 			for (var j:int = 0; j < height; j++) {
 				for (var i:int = 0; i < width; i++) {
 					var square:SquareInfo = gameRules.getIndex(i, j);
-					if (square.ownerID == playerID) {
-						square.points += addAmount;
+					if (square.ownerID != playerID && square.ownerID < BattleSquaresConstants.PLAYER_NONE) {
+						square.points -= subtractAmount;
+						if (square.points < 0) square.points = 0;
 					}
 				}
 			}
@@ -66,8 +67,9 @@ package puzzle.battlesquares.bonuses
 		
 		override public function getDescription():String 
 		{
-			return "+50: After capturing, all your squares gain 50 points";
+			return "-25: After capturing, all enemy squares lose 25 points";
 		}
+		
 	}
 
 }

@@ -90,14 +90,21 @@ package puzzle.battlesquares.level
 					var owner:int = !isEdgeSquare(i, j) && Math.random() < blockedSquareChance ?
 									BattleSquaresConstants.PLAYER_BLOCKED : BattleSquaresConstants.PLAYER_NONE;
 					var points:int = owner == BattleSquaresConstants.PLAYER_BLOCKED ? 0 : BattleSquaresConstants.STARTING_POINTS;
-					var bonus:int = owner == BattleSquaresConstants.PLAYER_NONE && Math.random() < bonusSquareChance ? 
-											 (Math.random() < BONUS_2X_CHANCE ? BonusConstants.MULTIPLIER.getID() :
-											 BonusConstants.ADDER_ALL.getID()) : BonusConstants.NONE.getID();
+					var bonus:int = owner == BattleSquaresConstants.PLAYER_NONE && Math.random() < bonusSquareChance ?
+									getRandomBonusID() : BonusConstants.NONE.getID();
 					var square:SquareInfo = level.getSquare(i, j);
 					square.setValues(owner, points, bonus);
 				}
 			}
 			return level;
+		}
+		
+		private function getRandomBonusID():int {
+			var num:Number = Math.random();
+			if (num < 0.6) return BonusConstants.MULTIPLIER.getID();
+			else if (num < 0.85) return BonusConstants.ADDER_ALL.getID();
+			else if (num < 1) return BonusConstants.SUBTRACT_ALL.getID();
+			else return BonusConstants.NONE.getID();
 		}
 		
 		private function isEdgeSquare(xIndex:int, yIndex:int):Boolean
