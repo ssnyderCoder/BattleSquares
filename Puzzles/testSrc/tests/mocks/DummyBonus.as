@@ -21,7 +21,7 @@ package tests.mocks
 			//do nothing
 		}
 		
-		override public function applyContinousBonus(gameRules:BattleSquaresRules, squareInfo:SquareInfo):void 
+		override public function applyContinuousBonus(gameRules:BattleSquaresRules, squareInfo:SquareInfo):void 
 		{
 			//do nothing
 		}

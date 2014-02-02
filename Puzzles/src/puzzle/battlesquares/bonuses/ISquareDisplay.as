@@ -15,6 +15,7 @@ package puzzle.battlesquares.bonuses
 		function getNumberOfColumns():int;
 		function getNumberOfRows():int;
 		function getWorld():World;
+		function getAttacks():Array; //returns array of AttackInfos
 	}
 	
 }

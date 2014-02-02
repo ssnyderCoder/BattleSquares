@@ -34,9 +34,14 @@ package puzzle.battlesquares.bonuses
 			squareInfo.bonusID = BonusConstants.NONE.getID();
 		}
 		
-		override public function applyContinousBonus(gameRules:BattleSquaresRules, squareInfo:SquareInfo):void 
+		override public function applyContinuousEffect(squareDisplay:ISquareDisplay, squareInfo:SquareInfo):void 
 		{
-			//does not have such a bonus
+			//NO EFFECT
+		}
+		
+		override public function applyContinuousBonus(gameRules:BattleSquaresRules, squareInfo:SquareInfo):void 
+		{
+			//NO EFFECT
 		}
 		
 		public function get multiplier():Number 

@@ -43,10 +43,10 @@ package tests
 			var secondsPassed:Number = 0;
 			
 			secondsPassed += 1.0;
-			bonus.applyContinousBonus(gameRules, squareInfo);
+			bonus.applyContinuousBonus(gameRules, squareInfo);
 			
 			secondsPassed += 1.0;
-			bonus.applyContinousBonus(gameRules, squareInfo);
+			bonus.applyContinuousBonus(gameRules, squareInfo);
 		}
 		
 		public function getBonus(id:int):Bonus 

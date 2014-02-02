@@ -13,7 +13,7 @@ package puzzle.battlesquares.player
 			players.push(player);
 		}
 		
-		public function updatePlayers(game:BattleSquares):void {
+		public function updateAll(game:BattleSquares):void {
 			for (var i:int = 0; i < players.length; i++) 
 			{
 				var player:Player = players[i];

@@ -28,10 +28,14 @@ package puzzle.battlesquares.bonuses
 		{
 			throw new TypeError("CaptureBonus must be implemented in derived class");
 		}
+
+		public function applyContinuousEffect(squareDisplay:ISquareDisplay, squareInfo:SquareInfo):void {
+			throw new TypeError("ContinuousEffect must be implemented in derived class");
+		}
 		
-		public function applyContinousBonus(gameRules:BattleSquaresRules, squareInfo:SquareInfo):void 
+		public function applyContinuousBonus(gameRules:BattleSquaresRules, squareInfo:SquareInfo):void 
 		{
-			throw new TypeError("ContinousBonus must be implemented in derived class");
+			throw new TypeError("ContinuousBonus must be implemented in derived class");
 		}
 		
 		public function getDescription():String {

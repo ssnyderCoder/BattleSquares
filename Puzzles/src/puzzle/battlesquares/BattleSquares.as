@@ -47,7 +47,7 @@ package puzzle.battlesquares
 			this.setHitbox(300, 300);
 			
 			var levelProvider:ILevelProvider = battleFactory.getLevelProvider(LevelConstants.LEVEL_GEN_RANDOM_ID);
-			gameRules = new BattleSquaresRules(levelProvider, gameConfig.secondsPerRound);
+			gameRules = new BattleSquaresRules(levelProvider, gameConfig.secondsPerRound, applyBonusContinuousEffect);
 			gamePlayers = new GamePlayers();
 			
 			var background:Graphic = new Stamp(Assets.SQUARE_GAME_BACKGROUND);
@@ -64,6 +64,12 @@ package puzzle.battlesquares
 			this.graphic = new Graphiclist(background, squareGridDisp, bonusGridDisp);
 			initHelperEntities();
 			initPlayers(gameConfig, battleFactory); 
+		}
+		
+		private function applyBonusContinuousEffect(square:SquareInfo):void 
+		{
+			var bonus:Bonus = BonusConstants.getBonus(square.bonusID);
+			bonus.applyContinuousEffect(this, square);
 		}
 					
 		private function initHelperEntities():void 
@@ -93,16 +99,12 @@ package puzzle.battlesquares
 		{
 			super.update();
 			gameRules.update();
-			gamePlayers.updatePlayers(this);
+			gamePlayers.updateAll(this);
 			if (this.gameHadBeenWon && winnerDisplay.windowClicked) {
 				shutdownGame();
 			}
-			//if time is up, show winner
 			if (gameRules.isGameDone() && !gameHadBeenWon) {
-				winnerDisplay = new WinnerDisplay(gameRules.getWinnerName(), this.x + 280, this.y + 200);
-				this.world.add(winnerDisplay);
-				gameHadBeenWon = true;
-				Assets.SFX_GAME_OVER.play(0.8);
+				showWinner();
 			}
 			updateDisplay();
 		}
@@ -219,6 +221,14 @@ package puzzle.battlesquares
 			this.world.add(square);
 		}
 		
+		private function showWinner():void 
+		{
+			winnerDisplay = new WinnerDisplay(gameRules.getWinnerName(), this.x + 280, this.y + 200);
+			this.world.add(winnerDisplay);
+			gameHadBeenWon = true;
+			Assets.SFX_GAME_OVER.play(0.8);
+		}
+		
 		public function gameHasBeenWon():Boolean {
 			return gameHadBeenWon;
 		}
@@ -247,6 +257,10 @@ package puzzle.battlesquares
 		
 		public function getNumberOfColumns():int {
 			return gameRules.width;
+		}
+		
+		public function getAttacks():Array {
+			return gameRules.getAttackedSquares();
 		}
 		
 		public function isClockTickingFaster():Boolean {

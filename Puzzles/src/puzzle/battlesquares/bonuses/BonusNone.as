@@ -20,7 +20,12 @@ package puzzle.battlesquares.bonuses
 			//NO EFFECT
 		}
 		
-		override public function applyContinousBonus(gameRules:BattleSquaresRules, squareInfo:SquareInfo):void 
+		override public function applyContinuousBonus(gameRules:BattleSquaresRules, squareInfo:SquareInfo):void 
+		{
+			//NO EFFECT
+		}
+		
+		override public function applyContinuousEffect(squareDisplay:ISquareDisplay, squareInfo:SquareInfo):void 
 		{
 			//NO EFFECT
 		}
@@ -32,7 +37,7 @@ package puzzle.battlesquares.bonuses
 		
 		override public function getDescription():String 
 		{
-			return "NONE";
+			return "None";
 		}
 		
 	}

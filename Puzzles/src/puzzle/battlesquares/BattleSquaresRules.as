@@ -31,13 +31,15 @@ package puzzle.battlesquares
 		private var _clockTickingFaster:Boolean = false;
 		
 		private var timePerRound:int; //seconds
+		private var secondsPassed:Number = 0;
+		private var contBonusCallback:Function;
 		private var winnerID:int;
 		
 		private var attackedSquares:Array; //contains information on each attack being done
 		private var levelProvider:ILevelProvider;
 		private var currentLevel:Level;
 		
-		public function BattleSquaresRules(levelProvider:ILevelProvider, secondsPerRound:int) 
+		public function BattleSquaresRules(levelProvider:ILevelProvider, secondsPerRound:int, contBonusCallback:Function = null) 
 		{
 			this.levelProvider = levelProvider;
 			currentLevel = levelProvider.provideLevel(0)
@@ -45,6 +47,7 @@ package puzzle.battlesquares
 			this.timePerRound = secondsPerRound;
 			this._timeRemaining = timePerRound;
 			this.winnerID = BattleSquaresConstants.PLAYER_NONE;
+			this.contBonusCallback = contBonusCallback;
 		}
 		
 		public function resetGame():void {
@@ -187,10 +190,29 @@ package puzzle.battlesquares
 		private function countDownTime():void 
 		{
 			var noMoreUnownedTiles:Boolean = currentLevel.getOwnershipCount(BattleSquaresConstants.PLAYER_NONE) == 0;
-			_timeRemaining -= noMoreUnownedTiles ? FP.elapsed * 10: FP.elapsed;
-			_clockTickingFaster = noMoreUnownedTiles ? true : false;
-			if (_timeRemaining < 0) {
-				_timeRemaining = 0;
+			var timePassed:Number = noMoreUnownedTiles ? FP.elapsed * 10: FP.elapsed;
+			secondsPassed += timePassed;
+			_timeRemaining = FP.approach(_timeRemaining, 0, timePassed);
+			_clockTickingFaster = noMoreUnownedTiles;
+			while (secondsPassed > 1.0) {
+				secondsPassed -= 1.0;
+				applyContinuousBonuses();
+			}
+		}
+		
+		private function applyContinuousBonuses():void 
+		{
+			for (var i:int = 0; i < width; i++) 
+			{
+				for (var j:int = 0; j < height; j++) 
+				{
+					var square:SquareInfo = this.getIndex(i, j);
+					var bonus:Bonus = BonusConstants.getBonus(square.bonusID)
+					bonus.applyContinuousBonus(this, square);
+					if (contBonusCallback != null) {
+						contBonusCallback(square);
+					}
+				}
 			}
 		}
 		
