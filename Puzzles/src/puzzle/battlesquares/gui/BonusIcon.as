@@ -1,7 +1,9 @@
 package puzzle.battlesquares.gui 
 {
+	import flash.display.Sprite;
 	import net.flashpunk.Entity;
 	import net.flashpunk.Graphic;
+	import net.flashpunk.graphics.Image;
 	import net.flashpunk.graphics.Spritemap;
 	import net.flashpunk.Mask;
 	import net.flashpunk.Tween;
@@ -41,7 +43,16 @@ package puzzle.battlesquares.gui
 			fadeAway();
 			dieIfDone();
 		}
-				
+		
+		public function getImage():Image {
+			return sprite;
+		}
+		
+		public function setStartingPosition(x:Number, y:Number):void {
+			this.x = x;
+			this.y = yStart = y;
+		}
+		
 		private function floatUpward():void 
 		{
 			if(floatTween.active){

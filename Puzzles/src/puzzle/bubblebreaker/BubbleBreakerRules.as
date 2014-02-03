@@ -85,6 +85,11 @@ package puzzle.bubblebreaker
 			return _numRows;
 		}
 		
+		public function set score(value:int):void 
+		{
+			_score = value;
+		}
+		
 		public function getIndex(x:int, y:int):int {
 			x = FP.clamp(x, 0, _numColumns - 1);
 			y = FP.clamp(y, 0, _numRows - 1);

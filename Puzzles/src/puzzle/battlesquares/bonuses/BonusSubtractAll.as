@@ -35,14 +35,6 @@ package puzzle.battlesquares.bonuses
 			}
 		}
 		
-		private function createBonusIcon(squareDisplay:ISquareDisplay, tileX:int, tileY:int):void 
-		{
-			var rect:Rectangle = squareDisplay.getSquareRect(tileX, tileY);
-			var bonusIcon:BonusIcon = new BonusIcon(rect.x + 6, rect.y + 6, this.getID());
-			var world:World = squareDisplay.getWorld();
-			world.add(bonusIcon);
-		}
-		
 		override public function applyCaptureBonus(gameRules:BattleSquaresRules, squareInfo:SquareInfo):void 
 		{
 			var height:int = gameRules.height;

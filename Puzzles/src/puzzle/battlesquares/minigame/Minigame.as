@@ -43,6 +43,10 @@ package puzzle.battlesquares.minigame
 			throw new Error("getScore method must be overriden in derived class");
 		}
 		
+		public function setScore(newScore:int):void {
+			throw new Error("setScore method must be overriden in derived class");
+		}
+		
 		public function hasBeenWon():Boolean 
 		{
 			throw new Error("hasBeenWon method must be overriden in derived class");

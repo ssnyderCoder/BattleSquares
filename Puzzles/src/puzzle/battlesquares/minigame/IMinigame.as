@@ -11,6 +11,7 @@ package puzzle.battlesquares.minigame
 		function endGame():void;
 		function isActive(): Boolean;
 		function getScore():int;
+		function setScore(newScore:int):void;
 		function hasBeenWon():Boolean;
 	}
 	

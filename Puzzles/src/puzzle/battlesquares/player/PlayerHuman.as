@@ -14,6 +14,7 @@ package puzzle.battlesquares.player
 	public class PlayerHuman extends Player implements IMinigamePlayer
 	{
 		private var minigame:IMinigame = null;
+		private var prevPoints:int = 0;
 		public function PlayerHuman(playerID:int) 
 		{
 			super(playerID);
@@ -36,7 +37,12 @@ package puzzle.battlesquares.player
 			}
 			
 			if (currentAttack) {
-				currentAttack.currentPoints = minigame.getScore();
+				//takes into account point changes from other sources
+				var pointDifference:int = currentAttack.currentPoints - prevPoints;
+				var newScore:int = minigame.getScore() + pointDifference;
+				minigame.setScore(newScore);
+				currentAttack.currentPoints = newScore;
+				prevPoints = newScore;
 				if (minigame.hasBeenWon()) {
 					minigame.endGame();
 					game.captureSquare(currentAttack);
@@ -68,6 +74,7 @@ package puzzle.battlesquares.player
 			if (atkInfo) {
 				currentAttack = atkInfo;
 				minigame.beginGame(atkInfo.capturePoints, atkInfo.defenseValue);
+				prevPoints = 0;
 			}
 		}
 		

@@ -199,6 +199,12 @@ package puzzle.bubblebreaker
 			return this.active ? gameRules.score : 0;
 		}
 		
+		override public function setScore(newScore:int):void 
+		{
+			gameRules.score = newScore;
+			this.updateScoreDisplay();
+		}
+		
 		override public function hasBeenWon():Boolean
 		{
 			return hasCaptured && !fader.isFading();
