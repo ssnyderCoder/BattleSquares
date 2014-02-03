@@ -143,8 +143,8 @@ package puzzle.battlesquares.player
 			var difficultyModifier:int = difficulty == EASY_DIFFICULTY   ? -2 :
 										 difficulty == MEDIUM_DIFFICULTY ?  0 :
 										 difficulty == HARD_DIFFICULTY   ?  2 : 0;
-			var defenceModifier:int = currentAttack.defenseValue - MinigameConstants.DIFFICULTY_MEDIUM; //should be 0 or 1(Hard)
-			var spheresCleared:int = FP.choose(NUM_SPHERES_TO_CLEAR) - (defenceModifier * 5) + difficultyModifier;
+			var defenceModifier:int = currentAttack.defenseValue - MinigameConstants.DIFFICULTY_MEDIUM; //should be 0 - 2
+			var spheresCleared:int = FP.choose(NUM_SPHERES_TO_CLEAR) - (defenceModifier * 3) + difficultyModifier;
 			if (spheresCleared < 2) {
 				return;
 			}
