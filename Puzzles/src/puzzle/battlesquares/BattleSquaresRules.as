@@ -94,9 +94,9 @@ package puzzle.battlesquares
 			var squareOwner:int = getIndex(x, y).ownerID;
 			var bonusType:int = getIndex(x, y).bonusID;
 			var captureRequirement:int = getIndex(x, y).points;
-			var defenseValue:int = squareOwner == BattleSquaresConstants.PLAYER_NONE &&
-												  bonusType == BonusConstants.NONE.getID() ?
-												  MinigameConstants.DIFFICULTY_MEDIUM : MinigameConstants.DIFFICULTY_HARD;
+			var defenseValue:int = MinigameConstants.DIFFICULTY_MEDIUM;
+			defenseValue += squareOwner == BattleSquaresConstants.PLAYER_NONE ? 0 : 1;
+			defenseValue += bonusType == BonusConstants.NONE.getID() ? 0 : 1;
 			var attack:AttackInfo = new AttackInfo(playerID, x, y, captureRequirement, defenseValue);
 			attackedSquares.push(attack);
 			return attack;

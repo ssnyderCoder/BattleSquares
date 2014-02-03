@@ -44,11 +44,12 @@ package puzzle.battlesquares.bonuses
 		override public function applyContinuousEffect(squareDisplay:ISquareDisplay, squareInfo:SquareInfo):void 
 		{
 			var attacks:Array = squareDisplay.getAttacks();
+			var quantity:int = boostPower > 5 ? 5 : boostPower;
 			for each (var atk:AttackInfo in attacks) 
 			{
 				if (atk.attackerID == squareInfo.ownerID) {
-					showBonusIcons(squareDisplay, squareInfo.xIndex, squareInfo.yIndex, 4);
-					showBonusIcons(squareDisplay, atk.tileX, atk.tileY, 4);
+					showBonusIcons(squareDisplay, squareInfo.xIndex, squareInfo.yIndex, quantity);
+					showBonusIcons(squareDisplay, atk.tileX, atk.tileY, quantity);
 					break;
 				}
 			}
