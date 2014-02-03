@@ -184,8 +184,8 @@ package puzzle.bubblebreaker.gui
 						transitionSphereCount++;
 						var xPos:Number = this.x + (sphereGrid.tileWidth * (i + 0.5));
 						var yPos:Number = this.y + (sphereGrid.tileHeight * (j + 0.5));
-						var sphere:SingleBubble = new SingleBubble(xPos, yPos, previousIndex, sphereHasFinishedShrinking);
-						this.world.add(sphere);
+						var sphere:SingleBubble = (SingleBubble) (world.create(SingleBubble, true));
+						sphere.init(xPos, yPos, previousIndex, sphereHasFinishedShrinking);
 					}
 				}
 			}

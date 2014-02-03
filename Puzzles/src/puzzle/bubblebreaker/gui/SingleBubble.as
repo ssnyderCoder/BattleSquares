@@ -16,17 +16,23 @@ package puzzle.bubblebreaker.gui
 		private var scaleTween:Tween;
 		public function SingleBubble(x:Number = 0, y:Number = 0, sphereID:int = 0, complete:Function = null) 
 		{
-			this.x = x;
-			this.y = y;
-			
 			sprite = new Spritemap(Assets.SPHERES, BubbleBreakerConstants.SPHERE_WIDTH, BubbleBreakerConstants.SPHERE_HEIGHT);
-			sprite.frame = sphereID;
 			sprite.originX = BubbleBreakerConstants.SPHERE_WIDTH / 2;
 			sprite.originY = BubbleBreakerConstants.SPHERE_HEIGHT / 2;
 			this.graphic = sprite;
 			
-			scaleTween = new Tween(0.3, Tween.ONESHOT, complete, Ease.backIn);
-			this.addTween(scaleTween, true);
+			scaleTween = new Tween(0.3, Tween.PERSIST, null, Ease.backIn);
+			this.addTween(scaleTween);
+			
+			init(x, y, sphereID, complete);
+		}
+		
+		public function init(x:Number = 0, y:Number = 0, sphereID:int = 0, complete:Function = null):void {
+			this.x = x;
+			this.y = y;
+			sprite.frame = sphereID;
+			scaleTween.complete = complete;
+			sprite.scale = 1.0;
 		}
 		
 		//shrink during each update
@@ -35,8 +41,14 @@ package puzzle.bubblebreaker.gui
 			super.update();
 			sprite.scale = 1 - scaleTween.scale;
 			if (!scaleTween.active) {
-				this.world.remove(this);
+				this.world.recycle(this);
 			}
+		}
+		
+		override public function added():void 
+		{
+			super.added();
+			scaleTween.start();
 		}
 		
 	}

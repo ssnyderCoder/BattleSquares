@@ -16,24 +16,34 @@ package puzzle.battlesquares.gui
 	 */
 	public class BonusIcon extends Entity 
 	{
-		public static const BONUS_50_ALL:int = 0;
-		public static const BONUS_2X:int = 1;
 		private static const FLOAT_DISTANCE:Number = 20;
 		
 		private var sprite:Spritemap;
-		private var fadeTween:Tween = new Tween(1.6, Tween.ONESHOT, null, Ease.expoIn);
-		private var floatTween:Tween = new Tween(1.6, Tween.ONESHOT, null, Ease.cubeOut);
+		private var fadeTween:Tween = new Tween(1.6, Tween.PERSIST, null, Ease.expoIn);
+		private var floatTween:Tween = new Tween(1.6, Tween.PERSIST, null, Ease.cubeOut);
 		private var yStart:Number;
 		
-		public function BonusIcon(x:Number=0, y:Number=0, bonusId:int=BONUS_2X) 
+		public function BonusIcon(x:Number=0, y:Number=0, bonusID:int=0) 
 		{
-			super(x, y);
-			yStart = y;
+			setStartingPosition(x, y);
 			sprite = new Spritemap(Assets.BONUS_ICONS, 20, 20);
-			sprite.frame = bonusId;
 			this.graphic = sprite;
-			this.addTween(fadeTween, true);
-			this.addTween(floatTween, true);
+			this.addTween(fadeTween);
+			this.addTween(floatTween);
+		}
+		
+		public function init(x:Number = 0, y:Number = 0, bonusID:int = 0):void {
+			setStartingPosition(x, y);
+			sprite.frame = bonusID;
+			sprite.alpha = 1;
+			sprite.scale = 1;
+		}
+		
+		override public function added():void 
+		{
+			super.added();
+			fadeTween.start();
+			floatTween.start();
 		}
 		
 		override public function update():void 
@@ -70,7 +80,7 @@ package puzzle.battlesquares.gui
 		private function dieIfDone():void 
 		{
 			if (!floatTween.active && !fadeTween.active) {
-				this.world.remove(this);
+				this.world.recycle(this);
 			}
 		}
 

@@ -14,30 +14,39 @@ package puzzle.battlesquares.gui
 	 */
 	public class SingleSquare extends Entity 
 	{
-		
+		private var originalSprite:Spritemap;
 		private var sprite:Spritemap;
 		private var scaleTween:Tween;
 		
 		public function SingleSquare(x:Number = 0, y:Number = 0, prevPlayerID:int = 0, newPlayerID:int = 0) 
 		{
-			this.x = x;
-			this.y = y;
-			var originalSprite:Spritemap = new Spritemap(Assets.SQUARES, BattleSquaresConstants.SQUARE_WIDTH,
+			originalSprite = new Spritemap(Assets.SQUARES, BattleSquaresConstants.SQUARE_WIDTH,
 														BattleSquaresConstants.SQUARE_HEIGHT);
-			originalSprite.frame = prevPlayerID;
 			originalSprite.originX = BattleSquaresConstants.SQUARE_WIDTH / 2;
 			originalSprite.originY = BattleSquaresConstants.SQUARE_HEIGHT / 2;
 			sprite = new Spritemap(Assets.SQUARES, BattleSquaresConstants.SQUARE_WIDTH, BattleSquaresConstants.SQUARE_HEIGHT);
-			sprite.frame = newPlayerID;
 			sprite.originX = BattleSquaresConstants.SQUARE_WIDTH / 2;
 			sprite.originY = BattleSquaresConstants.SQUARE_HEIGHT / 2;
-			sprite.scale = 0;
 			this.graphic = new Graphiclist(originalSprite, sprite);
 			
-			scaleTween = new Tween(0.3, Tween.ONESHOT, null, Ease.backOut);
-			this.addTween(scaleTween, true);
+			scaleTween = new Tween(0.3, Tween.PERSIST, null, Ease.backOut);
+			this.addTween(scaleTween);
+			init(x, y, prevPlayerID, newPlayerID);
 		}
 		
+		public function init(x:Number = 0, y:Number = 0, prevPlayerID:int = 0, newPlayerID:int = 0):void {
+			this.x = x;
+			this.y = y;
+			originalSprite.frame = prevPlayerID;
+			sprite.frame = newPlayerID;
+			sprite.scale = 0;
+		}
+		
+		override public function added():void 
+		{
+			super.added();
+			scaleTween.start();
+		}
 		
 		//only function is to shrink away like the spheres
 		override public function update():void 
@@ -45,7 +54,7 @@ package puzzle.battlesquares.gui
 			super.update();
 			sprite.scale = scaleTween.scale;
 			if (!scaleTween.active) {
-				this.world.remove(this);
+				this.world.recycle(this);
 			}
 		}
 	}

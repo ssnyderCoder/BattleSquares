@@ -26,9 +26,9 @@ package puzzle.battlesquares.bonuses
 		protected function createBonusIcon(squareDisplay:ISquareDisplay, tileX:int, tileY:int):BonusIcon
 		{
 			var rect:Rectangle = squareDisplay.getSquareRect(tileX, tileY);
-			var bonusIcon:BonusIcon = new BonusIcon(rect.x + 6, rect.y + 6, this.getID());
 			var world:World = squareDisplay.getWorld();
-			world.add(bonusIcon);
+			var bonusIcon:BonusIcon = (BonusIcon) (world.create(BonusIcon, true));
+			bonusIcon.init(rect.x + 6, rect.y + 6, this.getID());
 			return bonusIcon;
 		}
 		

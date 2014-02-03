@@ -217,8 +217,8 @@ package puzzle.battlesquares
 			var prevOwnerID:int = squareGridDisp.getTile(tileX, tileY);
 			var xPos:Number = squareGridRect.x + (squareGridDisp.tileWidth * (tileX + 0.5));
 			var yPos:Number = squareGridRect.y + (squareGridDisp.tileHeight * (tileY + 0.5));
-			var square:SingleSquare = new SingleSquare(xPos, yPos, prevOwnerID, newOwnerID);
-			this.world.add(square);
+			var square:SingleSquare = (SingleSquare) (world.create(SingleSquare, true));
+			square.init(xPos, yPos, prevOwnerID, newOwnerID);
 		}
 		
 		private function showWinner():void 
