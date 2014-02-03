@@ -96,6 +96,10 @@ package puzzle.bubblebreaker
 			{
 				captureButton.appear();
 			}
+			else if(captureButton.visible && gameRules.score <= pointsRequiredToCapture)
+			{
+				captureButton.disappear();
+			}
 		}
 		
 		private function updateScoreDisplay():void

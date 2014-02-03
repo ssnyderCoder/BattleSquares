@@ -50,6 +50,11 @@ package puzzle.bubblebreaker.gui
 			fader.fadeIn();
 		}
 		
+		public function disappear():void {
+			this.visible = false;
+			fader.fadeOut();
+		}
+		
 		public function reset():void 
 		{
 			this.visible = false;
