@@ -102,7 +102,7 @@ package puzzle.battlesquares.level
 		private function getRandomBonusID():int {
 			var num:Number = Math.random();
 			if (num < 0.1) return BonusConstants.OFFENSE.getID();
-			else if (num < 0.5) return BonusConstants.DEFENSE.getID();
+			else if (num < 0.2) return BonusConstants.DEFENSE.getID();
 			else if (num < 0.6) return BonusConstants.MULTIPLIER.getID();
 			else if (num < 0.85) return BonusConstants.ADDER_ALL.getID();
 			else if (num < 1) return BonusConstants.SUBTRACT_ALL.getID();
