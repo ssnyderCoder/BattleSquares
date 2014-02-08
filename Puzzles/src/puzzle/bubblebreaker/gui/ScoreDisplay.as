@@ -17,7 +17,7 @@ package puzzle.bubblebreaker.gui
 	{
 		
 		private static const COLOR_GREEN:uint = 0x11cc11;
-		private static const COLOR_RED:uint = 0xcc1111;
+		private static const COLOR_RED:uint = 0xff1111;
 		
 		private var scoreText:Text;
 		private var requiredScoreText:Text;
