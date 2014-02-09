@@ -1,0 +1,22 @@
+<level width="256" height="256" columns="8" rows="8" player_1="Human_Tutorial" player_2="None" player_3="None" player_4="None" win_condition="CaptureAllTiles" time_limit="-1">
+  <TileLayer tileset="Tiles" exportMode="CSV">5,5,5,5,5,5,5,5
+5,5,5,5,5,5,5,5
+5,5,5,5,5,5,5,5
+0,4,4,4,4,5,5,5
+5,5,5,4,4,4,4,4
+5,5,5,5,5,5,5,5
+5,5,5,5,5,5,5,5
+5,5,5,5,5,5,5,5</TileLayer>
+  <BonusLayer tileset="Bonuses" exportMode="CSV">0,0,0,0,0,0,0,0
+0,0,0,0,0,0,0,0
+0,0,0,0,0,0,0,0
+0,0,0,0,0,0,0,0
+0,0,0,0,0,0,0,0
+0,0,0,0,0,0,0,0
+0,0,0,0,0,0,0,0
+0,0,0,0,0,0,0,0</BonusLayer>
+  <Entities>
+    <Note id="0" x="0" y="96" message="Click on adjacent squares to capture them." delay="8" />
+    <Note id="1" x="64" y="96" message="You can only capture 1 square at a time." delay="2" />
+  </Entities>
+</level>
