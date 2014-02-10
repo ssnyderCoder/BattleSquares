@@ -18,5 +18,6 @@
   <Entities>
     <Note id="0" x="0" y="96" message="Click on adjacent squares to capture them." delay="8" />
     <Note id="1" x="64" y="96" message="You can only capture 1 square at a time." delay="2" />
+    <Points id="2" x="0" y="96" value="75" />
   </Entities>
 </level>
